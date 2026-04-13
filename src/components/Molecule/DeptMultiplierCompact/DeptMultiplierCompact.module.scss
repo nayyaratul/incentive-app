@@ -169,28 +169,65 @@
 .tierBand { color: var(--text-secondary); }
 .tierMult { color: var(--brand); font-weight: 700; }
 
-.demoBtn {
+/* Tier-reference rows are tappable demo triggers */
+.sectionTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.demoHint {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 11.5px;
-  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
   color: var(--brand);
-  padding: 6px 12px;
-  background: var(--brand-soft);
-  border: 1px dashed rgba(189, 41, 37, 0.32);
-  border-radius: 999px;
+  font-weight: 600;
+
+  > svg { color: var(--brand); }
+}
+
+.tierRowBtn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 10px;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   cursor: pointer;
-  letter-spacing: -0.005em;
+  margin: 0;
+  text-align: left;
+  transition: all var(--dur-fast) var(--ease-out);
 
   &:hover {
-    background: var(--brand);
-    color: var(--brand-contrast);
-    border-style: solid;
-    border-color: var(--brand);
+    background: var(--brand-soft);
+    border-color: rgba(189, 41, 37, 0.32);
+
+    .tierBand, .tierMult {
+      color: var(--brand-deep);
+    }
   }
 
-  > svg { color: currentColor; }
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.tierRowCurrent {
+  border-color: var(--text-primary);
+  background: var(--surface-sunken);
+  position: relative;
+
+  .tierBand::before {
+    content: '● ';
+    color: var(--brand);
+    margin-right: 2px;
+    font-size: 11px;
+  }
 }
 

@@ -11,29 +11,18 @@ import TierCelebration from '../../Organism/TierCelebration/TierCelebration';
  */
 export default function DeptMultiplierCompact({ primaryDepartment, allDepartments }) {
   const [open, setOpen] = useState(false);
-  const [celebOpen, setCelebOpen] = useState(false);
+  const [celebTier, setCelebTier] = useState(null);
 
   const primary = allDepartments.find((d) => d.department === primaryDepartment) || allDepartments[0];
   const others = allDepartments.filter((d) => d.department !== primary.department);
 
   const isZero = primary.multiplier === 0;
 
-  // Compute the celebration target for the demo trigger:
-  // pick the next tier above the user's current multiplier band.
-  const sortedTiers = [...electronicsMultiplierTiers].sort((a, b) => a.gateFromPct - b.gateFromPct);
-  const currentTierIdx = sortedTiers.findIndex(
-    (t) => primary.achievementPct >= t.gateFromPct && primary.achievementPct < t.gateToPct
-  );
-  const nextTier = sortedTiers[currentTierIdx + 1] || sortedTiers[currentTierIdx];
-
-  // Brief-aligned framing per tier value. The brief defines six bands:
-  //   <85%   → 0%   (no payout)
-  //   85-90% → 50%
-  //   90-100%→ 80%
-  //   100-110%→ 100%   (target hit — biggest moment)
-  //   110-120%→ 110%
-  //   120%+  → 120%   (top tier)
-  const celebTier = nextTier && framingFor(nextTier.multiplier, primary.multiplier, primary.department);
+  // Demo helper: fire the celebration for any of the brief's six tiers.
+  // (Tier rows in the reference panel below are tappable.)
+  const simulate = (targetMultiplier) => {
+    setCelebTier(framingFor(targetMultiplier, primary.multiplier, primary.department));
+  };
 
   return (
     <section className={styles.card}>
@@ -57,9 +46,9 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
       </button>
 
       <TierCelebration
-        open={celebOpen}
+        open={!!celebTier}
         tier={celebTier}
-        onDismiss={() => setCelebOpen(false)}
+        onDismiss={() => setCelebTier(null)}
       />
 
       {open && (
@@ -84,32 +73,34 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
             </div>
           )}
 
-          {/* Demo trigger — POC only. In production, the celebration fires
-              automatically when the dept's tier actually changes (server push). */}
           <div className={styles.section}>
-            <button
-              type="button"
-              className={styles.demoBtn}
-              onClick={() => setCelebOpen(true)}
-            >
-              <Sparkles size={12} strokeWidth={2.4} />
-              Simulate tier change
-            </button>
-          </div>
-
-          <div className={styles.section}>
-            <div className={styles.sectionTitle}>How the multiplier works</div>
+            <div className={styles.sectionTitleRow}>
+              <span className={styles.sectionTitle}>How the multiplier works</span>
+              <span className={styles.demoHint}>
+                <Sparkles size={11} strokeWidth={2.4} />
+                Tap any tier to preview
+              </span>
+            </div>
             <div className={styles.tierGrid}>
-              {electronicsMultiplierTiers.map((t) => (
-                <div key={t.label} className={styles.tierRow}>
-                  <span className={styles.tierBand}>
-                    {t.gateFromPct}–{t.gateToPct === Infinity ? '∞' : t.gateToPct}%
-                  </span>
-                  <span className={`${styles.tierMult} ${t.multiplier === 0 ? styles.multZero : ''}`}>
-                    {t.multiplier === 0 ? 'No pay' : `${Math.round(t.multiplier * 100)}%`}
-                  </span>
-                </div>
-              ))}
+              {electronicsMultiplierTiers.map((t) => {
+                const isCurrent = primary.multiplier === t.multiplier;
+                return (
+                  <button
+                    key={t.label}
+                    type="button"
+                    className={`${styles.tierRow} ${styles.tierRowBtn} ${isCurrent ? styles.tierRowCurrent : ''}`}
+                    onClick={() => simulate(t.multiplier)}
+                    aria-label={`Preview celebration for ${t.multiplier === 0 ? 'no payout' : Math.round(t.multiplier * 100) + '%'} tier`}
+                  >
+                    <span className={styles.tierBand}>
+                      {t.gateFromPct}–{t.gateToPct === Infinity ? '∞' : t.gateToPct}%
+                    </span>
+                    <span className={`${styles.tierMult} ${t.multiplier === 0 ? styles.multZero : ''}`}>
+                      {t.multiplier === 0 ? 'No pay' : `${Math.round(t.multiplier * 100)}%`}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
