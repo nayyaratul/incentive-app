@@ -1,27 +1,34 @@
 @use '../styles/tokens-primitive' as *;
 
-// Maps the semantic CSS vars to primitives for the Reliance Retail brand.
-// To re-skin to another brand: copy this file, tweak values, swap the import in bootstrap.
+// Reliance Retail — "Editorial warmth" variant.
+// Ivory surface, deep-navy ink, brand blue reserved for primary action, saffron for earnings.
 
 :root {
   --_brand:           #{$blue-600};
-  --_brand-contrast:  #{$ink-0};
-  --_accent:          #{$saffron-400};
-  --_accent-soft:     #{$saffron-300};
+  --_brand-contrast:  #FFFFFF;
+  --_accent:          #FF6B00;          // saffron, upgraded from $saffron-400 for more punch
+  --_accent-soft:     #FFE3C2;
+  --_accent-deep:     #C14B00;
 
-  --_surface:         #{$ink-0};
-  --_surface-raised:  #{$ink-50};
-  --_surface-sunken:  #{$ink-100};
+  --_surface:         #F7F2E8;          // warm ivory — the signature move
+  --_surface-raised:  #FFFBF1;          // one notch warmer than pure white
+  --_surface-sunken:  #EDE6D4;
+  --_surface-card:    #FFFFFF;          // cards pop slightly against the ivory
 
-  --_text-primary:    #{$ink-900};
-  --_text-secondary:  #{$ink-600};
-  --_text-muted:      #{$ink-400};
-  --_text-on-brand:   #{$ink-0};
+  --_text-primary:    #0A1628;          // deep navy ink
+  --_text-secondary:  #3A4A5F;
+  --_text-muted:      #7A8699;
+  --_text-on-brand:   #FFFFFF;
 
-  --_border:          #{$ink-200};
-  --_divider:         #{$ink-100};
+  --_border:          #E2D9C4;          // warmer than the old gray-200
+  --_divider:         #EDE6D4;
 
-  --_success:         #{$success-500};
-  --_warn:            #{$warn-500};
-  --_error:           #{$error-500};
+  --_success:         #0F7A3A;
+  --_warn:            #C14B00;
+  --_error:           #B61E1E;
+
+  // Editorial extras consumed directly in components
+  --hero-grad-start:  #FFF6E1;
+  --hero-grad-end:    #FFDEAA;
+  --hero-ring:        #FF9933;
 }

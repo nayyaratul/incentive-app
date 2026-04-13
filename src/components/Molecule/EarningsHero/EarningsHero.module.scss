@@ -1,56 +1,221 @@
 .hero {
-  background: linear-gradient(135deg, #fff7e6, #ffe8b3);
-  border-radius: var(--radius-card);
-  padding: 28px 24px 24px;
-  margin: 0 16px;
-  box-shadow: var(--shadow-card);
+  position: relative;
+  padding: 24px 22px 22px;
+  border-radius: 24px;
+  background:
+    radial-gradient(120% 100% at 0% 0%, rgba(255, 222, 170, 0.95) 0%, rgba(255, 246, 225, 0.95) 60%, rgba(255, 251, 241, 1) 100%);
+  box-shadow: var(--shadow-hero);
+  border: 1px solid rgba(193, 75, 0, 0.14);
+  overflow: hidden;
+
+  // Textured paper feel
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.3  0 0 0 0 0.1  0 0 0 0.28 0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  // Radial ring corner flourish
+  &::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 153, 51, 0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+}
+
+.ornament {
+  position: absolute;
+  right: -12px;
+  top: -12px;
+  width: 96px;
+  height: 96px;
+  color: var(--accent-deep);
+  opacity: 0.32;
+  animation: ornament-spin 40s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes ornament-spin {
+  to { transform: rotate(360deg); }
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 18px;
+  gap: 12px;
 }
 
 .label {
-  margin: 0 0 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #92400e;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  color: var(--accent-deep);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(255, 107, 0, 0.6);
+}
+
+.trendPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(15, 122, 58, 0.08);
+  color: var(--success);
+  border-radius: 999px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border: 1px solid rgba(15, 122, 58, 0.16);
+}
+
+.amountRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.rupee {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 360;
+  font-style: italic;
+  font-size: 52px;
+  line-height: 0.9;
+  color: var(--accent-deep);
+  letter-spacing: -0.04em;
+  transform: translateY(-6px);
 }
 
 .amount {
-  margin: 0 0 8px;
-  font-size: 42px;
-  font-weight: 800;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 680;
+  font-size: 78px;
+  line-height: 0.85;
   color: var(--text-primary);
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  letter-spacing: -1px;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
-.subtext {
-  margin: 0 0 16px;
-  font-size: 13px;
-  color: #78350f;
-  font-weight: 500;
+.caption {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 18px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
-.progressTrack {
-  background: rgba(0, 0, 0, 0.12);
-  border-radius: var(--radius-chip);
-  height: 8px;
-  overflow: hidden;
-  margin-bottom: 6px;
+.captionNum {
+  font-family: 'Geist Mono', monospace;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 12.5px;
+  letter-spacing: -0.01em;
 }
 
-.progressBar {
-  height: 100%;
-  background: #d97706;
-  border-radius: var(--radius-chip);
-  transition: width var(--dur-med) var(--ease-out);
+.captionDiv {
+  color: var(--text-muted);
+  opacity: 0.6;
 }
 
-.progressLabel {
-  margin: 0;
-  font-size: 12px;
-  color: #92400e;
+.remaining {
+  font-family: 'Geist Mono', monospace;
+  color: var(--accent-deep);
   font-weight: 600;
-  text-align: right;
+  font-size: 12px;
+}
+
+.progress {
+  position: relative;
+  z-index: 1;
+}
+
+.track {
+  background: rgba(10, 22, 40, 0.08);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(10, 22, 40, 0.08);
+}
+
+.fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF9933 0%, #FF6B00 60%, #C14B00 100%);
+  border-radius: 999px;
+  position: relative;
+  transition: width 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  box-shadow: 0 0 12px rgba(255, 107, 0, 0.5);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 100%
+    );
+    background-size: 60% 100%;
+    background-repeat: no-repeat;
+    animation: shimmer 2.8s ease-in-out infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -120% 0; }
+  100% { background-position: 220% 0; }
+}
+
+.scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+
+  span:first-child { margin-left: -2px; }
+  span:last-child { margin-right: -2px; }
 }

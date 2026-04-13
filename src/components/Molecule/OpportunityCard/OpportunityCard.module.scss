@@ -1,50 +1,124 @@
 .card {
-  min-width: 160px;
-  max-width: 160px;
-  background: var(--surface);
-  border-radius: var(--radius-card);
+  position: relative;
+  min-width: 168px;
+  max-width: 168px;
+  height: 200px;
+  background: var(--surface-card);
+  border-radius: 16px;
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-card);
-  padding: 16px 14px;
-  flex-shrink: 0;
+  padding: 14px 16px 16px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px rgba(10, 22, 40, 0.03), 0 12px 24px -8px rgba(10, 22, 40, 0.08);
+  transition: transform var(--dur-med) var(--ease-out), box-shadow var(--dur-med) var(--ease-out);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-deep) 100%);
+    opacity: 0;
+    transition: opacity var(--dur-med) var(--ease-out);
+  }
+
+  &:hover,
+  &:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(10, 22, 40, 0.05), 0 20px 40px -12px rgba(10, 22, 40, 0.18);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.idx {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 70, 'wght' 420;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--accent-deep);
+  letter-spacing: -0.02em;
+}
+
+.rule {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   gap: 4px;
 }
 
 .sku {
   margin: 0;
-  font-size: 14px;
-  font-weight: 700;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 14.5px;
+  font-weight: 600;
   color: var(--text-primary);
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
 }
 
 .band {
   margin: 0;
-  font-size: 11px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.02em;
   color: var(--text-muted);
-  font-weight: 400;
 }
 
 .earn {
-  margin-top: 10px;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.earnLabel {
-  font-size: 10px;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 500;
+  align-items: baseline;
+  gap: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--divider);
+  margin-top: 10px;
 }
 
 .earnAmount {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--brand);
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
+}
+
+.earnRupee {
+  font-style: italic;
+  font-variation-settings: 'opsz' 72, 'SOFT' 100, 'wght' 420;
+  font-size: 22px;
+  color: var(--accent-deep);
+  margin-right: 1px;
+  transform: translateY(-2px);
+  display: inline-block;
+}
+
+.earnUnit {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-bottom: 2px;
 }

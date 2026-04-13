@@ -1,17 +1,28 @@
 import React from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import styles from './LeaderboardTile.module.scss';
-import RankBadge from '../../Atom/RankBadge/RankBadge';
 
 export default function LeaderboardTile({ rank, deltaAbove, scope }) {
   return (
-    <div className={styles.tile}>
-      <RankBadge rank={rank} />
-      <div className={styles.text}>
-        <p className={styles.primary}>You&apos;re #{rank} in {scope}</p>
-        <p className={styles.secondary}>+₹{deltaAbove} to #{rank - 1}</p>
+    <button type="button" className={styles.tile}>
+      <div className={styles.rankBlock}>
+        <span className={styles.hash}>#</span>
+        <span className={styles.rank}>{rank}</span>
       </div>
-      <ChevronRight size={20} color="var(--text-muted)" />
-    </div>
+
+      <div className={styles.meta}>
+        <span className={styles.eyebrow}>Standing · {scope}</span>
+        <span className={styles.line}>
+          <span className={styles.qty}>₹{deltaAbove}</span>
+          <span className={styles.qtyUnit}>to catch</span>
+          <span className={styles.rival}>#{rank - 1}</span>
+        </span>
+      </div>
+
+      <span className={styles.cta} aria-hidden="true">
+        <span>See board</span>
+        <ArrowUpRight size={14} strokeWidth={2.4} />
+      </span>
+    </button>
   );
 }

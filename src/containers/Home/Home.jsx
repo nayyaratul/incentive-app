@@ -7,18 +7,27 @@ import OpportunityStrip from '../../components/Organism/OpportunityStrip/Opportu
 import LeaderboardTile from '../../components/Molecule/LeaderboardTile/LeaderboardTile';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 
+const TODAY = new Date().toLocaleDateString('en-IN', {
+  weekday: 'long',
+  day: '2-digit',
+  month: 'short',
+});
+
 export default function Home() {
   const { employee, streak, earnings, goal, opportunities, myRank } = dummyData;
 
   return (
     <div className={styles.page}>
-      <HeaderBar
-        employeeName={employee.name}
-        streak={streak.current}
-      />
+      <HeaderBar employeeName={employee.name} streak={streak.current} />
 
       <main className={styles.main}>
-        <section className={styles.heroSection}>
+        <div className={`${styles.datemark} rise rise-1`}>
+          <span>Shift · {TODAY}</span>
+          <span className={styles.line} />
+          <span>Live</span>
+        </div>
+
+        <section className={`${styles.heroSection} rise rise-2`}>
           <EarningsHero
             thisMonth={earnings.thisMonth}
             today={earnings.today}
@@ -26,11 +35,11 @@ export default function Home() {
           />
         </section>
 
-        <section className={styles.stripSection}>
+        <section className={`${styles.stripSection} rise rise-3`}>
           <OpportunityStrip opportunities={opportunities} />
         </section>
 
-        <section className={styles.rankSection}>
+        <section className={`${styles.rankSection} rise rise-4`}>
           <LeaderboardTile
             rank={myRank.rank}
             deltaAbove={myRank.deltaAbove}

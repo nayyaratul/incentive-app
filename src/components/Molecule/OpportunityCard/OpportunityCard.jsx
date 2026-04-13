@@ -1,15 +1,27 @@
 import React from 'react';
 import styles from './OpportunityCard.module.scss';
 
-export default function OpportunityCard({ sku, band, earn }) {
+export default function OpportunityCard({ index, sku, band, earn }) {
+  const idx = String(index).padStart(2, '0');
   return (
-    <div className={styles.card}>
-      <p className={styles.sku}>{sku}</p>
-      <p className={styles.band}>{band}</p>
-      <div className={styles.earn}>
-        <span className={styles.earnLabel}>You earn</span>
-        <span className={styles.earnAmount}>₹{earn}/sale</span>
+    <article className={styles.card}>
+      <header className={styles.head}>
+        <span className={styles.idx}>{idx}</span>
+        <span className={styles.rule} aria-hidden="true" />
+      </header>
+
+      <div className={styles.body}>
+        <h3 className={styles.sku}>{sku}</h3>
+        <p className={styles.band}>{band}</p>
       </div>
-    </div>
+
+      <footer className={styles.earn}>
+        <span className={styles.earnAmount}>
+          <span className={styles.earnRupee}>₹</span>
+          {earn}
+        </span>
+        <span className={styles.earnUnit}>per sale</span>
+      </footer>
+    </article>
   );
 }

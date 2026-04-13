@@ -17,17 +17,69 @@ body,
 body {
   background: var(--surface);
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 14px;
+  font-family: 'Instrument Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
   line-height: 1.5;
+  letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-size-adjust: 100%;
+
+  /* Paper-grain noise overlay on the base surface.
+     SVG turbulence gives it a subtle, organic feel without an external asset. */
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(255, 107, 0, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 88% 8%, rgba(0, 102, 179, 0.04) 0%, transparent 45%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.04  0 0 0 0 0.03  0 0 0 0 0.02  0 0 0 0.48 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-attachment: fixed, fixed, fixed;
+}
+
+/* Display font for the hero — Fraunces variable with optical sizing + SOFT axis tuned for warmth */
+.display {
+  font-family: 'Fraunces', 'Georgia', 'Times New Roman', serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 60, 'wght' 480;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+.mono {
+  font-family: 'Geist Mono', 'SFMono-Regular', 'Menlo', monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.01em;
 }
 
 /* Non-removable focus ring */
 :focus-visible {
   outline: 2px solid var(--brand);
-  outline-offset: 2px;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Staggered page-load cascade — one delightful entrance */
+@keyframes incentive-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  animation: incentive-rise 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.rise-1 { animation-delay: 60ms; }
+.rise-2 { animation-delay: 140ms; }
+.rise-3 { animation-delay: 230ms; }
+.rise-4 { animation-delay: 320ms; }
+.rise-5 { animation-delay: 410ms; }
+
+@keyframes flame-pulse {
+  0%, 100% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 6px rgba(255,107,0,0.45)); }
+  50%      { transform: scale(1.08) rotate(2deg); filter: drop-shadow(0 0 14px rgba(255,107,0,0.65)); }
 }
 
 /* Disable motion above --dur-fast when user requests */
@@ -49,4 +101,9 @@ button {
   border: 0;
   padding: 0;
   color: inherit;
+}
+
+::selection {
+  background: rgba(255, 107, 0, 0.25);
+  color: var(--text-primary);
 }

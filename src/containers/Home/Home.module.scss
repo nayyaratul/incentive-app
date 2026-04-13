@@ -2,26 +2,49 @@
   max-width: 480px;
   margin: 0 auto;
   min-height: 100vh;
-  background: var(--surface);
   position: relative;
+  overflow-x: hidden;
+  // Soft edge to blend with the grain background on desktop
+  box-shadow: 0 0 0 1px rgba(226, 217, 196, 0.5);
+  background: transparent;
 }
 
 .main {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding-bottom: 80px;
-  padding-top: 20px;
+  gap: 28px;
+  padding: 4px 0 96px;
 }
 
 .heroSection {
-  // 75% visual weight — large card
+  padding: 0 20px;
 }
 
 .stripSection {
-  // 20% visual weight — horizontal scroll
+  padding: 0;
 }
 
 .rankSection {
-  // 5% visual weight — mini tile
+  padding: 0 20px 4px;
+}
+
+// Subtle editorial datemark at the top — grounds the design
+.datemark {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: -4px;
+
+  .line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    margin: 0 12px;
+  }
 }
