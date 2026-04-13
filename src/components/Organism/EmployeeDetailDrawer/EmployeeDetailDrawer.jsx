@@ -126,13 +126,15 @@ export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClo
             <section className={styles.section}>
               <div className={styles.txHead}>
                 <h3 className={styles.sectionTitle}>Recent transactions</h3>
-                {onViewAllTransactions && totalTxCount > recentTx.length && (
+                {onViewAllTransactions && totalTxCount > 0 && (
                   <button
                     type="button"
                     className={styles.viewAll}
                     onClick={() => onViewAllTransactions(employee.employeeId)}
                   >
-                    See all {totalTxCount}
+                    {totalTxCount > recentTx.length
+                      ? `See all ${totalTxCount}`
+                      : 'Open in Transactions'}
                     <ArrowUpRight size={12} strokeWidth={2.4} />
                   </button>
                 )}
