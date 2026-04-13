@@ -12,12 +12,6 @@ import FnlView from './views/FnlView';
 import RulesScreen from '../screens/RulesScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 
-const TODAY = new Date().toLocaleDateString('en-IN', {
-  weekday: 'long',
-  day: '2-digit',
-  month: 'short',
-});
-
 export default function EmployeeHome() {
   const [tab, setTab] = useState('home');
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
@@ -56,12 +50,6 @@ export default function EmployeeHome() {
         <main className={styles.main}>
           {tab === 'home' && (
             <>
-              <div className={`${styles.datemark} rise rise-1`}>
-                <span>{active.vertical} · {store?.storeName || '—'}</span>
-                <span className={styles.line} />
-                <span>{TODAY}</span>
-              </div>
-
               {active.vertical === VERTICALS.ELECTRONICS && (
                 <ElectronicsView payout={myPayout} employee={employee} store={store} role={active.role} />
               )}

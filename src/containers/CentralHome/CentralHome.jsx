@@ -209,12 +209,6 @@ export default function CentralHome() {
 
           {tab === 'home' && (
             <>
-          <div className={`${styles.datemark} rise rise-1`}>
-            <span>Central Reporting · read-only</span>
-            <span className={styles.line} />
-            <span>As of {new Date(cr.asOf).toLocaleString('en-IN')}</span>
-          </div>
-
           {/* Org hero */}
           <section className={`${styles.pad} rise rise-2`}>
             <div className={styles.orgHero}>

@@ -173,12 +173,6 @@ export default function StoreManagerHome() {
 
           {tab === 'home' && (
             <>
-              <div className={`${styles.datemark} rise rise-1`}>
-                <span>Store Manager · {store.storeName}</span>
-                <span className={styles.line} />
-                <span>{active.vertical}</span>
-              </div>
-
               <section className={`${styles.pad} rise rise-2`}>
                 <div className={styles.storeHero}>
                   <div className={styles.heroEyebrow}>

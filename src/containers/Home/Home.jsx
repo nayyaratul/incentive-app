@@ -37,12 +37,6 @@ export default function Home() {
           <HeaderBar employeeName={employee.name} streak={streak.current} />
 
           <main className={styles.main}>
-            <div className={`${styles.datemark} rise rise-1`}>
-              <span>Shift · {TODAY}</span>
-              <span className={styles.line} />
-              <span>Live</span>
-            </div>
-
             <section className={`${styles.heroSection} rise rise-2`}>
               <EarningsHero
                 thisMonth={earnings.thisMonth}

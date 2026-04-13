@@ -1,15 +1,9 @@
 import React from 'react';
 import styles from './OpportunityCard.module.scss';
 
-export default function OpportunityCard({ index, sku, band, earn }) {
-  const idx = String(index).padStart(2, '0');
+export default function OpportunityCard({ sku, band, earn }) {
   return (
     <article className={styles.card}>
-      <header className={styles.head}>
-        <span className={styles.idx}>{idx}</span>
-        <span className={styles.rule} aria-hidden="true" />
-      </header>
-
       <div className={styles.body}>
         <h3 className={styles.sku}>{sku}</h3>
         <p className={styles.band}>{band}</p>

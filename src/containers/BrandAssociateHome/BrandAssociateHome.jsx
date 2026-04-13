@@ -37,12 +37,6 @@ export default function BrandAssociateHome() {
         <main className={styles.main}>
           {tab === 'rules' && <RulesScreen defaultVertical={active.vertical} />}
           {tab === 'home' && (<>
-          <div className={`${styles.datemark} rise rise-1`}>
-            <span>Brand Associate · {active.brandRep}</span>
-            <span className={styles.line} />
-            <span>{store.storeName}</span>
-          </div>
-
           {/* Eligibility notice */}
           <section className={`${styles.pad} rise rise-2`}>
             <div className={styles.ineligCard}>
