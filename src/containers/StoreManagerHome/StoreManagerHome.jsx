@@ -19,6 +19,7 @@ import { transactionsByStore } from '../../data/transactions';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import RulesScreen from '../screens/RulesScreen';
+import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import { formatINR } from '../../utils/format';
 
 function sumTarget(code, targets) {
@@ -268,16 +269,16 @@ export default function StoreManagerHome() {
               </section>
 
               <section className={`${styles.pad} rise rise-5`}>
-                <div className={styles.complianceCard}>
-                  <div className={styles.complianceHead}><span>Store eligibility</span></div>
-                  <ul>
-                    <li><span>Store code</span><strong>{store.storeCode}</strong></li>
-                    <li><span>Format</span><strong>{store.storeFormat}</strong></li>
-                    <li><span>City · State</span><strong>{store.city}, {store.state}</strong></li>
-                    <li><span>Status</span><strong>{store.storeStatus}</strong></li>
-                    <li><span>Operational days (month)</span><strong>{store.operationalDaysInMonth} / 30</strong></li>
-                  </ul>
-                </div>
+                <ComplianceLink
+                  label="Store eligibility"
+                  items={[
+                    { label: 'Store code',              value: store.storeCode },
+                    { label: 'Format',                   value: store.storeFormat },
+                    { label: 'City · State',             value: `${store.city}, ${store.state}` },
+                    { label: 'Status',                   value: store.storeStatus },
+                    { label: 'Operational days',         value: `${store.operationalDaysInMonth} / 30` },
+                  ]}
+                />
               </section>
             </>
           )}

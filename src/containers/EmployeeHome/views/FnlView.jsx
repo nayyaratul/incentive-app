@@ -6,6 +6,7 @@ import { fnlWeeklyRules } from '../../../data/configs';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
+import ComplianceLink from '../../../components/Molecule/ComplianceLink/ComplianceLink';
 
 function findSplit(sms, dms) {
   return fnlWeeklyRules.splitMatrix.find((m) => m.sms === sms && m.dms === dms) || fnlWeeklyRules.splitMatrix[0];
@@ -153,19 +154,17 @@ export default function FnlView({ payout, employee, store, role }) {
         </div>
       </section>
 
-      {/* Compliance */}
+      {/* Compliance — demoted to quiet inline disclosure for consistency */}
       <section className={`${styles.pad} rise rise-5`}>
-        <div className={styles.complianceCard}>
-          <div className={styles.complianceHead}>
-            <span>Eligibility</span>
-          </div>
-          <ul>
-            <li><span>Role</span><strong>{role} · {employee?.employeeId}</strong></li>
-            <li><span>Payroll status</span><strong>{employee?.payrollStatus}</strong></li>
-            <li><span>Days PRESENT this week</span><strong>{myDays} / 7</strong></li>
-            <li><span>5-day rule</span><strong>{eligible5Day ? 'Met' : 'Not met'}</strong></li>
-          </ul>
-        </div>
+        <ComplianceLink
+          label="Eligibility & your record"
+          items={[
+            { label: 'Role',                   value: `${role} · ${employee?.employeeId}` },
+            { label: 'Payroll status',          value: employee?.payrollStatus },
+            { label: 'Days PRESENT this week',  value: `${myDays} / 7` },
+            { label: '5-day rule',              value: eligible5Day ? 'Met' : 'Not met' },
+          ]}
+        />
       </section>
     </>
   );

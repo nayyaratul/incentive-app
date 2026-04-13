@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { AlertTriangle, ShieldCheck, ChevronRight } from 'lucide-react';
+import React from 'react';
+import { AlertTriangle } from 'lucide-react';
 import styles from './VerticalViews.module.scss';
 import EarningsHero from '../../../components/Molecule/EarningsHero/EarningsHero';
 import OpportunityStrip from '../../../components/Organism/OpportunityStrip/OpportunityStrip';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
 import DeptMultiplierCompact from '../../../components/Molecule/DeptMultiplierCompact/DeptMultiplierCompact';
+import ComplianceLink from '../../../components/Molecule/ComplianceLink/ComplianceLink';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import { electronicsMultiplierTiers } from '../../../data/configs';
@@ -35,6 +36,14 @@ export default function ElectronicsView({ payout, employee, store, role }) {
     multiplier: findMultiplier(d.achievementPct),
   }));
 
+  const complianceItems = [
+    { label: 'Role',                        value: `${role} · ${employee?.employeeId}` },
+    { label: 'Payroll',                     value: employee?.payrollStatus },
+    { label: 'Store operational days',      value: `${store?.operationalDaysInMonth} / 30` },
+    { label: 'SFS / PAS / JioMart',         value: 'Excluded from incentive' },
+    { label: 'Apple / OnePlus / MS Surface',value: 'Excluded entirely' },
+  ];
+
   return (
     <>
       {payout.ineligibleReason && (
@@ -47,7 +56,6 @@ export default function ElectronicsView({ payout, employee, store, role }) {
         </div>
       )}
 
-      {/* Earnings hero — the dominant element */}
       <section className={`${styles.heroPad} rise rise-2`}>
         <EarningsHero
           thisMonth={{ amount: finalTotal }}
@@ -56,29 +64,24 @@ export default function ElectronicsView({ payout, employee, store, role }) {
         />
       </section>
 
-      {/* Streak note — always-positive, quiet placement */}
       {payout.streak && payout.streak.current > 0 && (
         <section className={`${styles.streakRow} rise rise-2`}>
           <StreakNote streak={payout.streak} />
         </section>
       )}
 
-      {/* Push now */}
       <section className={`rise rise-3`}>
         <OpportunityStrip opportunities={OPPS} />
       </section>
 
-      {/* Brief-aligned quests */}
       <section className={`${styles.pad} rise rise-4`}>
         <QuestCard employeeId={employee.employeeId} />
       </section>
 
-      {/* Badges */}
       <section className={`rise rise-5`}>
         <BadgesStrip employeeId={employee.employeeId} />
       </section>
 
-      {/* Department multiplier — compact, tap to expand */}
       <section className={`${styles.pad} rise rise-5`}>
         <DeptMultiplierCompact
           primaryDepartment={employee.primaryDepartment}
@@ -86,36 +89,9 @@ export default function ElectronicsView({ payout, employee, store, role }) {
         />
       </section>
 
-      {/* Eligibility — demoted to quiet inline link */}
       <section className={`${styles.pad} rise rise-5`}>
-        <EligibilityFootnote employee={employee} store={store} role={role} />
+        <ComplianceLink label="Eligibility & exclusions" items={complianceItems} />
       </section>
     </>
-  );
-}
-
-function EligibilityFootnote({ employee, store, role }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className={styles.eligWrap}>
-      <button type="button" className={styles.eligLink} onClick={() => setOpen(!open)} aria-expanded={open}>
-        <ShieldCheck size={12} strokeWidth={2.2} />
-        <span>Eligibility & exclusions</span>
-        <ChevronRight
-          size={13}
-          strokeWidth={2.2}
-          style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform 140ms ease-out' }}
-        />
-      </button>
-      {open && (
-        <div className={styles.eligPanel}>
-          <div><span>Role</span><strong>{role} · {employee?.employeeId}</strong></div>
-          <div><span>Payroll</span><strong>{employee?.payrollStatus}</strong></div>
-          <div><span>Store operational days</span><strong>{store?.operationalDaysInMonth} / 30</strong></div>
-          <div><span>SFS / PAS / JioMart</span><strong>Excluded from incentive</strong></div>
-          <div><span>Apple / OnePlus / MS Surface</span><strong>Excluded entirely</strong></div>
-        </div>
-      )}
-    </div>
   );
 }

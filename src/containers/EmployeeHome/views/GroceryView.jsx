@@ -6,6 +6,7 @@ import { formatINR } from '../../../utils/format';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
+import ComplianceLink from '../../../components/Molecule/ComplianceLink/ComplianceLink';
 
 export default function GroceryView({ payout, employee, store, role }) {
   const appliedRate = payout.appliedRate;
@@ -151,19 +152,18 @@ export default function GroceryView({ payout, employee, store, role }) {
         </div>
       </section>
 
-      {/* Compliance */}
+      {/* Compliance — demoted to quiet inline disclosure for consistency */}
       <section className={`${styles.pad} rise rise-5`}>
-        <div className={styles.complianceCard}>
-          <div className={styles.complianceHead}>
-            <span>Distribution rule</span>
-          </div>
-          <ul>
-            <li><span>Store incentive</span><strong>{formatINR(totalStoreIncentive)}</strong></li>
-            <li><span>Total staff</span><strong>{payout.staffCount}</strong></li>
-            <li><span>Per employee</span><strong>{formatINR(per)}</strong></li>
-            <li><span>Role</span><strong>{role} · {employee?.employeeId}</strong></li>
-          </ul>
-        </div>
+        <ComplianceLink
+          label="Distribution rule & your record"
+          items={[
+            { label: 'Store incentive',  value: formatINR(totalStoreIncentive) },
+            { label: 'Total staff',       value: String(payout.staffCount) },
+            { label: 'Per employee',      value: formatINR(per) },
+            { label: 'Role',              value: `${role} · ${employee?.employeeId}` },
+            { label: 'Split rule',        value: 'Equal across SM, DM, SA, BA' },
+          ]}
+        />
       </section>
     </>
   );

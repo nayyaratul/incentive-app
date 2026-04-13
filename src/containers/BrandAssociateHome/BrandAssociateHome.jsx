@@ -8,6 +8,7 @@ import { electronicsActualsRD3675 } from '../../data/configs';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import RulesScreen from '../screens/RulesScreen';
+import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import { formatINR } from '../../utils/format';
 
 export default function BrandAssociateHome() {
@@ -113,18 +114,18 @@ export default function BrandAssociateHome() {
             </div>
           </section>
 
-          {/* Compliance */}
+          {/* Your record — demoted to quiet inline disclosure for consistency */}
           <section className={`${styles.pad} rise rise-5`}>
-            <div className={styles.complianceCard}>
-              <div className={styles.complianceHead}><span>Your record</span></div>
-              <ul>
-                <li><span>Employee ID</span><strong>{employee.employeeId}</strong></li>
-                <li><span>Role</span><strong>Brand Associate (BA)</strong></li>
-                <li><span>Brand represented</span><strong>{active.brandRep}</strong></li>
-                <li><span>Store</span><strong>{store.storeCode} · {store.storeName}</strong></li>
-                <li><span>Payroll status</span><strong>{employee.payrollStatus}</strong></li>
-              </ul>
-            </div>
+            <ComplianceLink
+              label="Your record"
+              items={[
+                { label: 'Employee ID',        value: employee.employeeId },
+                { label: 'Role',                value: 'Brand Associate (BA)' },
+                { label: 'Brand represented',   value: active.brandRep },
+                { label: 'Store',               value: `${store.storeCode} · ${store.storeName}` },
+                { label: 'Payroll status',      value: employee.payrollStatus },
+              ]}
+            />
           </section>
           </>)}
         </main>
