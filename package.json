@@ -2,9 +2,6 @@
   "name": "incentive-app",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "18.x"
-  },
   "scripts": {
     "start": "webpack serve --mode development --config webpack.config.js",
     "build": "webpack --mode production --config webpack.config.js",
