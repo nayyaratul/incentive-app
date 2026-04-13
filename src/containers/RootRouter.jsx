@@ -7,18 +7,18 @@ import BrandAssociateHome from './BrandAssociateHome/BrandAssociateHome';
 
 /**
  * Branches the root view based on the active persona's role.
- * - SA / DM  → EmployeeHome (vertical-aware internally)
+ * - SA       → EmployeeHome (vertical-aware internally)
+ * - SM / DM  → StoreManagerHome (store achievement + roster payouts)
  * - BA       → BrandAssociateHome (read-only, ineligible notice)
- * - SM       → StoreManagerHome (store achievement + roster payouts)
  * - Central  → CentralHome (org drill-down, maker-checker log)
  */
 export default function RootRouter() {
   const { active } = usePersona();
   const role = active.role;
 
-  if (role === 'SM') return <StoreManagerHome />;
+  if (role === 'SM' || role === 'DM') return <StoreManagerHome />;
   if (role === 'BA') return <BrandAssociateHome />;
   if (role === 'CENTRAL') return <CentralHome />;
-  // SA / DM both see the employee home; internally it reacts to vertical
+  // SA sees the employee home; internally it reacts to vertical
   return <EmployeeHome />;
 }

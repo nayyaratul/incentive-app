@@ -1,0 +1,410 @@
+/* ============================================================================
+ * HeroCard — shared visual shell for every persona's primary metric card.
+ *
+ * Unified:
+ *   - container gradient, border, shadow, radial flourish, ornament
+ *   - type scale:  48px hero / 22px figure / 13px caption / 11px eyebrow
+ *   - subcomponent styles (eyebrow, pill, progress, figures, footer block)
+ *
+ * Content composed per-vertical by the view — see HeroCard.jsx usage example.
+ * ========================================================================== */
+
+.hero {
+  position: relative;
+  padding: 20px 20px 18px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--brand-tint, #FBEBEA) 0%, #FFFFFF 70%, #FFFFFF 100%);
+  border: 1px solid var(--brand-soft);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -12px rgba(189, 41, 37, 0.16);
+  overflow: hidden;
+
+  // Radial flourish top-right
+  &::after {
+    content: '';
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(189, 41, 37, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- Ornament ---------- */
+.ornament {
+  position: absolute;
+  right: -12px;
+  top: -12px;
+  width: 96px;
+  height: 96px;
+  color: var(--brand);
+  opacity: 0.28;
+  animation: hc-spin 40s linear infinite;
+  z-index: 0;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes hc-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Eyebrow row ---------- */
+.eyebrowRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 22px;
+}
+
+.eyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-deep);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 10px rgba(189, 41, 37, 0.6);
+}
+
+/* ---------- Pills ---------- */
+.trendPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: rgba(15, 122, 58, 0.08);
+  color: var(--success);
+  border-radius: 999px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border: 1px solid rgba(15, 122, 58, 0.22);
+}
+
+.qualifyPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border: 1px solid transparent;
+  width: fit-content;
+}
+.qYes {
+  background: rgba(15, 122, 58, 0.08);
+  color: var(--success);
+  border-color: rgba(15, 122, 58, 0.22);
+}
+.qNo {
+  background: rgba(182, 30, 30, 0.08);
+  color: var(--error);
+  border-color: rgba(182, 30, 30, 0.22);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tone-neutral {
+  background: rgba(10, 22, 40, 0.06);
+  color: var(--text-primary);
+  border: 1px solid var(--divider);
+}
+.tone-brand {
+  background: var(--brand-soft);
+  color: var(--brand-deep);
+  border: 1px solid rgba(189, 41, 37, 0.22);
+}
+
+/* ---------- Title / meta ---------- */
+.title {
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 640;
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
+.meta {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.metaDot {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* ---------- Hero amount (48px unified) ---------- */
+.amountRow {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.amount {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
+  font-size: 48px;
+  line-height: 0.9;
+  color: var(--text-primary);
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.amount-brand { color: var(--brand-deep); }
+.amount-success { color: var(--success); }
+
+.amountSymbol {
+  font-family: 'Fraunces', Georgia, serif;
+  font-style: italic;
+  font-variation-settings: 'opsz' 72, 'SOFT' 100, 'wght' 420;
+  font-size: 30px;
+  line-height: 0.9;
+  color: var(--brand);
+  letter-spacing: -0.03em;
+  transform: translateY(-2px);
+  display: inline-block;
+}
+
+.amountCap {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: -4px;
+}
+
+/* ---------- Caption ---------- */
+.caption {
+  margin: 0;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+
+  strong {
+    font-family: 'Geist Mono', monospace;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 13px;
+    letter-spacing: -0.01em;
+  }
+
+  em {
+    font-family: 'Geist Mono', monospace;
+    font-style: normal;
+    font-weight: 600;
+    color: var(--brand-deep);
+    font-size: 12.5px;
+  }
+}
+
+/* ---------- Progress ---------- */
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.track {
+  background: rgba(10, 22, 40, 0.08);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(10, 22, 40, 0.08);
+}
+
+.fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand) 0%, var(--brand-deep) 100%);
+  border-radius: 999px;
+  position: relative;
+  transition: width 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  box-shadow: 0 0 12px rgba(189, 41, 37, 0.5);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 100%
+    );
+    background-size: 60% 100%;
+    background-repeat: no-repeat;
+    animation: hc-shimmer 2.8s ease-in-out infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+}
+
+@keyframes hc-shimmer {
+  0% { background-position: -120% 0; }
+  100% { background-position: 220% 0; }
+}
+
+.scale {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+
+  span:first-child { margin-left: -2px; }
+  span:last-child  { margin-right: -2px; }
+}
+
+/* ---------- Figures row ---------- */
+.figures {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(10, 22, 40, 0.12);
+  border-bottom: 1px solid rgba(10, 22, 40, 0.12);
+}
+
+.figure {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.figValue {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.figCap {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+
+.figSub {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.figDivider {
+  width: 1px;
+  align-self: center;
+  height: 36px;
+  background: rgba(10, 22, 40, 0.12);
+}
+
+.divider {
+  height: 1px;
+  background: var(--divider);
+  margin: 2px 0;
+}
+
+/* ---------- Footer block (highlighted sub-card for "Your share" / payout) ---------- */
+.footerBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--divider);
+  border-radius: 12px;
+}
+
+.footerLabel {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+
+.footerValue {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--brand-deep);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.footerMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  text-align: right;
+}

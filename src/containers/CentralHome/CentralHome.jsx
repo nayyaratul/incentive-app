@@ -7,6 +7,7 @@ import { electronicsRuleMeta, groceryCampaign, fnlWeeklyRules } from '../../data
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import StoreDetailDrawer from '../../components/Organism/StoreDetailDrawer/StoreDetailDrawer';
+import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import RulesScreen from '../screens/RulesScreen';
 import { formatINR } from '../../utils/format';
 
@@ -211,18 +212,33 @@ export default function CentralHome() {
             <>
           {/* Org hero */}
           <section className={`${styles.pad} rise rise-2`}>
-            <div className={styles.orgHero}>
-              <div className={styles.heroEyebrow}>Organisation · Month to date</div>
-              <div className={styles.bigPay}>{formatINR(cr.totals.organisationPayoutMTD)}</div>
-              <div className={styles.bigCap}>total incentive payout across all verticals</div>
-              <div className={styles.heroStats}>
-                <div><strong>{cr.totals.employeesEligible.toLocaleString('en-IN')}</strong><span>eligible employees</span></div>
-                <div className={styles.statDiv} />
-                <div><strong>{cr.totals.storesWithPayout}</strong><span>stores with payout</span></div>
-                <div className={styles.statDiv} />
-                <div><strong>{cr.totals.storesBelowGate}</strong><span>below payout gate</span></div>
-              </div>
-            </div>
+            <HeroCard>
+              <HeroCard.EyebrowRow>
+                <HeroCard.Eyebrow withDot>Organisation · Month to date</HeroCard.Eyebrow>
+              </HeroCard.EyebrowRow>
+
+              <HeroCard.Amount prefix="₹">
+                {new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(cr.totals.organisationPayoutMTD)}
+              </HeroCard.Amount>
+              <HeroCard.AmountCap>total incentive payout across all verticals</HeroCard.AmountCap>
+
+              <HeroCard.Figures>
+                <HeroCard.Figure
+                  value={cr.totals.employeesEligible.toLocaleString('en-IN')}
+                  cap="eligible employees"
+                />
+                <HeroCard.FigureDivider />
+                <HeroCard.Figure
+                  value={cr.totals.storesWithPayout}
+                  cap="stores with payout"
+                />
+                <HeroCard.FigureDivider />
+                <HeroCard.Figure
+                  value={cr.totals.storesBelowGate}
+                  cap="below gate"
+                />
+              </HeroCard.Figures>
+            </HeroCard>
           </section>
 
           {/* By vertical */}

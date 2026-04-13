@@ -3,6 +3,7 @@ import { Calendar, Check, X as XIcon } from 'lucide-react';
 import styles from './VerticalViews.module.scss';
 import { formatINR } from '../../../utils/format';
 import { fnlWeeklyRules } from '../../../data/configs';
+import HeroCard from '../../../components/Molecule/HeroCard/HeroCard';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
@@ -25,51 +26,52 @@ export default function FnlView({ payout, employee, store, role }) {
     <>
       {/* Week hero */}
       <section className={`${styles.pad} rise rise-2`}>
-        <div className={styles.weekHero}>
-          <div className={styles.weekEyebrow}>
-            <Calendar size={11} strokeWidth={2.2} />
-            <span>Week · {payout.weekStart} → {payout.weekEnd}</span>
-          </div>
-
-          <div className={styles.weekQualify}>
-            <span className={`${styles.qPill} ${qualifies ? styles.qYes : styles.qNo}`}>
-              {qualifies ? <Check size={13} strokeWidth={2.6} /> : <XIcon size={13} strokeWidth={2.6} />}
+        <HeroCard>
+          <HeroCard.EyebrowRow>
+            <HeroCard.Eyebrow withDot>
+              <Calendar size={11} strokeWidth={2.2} />
+              Week · {payout.weekStart} → {payout.weekEnd}
+            </HeroCard.Eyebrow>
+            <HeroCard.QualifyPill qualifies={qualifies}>
               Store {qualifies ? 'qualifies' : 'missed target'}
-            </span>
-          </div>
+            </HeroCard.QualifyPill>
+          </HeroCard.EyebrowRow>
 
-          <div className={styles.weekFigures}>
-            <div>
-              <div className={styles.weekMini}>{formatINR(payout.actualWeeklyGrossSales)}</div>
-              <div className={styles.weekMiniCap}>actual</div>
-            </div>
-            <div className={styles.weekDiv} />
-            <div>
-              <div className={styles.weekMini}>{formatINR(payout.weeklySalesTarget)}</div>
-              <div className={styles.weekMiniCap}>target</div>
-            </div>
-            <div className={styles.weekDiv} />
-            <div>
-              <div className={styles.weekMini}>{formatINR(payout.totalStoreIncentive)}</div>
-              <div className={styles.weekMiniCap}>store pool (1%)</div>
-            </div>
-          </div>
+          <HeroCard.Amount prefix="₹" tone="brand">
+            {qualifies && eligible5Day
+              ? new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(myPayout)
+              : '0'}
+          </HeroCard.Amount>
+          <HeroCard.AmountCap>Your share this week</HeroCard.AmountCap>
 
-          <div className={styles.weekMyBlock}>
+          <HeroCard.Figures>
+            <HeroCard.Figure value={formatINR(payout.actualWeeklyGrossSales)} cap="actual" />
+            <HeroCard.FigureDivider />
+            <HeroCard.Figure value={formatINR(payout.weeklySalesTarget)} cap="target" />
+            <HeroCard.FigureDivider />
+            <HeroCard.Figure value={formatINR(payout.totalStoreIncentive)} cap="pool · 1%" />
+          </HeroCard.Figures>
+
+          <HeroCard.FooterBlock>
             <div>
-              <div className={styles.payoutLabel}>Your share this week</div>
-              <div className={styles.payoutValue}>{qualifies && eligible5Day ? formatINR(myPayout) : '₹0'}</div>
+              <HeroCard.FooterLabel>Your pool share</HeroCard.FooterLabel>
+              <HeroCard.FooterValue>
+                {role === 'SM' ? `${Math.round(split.smSharePct * 100)}%` :
+                 role === 'DM' ? `${Math.round(split.dmSharePctEach * 100)}%` :
+                 `${Math.round(split.saPoolPct * 100)}%`}
+              </HeroCard.FooterValue>
             </div>
-            <div className={styles.weekRole}>
+            <HeroCard.FooterMeta>
               <span>{role}</span>
-              <strong>
-                {role === 'SM' ? `${Math.round(split.smSharePct * 100)}% of pool` :
-                 role === 'DM' ? `${Math.round(split.dmSharePctEach * 100)}% of pool (per DM)` :
-                 `${Math.round(split.saPoolPct * 100)}% pool ÷ ${payout.staffing.eligibleSaCount}`}
-              </strong>
-            </div>
-          </div>
-        </div>
+              <span>·</span>
+              <span>
+                {role === 'SM' ? 'of pool' :
+                 role === 'DM' ? 'per DM' :
+                 `÷ ${payout.staffing.eligibleSaCount} SAs`}
+              </span>
+            </HeroCard.FooterMeta>
+          </HeroCard.FooterBlock>
+        </HeroCard>
       </section>
 
       {/* Streak note — always positive */}

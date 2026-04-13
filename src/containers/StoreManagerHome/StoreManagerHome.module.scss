@@ -73,17 +73,17 @@
 
 .bigPct {
   font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 20, 'wght' 700;
-  font-size: 52px;
-  line-height: 0.85;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
+  font-size: 48px;
+  line-height: 0.9;
   color: var(--text-primary);
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
 }
 .sign {
   font-style: italic;
-  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 520;
-  font-size: 32px;
+  font-variation-settings: 'opsz' 72, 'SOFT' 100, 'wght' 420;
+  font-size: 30px;
   color: var(--accent);
 }
 .bigCap {
@@ -133,11 +133,11 @@
 }
 .payoutValue {
   font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 680;
-  font-size: 24px;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
+  font-size: 22px;
   line-height: 1;
   color: var(--accent);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 .teamNote {

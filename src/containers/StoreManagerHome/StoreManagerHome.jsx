@@ -20,6 +20,7 @@ import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import RulesScreen from '../screens/RulesScreen';
 import StoreTransactions from '../screens/StoreTransactions';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
+import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
 import { formatINR } from '../../utils/format';
 
@@ -174,36 +175,38 @@ export default function StoreManagerHome() {
           {tab === 'home' && (
             <>
               <section className={`${styles.pad} rise rise-2`}>
-                <div className={styles.storeHero}>
-                  <div className={styles.heroEyebrow}>
-                    {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
-                    {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${summary.campaign.campaignStart} → ${summary.campaign.campaignEnd}`}
-                    {summary.kind === 'FNL' && `Week · ${summary.week.start} → ${summary.week.end}`}
-                  </div>
+                <HeroCard>
+                  <HeroCard.EyebrowRow>
+                    <HeroCard.Eyebrow withDot>
+                      {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
+                      {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${summary.campaign.campaignStart} → ${summary.campaign.campaignEnd}`}
+                      {summary.kind === 'FNL' && `Week · ${summary.week.start} → ${summary.week.end}`}
+                    </HeroCard.Eyebrow>
+                  </HeroCard.EyebrowRow>
 
-                  <div className={styles.heroRow}>
-                    <div>
-                      <div className={styles.bigPct}>{summary.achievementPct}<span className={styles.sign}>%</span></div>
-                      <div className={styles.bigCap}>of store {summary.kind === 'FNL' ? 'weekly' : 'period'} target</div>
-                    </div>
-                    <div className={styles.heroDivider} />
-                    <div>
-                      <div className={styles.miniFig}>{formatINR(summary.totalActual)}</div>
-                      <div className={styles.miniCap}>of {formatINR(summary.totalTarget)}</div>
-                    </div>
-                  </div>
+                  <HeroCard.Amount suffix="%">{summary.achievementPct}</HeroCard.Amount>
+                  <HeroCard.AmountCap>
+                    of store {summary.kind === 'FNL' ? 'weekly' : 'period'} target
+                  </HeroCard.AmountCap>
 
-                  <div className={styles.payoutRow}>
+                  <HeroCard.Figures>
+                    <HeroCard.Figure
+                      value={formatINR(summary.totalActual)}
+                      cap={`of ${formatINR(summary.totalTarget)}`}
+                    />
+                  </HeroCard.Figures>
+
+                  <HeroCard.FooterBlock>
                     <div>
-                      <div className={styles.payoutLabel}>Total store payout</div>
-                      <div className={styles.payoutValue}>{formatINR(summary.totalPayout)}</div>
+                      <HeroCard.FooterLabel>Total store payout</HeroCard.FooterLabel>
+                      <HeroCard.FooterValue>{formatINR(summary.totalPayout)}</HeroCard.FooterValue>
                     </div>
-                    <div className={styles.teamNote}>
+                    <HeroCard.FooterMeta>
                       <Users size={12} strokeWidth={2.2} />
                       <span>{summary.employees.length} staff</span>
-                    </div>
-                  </div>
-                </div>
+                    </HeroCard.FooterMeta>
+                  </HeroCard.FooterBlock>
+                </HeroCard>
               </section>
 
               {summary.kind === 'ELECTRONICS' && (

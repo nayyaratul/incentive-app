@@ -52,10 +52,10 @@
 .bigPay {
   position: relative; z-index: 1;
   font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 720;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
   font-size: 48px;
-  line-height: 0.88;
-  letter-spacing: -0.04em;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums lining-nums;
 }

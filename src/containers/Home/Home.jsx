@@ -9,12 +9,6 @@ import LeaderboardTile from '../../components/Molecule/LeaderboardTile/Leaderboa
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import RightRail from '../../components/Widgets/RightRail/RightRail';
 
-const TODAY = new Date().toLocaleDateString('en-IN', {
-  weekday: 'long',
-  day: '2-digit',
-  month: 'short',
-});
-
 export default function Home() {
   const {
     employee,

@@ -295,17 +295,17 @@ details[open] .tierSummary::before { content: '–  '; }
 }
 .bigNum {
   font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 20, 'wght' 700;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
   font-size: 48px;
-  line-height: 0.85;
+  line-height: 0.9;
   color: var(--text-primary);
-  letter-spacing: -0.045em;
+  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
 }
 .bigUnit {
   font-style: italic;
-  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 520;
-  font-size: 32px;
+  font-variation-settings: 'opsz' 72, 'SOFT' 100, 'wght' 420;
+  font-size: 30px;
   color: var(--accent);
 }
 .bigCap {
@@ -322,7 +322,7 @@ details[open] .tierSummary::before { content: '–  '; }
 .miniFig {
   font-family: 'Fraunces', Georgia, serif;
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
-  font-size: 20px;
+  font-size: 22px;
   color: var(--text-primary);
   line-height: 1;
   letter-spacing: -0.02em;
@@ -387,11 +387,20 @@ details[open] .tierSummary::before { content: '–  '; }
 }
 .payoutValue {
   font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 680;
-  font-size: 26px;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
+  font-size: 22px;
   line-height: 1;
   color: var(--brand-deep);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.heroPayoutValue {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
+  font-size: 48px;
+  line-height: 0.9;
+  color: var(--brand-deep);
+  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
 }
 .staffNote {

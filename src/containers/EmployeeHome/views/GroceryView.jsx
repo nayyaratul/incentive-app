@@ -3,6 +3,7 @@ import { Calendar, Users } from 'lucide-react';
 import styles from './VerticalViews.module.scss';
 import { groceryCampaign } from '../../../data/configs';
 import { formatINR } from '../../../utils/format';
+import HeroCard from '../../../components/Molecule/HeroCard/HeroCard';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
@@ -19,54 +20,50 @@ export default function GroceryView({ payout, employee, store, role }) {
     <>
       {/* Campaign hero */}
       <section className={`${styles.pad} rise rise-2`}>
-        <div className={styles.campaignCard}>
-          <div className={styles.campEyebrowRow}>
-            <span className={styles.campEyebrow}>Live campaign</span>
-            <span className={styles.campBadge}>{groceryCampaign.incentiveType}</span>
-          </div>
-          <h2 className={styles.campTitle}>{groceryCampaign.campaignName}</h2>
-          <p className={styles.campMeta}>
+        <HeroCard>
+          <HeroCard.EyebrowRow>
+            <HeroCard.Eyebrow withDot>Live campaign</HeroCard.Eyebrow>
+            <HeroCard.Badge tone="brand">{groceryCampaign.incentiveType}</HeroCard.Badge>
+          </HeroCard.EyebrowRow>
+
+          <HeroCard.Title>{groceryCampaign.campaignName}</HeroCard.Title>
+          <HeroCard.Meta>
             <Calendar size={11} strokeWidth={2.2} />
             <span>{groceryCampaign.campaignStart} → {groceryCampaign.campaignEnd}</span>
-            <span className={styles.dot}>·</span>
+            <HeroCard.MetaDot />
             <span>{groceryCampaign.geography}</span>
-            <span className={styles.dot}>·</span>
+            <HeroCard.MetaDot />
             <span>{groceryCampaign.channel}</span>
-          </p>
+          </HeroCard.Meta>
 
-          <div className={styles.campGrid}>
-            <div>
-              <div className={styles.bigNum}>
-                {achievementPct}<span className={styles.bigUnit}>%</span>
-              </div>
-              <div className={styles.bigCap}>of store target</div>
-            </div>
-            <div className={styles.campDivider} />
-            <div>
-              <div className={styles.miniFig}>{formatINR(payout.actualSalesValue)}</div>
-              <div className={styles.miniCap}>of {formatINR(payout.targetSalesValue)}</div>
-              <div className={styles.pieces}>{payout.piecesSoldTotal} pieces sold</div>
-            </div>
-          </div>
+          <HeroCard.Amount suffix="%">{achievementPct}</HeroCard.Amount>
+          <HeroCard.AmountCap>of store target</HeroCard.AmountCap>
 
-          <div className={styles.rateLine}>
-            <span className={styles.rateLabel}>Current rate per piece</span>
-            <span className={styles.rateVal}>
-              {appliedRate === 0 ? 'Not yet unlocked' : `₹${appliedRate}`}
-            </span>
-          </div>
+          <HeroCard.Figures>
+            <HeroCard.Figure
+              value={formatINR(payout.actualSalesValue)}
+              cap={`of ${formatINR(payout.targetSalesValue)}`}
+              sub={`${payout.piecesSoldTotal} pieces sold`}
+            />
+            <HeroCard.FigureDivider />
+            <HeroCard.Figure
+              value={appliedRate === 0 ? '—' : `₹${appliedRate}`}
+              cap="rate / piece"
+              sub={appliedRate === 0 ? 'not yet unlocked' : 'current slab'}
+            />
+          </HeroCard.Figures>
 
-          <div className={styles.individualPayout}>
+          <HeroCard.FooterBlock>
             <div>
-              <div className={styles.payoutLabel}>Your payout so far</div>
-              <div className={styles.payoutValue}>{formatINR(per)}</div>
+              <HeroCard.FooterLabel>Your payout so far</HeroCard.FooterLabel>
+              <HeroCard.FooterValue>{formatINR(per)}</HeroCard.FooterValue>
             </div>
-            <div className={styles.staffNote}>
+            <HeroCard.FooterMeta>
               <Users size={11} strokeWidth={2.2} />
               <span>Split equally across {payout.staffCount} staff</span>
-            </div>
-          </div>
-        </div>
+            </HeroCard.FooterMeta>
+          </HeroCard.FooterBlock>
+        </HeroCard>
       </section>
 
       {/* Slab ladder — what store needs to unlock each rate */}
