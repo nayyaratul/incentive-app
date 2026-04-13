@@ -79,12 +79,12 @@ This supersedes the original Phase 1 plan (`2026-04-13-incentive-app-phase-1-fou
 
 ## 2. What's open / pending
 
-### A. Transaction screens *(next focus — scope below)*
-The current state is thin:
-- `HistoryScreen` (per-employee) exists but is a basic list — no search, no filters, no per-department grouping
-- `StoreManagerHome > Transactions` tab is a **placeholder** with a count only
-- `CentralHome` has no transaction drill-down at all
-- No way to inspect an individual transaction's 16-field payload
+### A. Transaction screens — ✅ done in this pass
+- `TransactionDetailSheet` shared bottom-sheet renders the full 16-field §9 record + calc trace + copyable transaction ID
+- `HistoryScreen` enhanced: search bar, transaction-type filter chips, "Incentive only" toggle, day-grouped list with "Today/Yesterday" headings, summary strip recalculates per filter, empty state with "Clear filters" shortcut, tap-to-detail
+- `StoreTransactions` screen replaces SM placeholder: store-wide aggregated stream, employee-filter chips, role badges per row, 4-column summary (tx · gross · incentive · excluded), tap-to-detail
+- Dummy data extended: 4 more Electronics employees with transactions so the SM view has volume; `getStoreTransactions(storeCode, employees)` helper added
+- Central transactions browser intentionally skipped (admin-portal territory; not mobile-suitable)
 
 ### B. Administrative screens (deferred — admin-portal scope per user)
 - Maker/Checker workflow actions (approve/reject configs) — app is read-only
@@ -102,6 +102,11 @@ The current state is thin:
 - **Levels** — component built, not rendered; we agreed to discuss what the progression should mean
 - **Languages** — English only for now; i18n layer exists (via `i18next` dependency) but not wired
 - **Push notifications** — out of POC scope
+
+### E. Polish candidates (lightweight, low priority)
+- SM "Team" tab right now reuses the home roster card — could grow into its own roster screen with per-employee drill (sales by employee, eligibility detail)
+- BA contribution panel could show the BA's own qty/value totals (currently shows SM's credited base)
+- Central "Stores" tab is a top-5 list — a searchable directory would be more useful for ops
 
 ---
 
