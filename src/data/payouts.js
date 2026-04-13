@@ -276,13 +276,34 @@ export const centralReporting = {
     { state: 'Delhi',       stores: 42, payoutMTD: 980000,  topStore: 'Reliance Digital, Saket' },
     { state: 'Gujarat',     stores: 38, payoutMTD: 720000,  topStore: 'SMT-Satellite' },
   ],
-  // Top 5 earning stores
+  // Top 5 earning stores (Overview tab convenience view)
   topStores: [
     { storeCode: 'TRN0241', storeName: 'Trends, Koregaon Park',      vertical: 'FNL',         payoutMTD: 58400, achievementPct: 105 },
     { storeCode: 'RD3682',  storeName: 'Reliance Digital, Bijapur KA',vertical: 'ELECTRONICS', payoutMTD: 46200, achievementPct: 112 },
     { storeCode: 'T28V',    storeName: 'SMT-Kalpetta',               vertical: 'GROCERY',     payoutMTD: 0,     achievementPct: 92  },
     { storeCode: 'RD3675',  storeName: 'Reliance Digital, Andheri',  vertical: 'ELECTRONICS', payoutMTD: 38400, achievementPct: 97  },
     { storeCode: 'TGL5',    storeName: 'SMT-Edappal',                vertical: 'GROCERY',     payoutMTD: 34500, achievementPct: 110 },
+  ],
+  // Full store directory for the Stores tab (search + drill-down)
+  allStores: [
+    { storeCode: 'TRN0241', storeName: 'Trends, Koregaon Park',         vertical: 'FNL',         format: 'Trends',          state: 'Maharashtra', city: 'Pune',       payoutMTD: 58400, achievementPct: 105, status: 'ACTIVE', staffCount: 11 },
+    { storeCode: 'RD3682',  storeName: 'Reliance Digital, Bijapur KA',  vertical: 'ELECTRONICS', format: 'Reliance Digital',state: 'Karnataka',   city: 'Bijapur',    payoutMTD: 46200, achievementPct: 112, status: 'ACTIVE', staffCount: 9 },
+    { storeCode: 'T28V',    storeName: 'SMT-Kalpetta',                  vertical: 'GROCERY',     format: 'Smart',           state: 'Kerala',      city: 'Kalpetta',   payoutMTD: 0,     achievementPct: 92,  status: 'ACTIVE', staffCount: 7 },
+    { storeCode: 'RD3675',  storeName: 'Reliance Digital, Andheri W.',  vertical: 'ELECTRONICS', format: 'Reliance Digital',state: 'Maharashtra', city: 'Mumbai',     payoutMTD: 38400, achievementPct: 97,  status: 'ACTIVE', staffCount: 8 },
+    { storeCode: 'TGL5',    storeName: 'SMT-Edappal',                   vertical: 'GROCERY',     format: 'Smart',           state: 'Kerala',      city: 'Edappal',    payoutMTD: 34500, achievementPct: 110, status: 'ACTIVE', staffCount: 8 },
+    { storeCode: '2536',    storeName: 'SIG-Pottammel',                 vertical: 'GROCERY',     format: 'Signature',       state: 'Kerala',      city: 'Pottammel',  payoutMTD: 12200, achievementPct: 109, status: 'ACTIVE', staffCount: 6 },
+    { storeCode: 'TST0518', storeName: 'Trends Small Town, Nashik',     vertical: 'FNL',         format: 'TST',             state: 'Maharashtra', city: 'Nashik',     payoutMTD: 22800, achievementPct: 88,  status: 'ACTIVE', staffCount: 6 },
+    { storeCode: 'TEX0109', storeName: 'Trends Extension, Thrissur',    vertical: 'FNL',         format: 'Trends Extension',state: 'Kerala',      city: 'Thrissur',   payoutMTD: 18900, achievementPct: 102, status: 'ACTIVE', staffCount: 5 },
+    { storeCode: 'RD4012',  storeName: 'Reliance Digital, Saket',       vertical: 'ELECTRONICS', format: 'Reliance Digital',state: 'Delhi',       city: 'New Delhi',  payoutMTD: 41200, achievementPct: 103, status: 'ACTIVE', staffCount: 10 },
+    { storeCode: 'RD4188',  storeName: 'Reliance Digital, Velachery',   vertical: 'ELECTRONICS', format: 'Reliance Digital',state: 'Tamil Nadu',  city: 'Chennai',    payoutMTD: 35600, achievementPct: 99,  status: 'ACTIVE', staffCount: 8 },
+    { storeCode: 'TRN0512', storeName: 'Trends, Velachery',             vertical: 'FNL',         format: 'Trends',          state: 'Tamil Nadu',  city: 'Chennai',    payoutMTD: 49800, achievementPct: 108, status: 'ACTIVE', staffCount: 12 },
+    { storeCode: 'TRN0833', storeName: 'Trends, Banjara Hills',         vertical: 'FNL',         format: 'Trends',          state: 'Telangana',   city: 'Hyderabad',  payoutMTD: 28400, achievementPct: 96,  status: 'ACTIVE', staffCount: 9 },
+    { storeCode: 'SMT-S04', storeName: 'SMT-Satellite',                 vertical: 'GROCERY',     format: 'Smart',           state: 'Gujarat',     city: 'Ahmedabad',  payoutMTD: 17200, achievementPct: 101, status: 'ACTIVE', staffCount: 7 },
+    { storeCode: 'SMT-G18', storeName: 'SMT-Gota',                      vertical: 'GROCERY',     format: 'Smart',           state: 'Gujarat',     city: 'Ahmedabad',  payoutMTD: 0,     achievementPct: 78,  status: 'ACTIVE', staffCount: 6 },
+    { storeCode: 'RD3915',  storeName: 'Reliance Digital, Kothrud',     vertical: 'ELECTRONICS', format: 'Reliance Digital',state: 'Maharashtra', city: 'Pune',       payoutMTD: 23800, achievementPct: 91,  status: 'ACTIVE', staffCount: 7 },
+    { storeCode: 'RD3621',  storeName: 'Reliance Digital, Jaipur',      vertical: 'ELECTRONICS', format: 'Reliance Digital',state: 'Rajasthan',   city: 'Jaipur',     payoutMTD: 0,     achievementPct: 81,  status: 'TEMPORARILY_CLOSED', staffCount: 8 },
+    { storeCode: 'TST0277', storeName: 'Trends Small Town, Hubli',      vertical: 'FNL',         format: 'TST',             state: 'Karnataka',   city: 'Hubli',      payoutMTD: 14600, achievementPct: 94,  status: 'ACTIVE', staffCount: 5 },
+    { storeCode: 'SMT-K22', storeName: 'SMT-Karelibaug',                vertical: 'GROCERY',     format: 'Smart',           state: 'Gujarat',     city: 'Vadodara',   payoutMTD: 9800,  achievementPct: 105, status: 'ACTIVE', staffCount: 6 },
   ],
   // Anomalies / flags for Ops to investigate
   flags: [

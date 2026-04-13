@@ -391,3 +391,230 @@
   margin-top: 2px;
   letter-spacing: 0.04em;
 }
+
+/* ==================== STORES DIRECTORY ==================== */
+
+.searchWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 34px 10px 34px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  outline: none;
+  -webkit-appearance: none;
+
+  &::placeholder { color: var(--text-muted); }
+  &:focus { border-color: var(--text-primary); }
+}
+
+.searchClear {
+  position: absolute;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+
+  &:hover { background: var(--text-primary); color: var(--brand-contrast); }
+}
+
+.chipsRow {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  margin-bottom: 4px;
+
+  &::-webkit-scrollbar { display: none; }
+  scrollbar-width: none;
+}
+
+.chip {
+  flex: 0 0 auto;
+  padding: 7px 12px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--dur-fast) var(--ease-out);
+
+  &:hover { border-color: var(--text-primary); color: var(--text-primary); }
+}
+
+.chipActive {
+  background: var(--brand-deep);
+  border-color: var(--brand-deep);
+  color: #FFFFFF;
+
+  &:hover { background: var(--brand-deep); color: #FFFFFF; border-color: var(--brand-deep); }
+}
+
+.empty {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--surface-card);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.emptyReset {
+  padding: 8px 14px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--text-primary);
+    color: var(--brand-contrast);
+    border-color: var(--text-primary);
+  }
+}
+
+.dirList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dirRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: all var(--dur-fast) var(--ease-out);
+
+  &:hover {
+    border-color: var(--text-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(10, 22, 40, 0.06);
+  }
+
+  &:active { transform: translateY(0); }
+}
+
+.dirLeft { min-width: 0; }
+
+.dirName {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dirMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.dirVertical {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand);
+  font-weight: 700;
+  padding: 1px 7px;
+  background: var(--brand-soft);
+  border: 1px solid rgba(189, 41, 37, 0.2);
+  border-radius: 4px;
+}
+
+.metaDot { opacity: 0.5; }
+
+.dirStatusChip {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: capitalize;
+  padding: 1px 7px;
+  background: rgba(193, 75, 0, 0.1);
+  color: var(--warn);
+  border: 1px solid rgba(193, 75, 0, 0.24);
+  border-radius: 999px;
+}
+
+.dirRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.dirAch {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
+  font-size: 18px;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.dirAchHit { color: var(--success); }
+.dirAchBehind { color: var(--warn); }
+
+.dirPay {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand-deep);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}

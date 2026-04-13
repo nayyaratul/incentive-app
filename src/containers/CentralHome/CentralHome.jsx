@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Flag, CheckCircle2, XCircle } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Flag, CheckCircle2, XCircle, Search, X } from 'lucide-react';
 import styles from './CentralHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { centralReporting } from '../../data/payouts';
 import { electronicsRuleMeta, groceryCampaign, fnlWeeklyRules } from '../../data/configs';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
+import StoreDetailDrawer from '../../components/Organism/StoreDetailDrawer/StoreDetailDrawer';
 import RulesScreen from '../screens/RulesScreen';
 import { formatINR } from '../../utils/format';
 
@@ -25,13 +26,37 @@ const WORKFLOW_COLORS = {
 
 export default function CentralHome() {
   const [tab, setTab] = useState('home');
+  const [storeQuery, setStoreQuery] = useState('');
+  const [verticalFilter, setVerticalFilter] = useState('ALL');
+  const [selectedStore, setSelectedStore] = useState(null);
   const { employee } = usePersona();
   const firstName = employee.employeeName.split(' ')[0];
   const cr = centralReporting;
 
+  const filteredStores = useMemo(() => {
+    let list = cr.allStores || [];
+    if (verticalFilter !== 'ALL') list = list.filter((s) => s.vertical === verticalFilter);
+    if (storeQuery.trim()) {
+      const q = storeQuery.trim().toLowerCase();
+      list = list.filter((s) =>
+        [s.storeName, s.storeCode, s.city, s.state, s.format]
+          .filter(Boolean)
+          .some((f) => f.toLowerCase().includes(q))
+      );
+    }
+    // Sort by payout desc
+    return [...list].sort((a, b) => b.payoutMTD - a.payoutMTD);
+  }, [cr.allStores, verticalFilter, storeQuery]);
+
   return (
     <div className={styles.shell}>
       <BottomNav active={tab} role="CENTRAL" onNavigate={setTab} />
+
+      <StoreDetailDrawer
+        store={selectedStore}
+        open={!!selectedStore}
+        onClose={() => setSelectedStore(null)}
+      />
 
       <div className={styles.layout}>
         <HeaderBar
@@ -46,31 +71,96 @@ export default function CentralHome() {
           {tab === 'stores' && (
             <>
               <div className={`${styles.datemark} rise rise-1`}>
-                <span>Stores · drill-down</span>
+                <span>Stores · directory</span>
                 <span className={styles.line} />
-                <span>{cr.topStores.length} shown</span>
+                <span>{filteredStores.length} of {cr.allStores.length}</span>
               </div>
+
               <section className={`${styles.pad} rise rise-2`}>
-                <div className={styles.cardLight}>
-                  <div className={styles.cardHead}>
-                    <span className={styles.eyebrow}>Top stores</span>
-                  </div>
-                  {cr.topStores.map((s, i) => (
-                    <div key={s.storeCode} className={styles.storeRow}>
-                      <div className={styles.storeRank}>#{i + 1}</div>
-                      <div className={styles.storeMid}>
-                        <div className={styles.storeName}>{s.storeName}</div>
-                        <div className={styles.storeMeta}>{s.vertical} · {s.storeCode} · {s.achievementPct}%</div>
-                      </div>
-                      <div className={styles.storePay}>{formatINR(s.payoutMTD)}</div>
-                    </div>
+                <div className={styles.searchWrap}>
+                  <Search size={14} strokeWidth={2.2} className={styles.searchIcon} />
+                  <input
+                    type="search"
+                    className={styles.searchInput}
+                    placeholder="Search store · code · city · format"
+                    value={storeQuery}
+                    onChange={(e) => setStoreQuery(e.target.value)}
+                  />
+                  {storeQuery && (
+                    <button type="button" className={styles.searchClear} onClick={() => setStoreQuery('')} aria-label="Clear search">
+                      <X size={12} strokeWidth={2.4} />
+                    </button>
+                  )}
+                </div>
+                <div className={styles.chipsRow}>
+                  {[
+                    { id: 'ALL',         label: 'All' },
+                    { id: 'ELECTRONICS', label: 'Electronics' },
+                    { id: 'GROCERY',     label: 'Grocery' },
+                    { id: 'FNL',         label: 'F&L' },
+                  ].map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      className={`${styles.chip} ${verticalFilter === c.id ? styles.chipActive : ''}`}
+                      onClick={() => setVerticalFilter(c.id)}
+                    >
+                      {c.label}
+                    </button>
                   ))}
                 </div>
               </section>
+
               <section className={`${styles.pad} rise rise-3`}>
+                {filteredStores.length === 0 ? (
+                  <div className={styles.empty}>
+                    No stores match.
+                    <button
+                      type="button"
+                      className={styles.emptyReset}
+                      onClick={() => { setStoreQuery(''); setVerticalFilter('ALL'); }}
+                    >
+                      Clear filters
+                    </button>
+                  </div>
+                ) : (
+                  <div className={styles.dirList}>
+                    {filteredStores.map((s) => (
+                      <button
+                        key={s.storeCode}
+                        type="button"
+                        className={styles.dirRow}
+                        onClick={() => setSelectedStore(s)}
+                      >
+                        <div className={styles.dirLeft}>
+                          <div className={styles.dirName}>{s.storeName}</div>
+                          <div className={styles.dirMeta}>
+                            <span className={styles.dirVertical}>{s.vertical}</span>
+                            <span>{s.storeCode}</span>
+                            <span className={styles.metaDot}>·</span>
+                            <span>{s.city}</span>
+                            {s.status !== 'ACTIVE' && (
+                              <span className={styles.dirStatusChip}>{s.status.replace(/_/g, ' ').toLowerCase()}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className={styles.dirRight}>
+                          <div className={`${styles.dirAch} ${s.achievementPct >= 100 ? styles.dirAchHit : (s.achievementPct < 85 ? styles.dirAchBehind : '')}`}>
+                            {s.achievementPct}%
+                          </div>
+                          <div className={styles.dirPay}>{formatINR(s.payoutMTD)}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* By state — kept as a quiet secondary block below the directory */}
+              <section className={`${styles.pad} rise rise-4`}>
                 <div className={styles.cardLight}>
                   <div className={styles.cardHead}>
-                    <span className={styles.eyebrow}>By state</span>
+                    <span className={styles.eyebrow}>By state · payout MTD</span>
                   </div>
                   <div className={styles.stateGrid}>
                     {cr.byState.map((s) => (
