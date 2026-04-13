@@ -1,8 +1,10 @@
-/* ---------- Floating pill (top-right) ---------- */
+/* ---------- Floating pill (top-center, auto-hide on scroll) ---------- */
 .pill {
   position: fixed;
-  top: 14px;
-  right: 14px;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
   z-index: calc(var(--z-overlay) + 1);
   display: inline-flex;
   align-items: center;
@@ -17,14 +19,21 @@
   box-shadow:
     0 2px 4px rgba(10, 22, 40, 0.10),
     0 12px 28px rgba(10, 22, 40, 0.22);
-  transition: transform var(--dur-fast) var(--ease-out);
+  transition: transform var(--dur-med) var(--ease-out), opacity var(--dur-med) var(--ease-out);
 
   &:hover {
-    transform: translateY(-1px);
+    transform: translateX(-50%) translateY(-1px);
   }
   &:active {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
   }
+}
+
+/* Hides when user scrolls down; slides up off-screen, reappears on scroll-up */
+.pillHidden {
+  transform: translateX(-50%) translateY(-140%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .pillRole {
@@ -54,8 +63,7 @@
 
 @media (min-width: 900px) {
   .pill {
-    top: 20px;
-    right: 24px;
+    top: calc(20px + env(safe-area-inset-top, 0px));
     padding: 8px 12px 8px 10px;
   }
   .pillName {

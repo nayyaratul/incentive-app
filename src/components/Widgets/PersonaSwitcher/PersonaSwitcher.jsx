@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UserCircle2, X, Check } from 'lucide-react';
 import styles from './PersonaSwitcher.module.scss';
 import { usePersona } from '../../../context/PersonaContext';
@@ -17,8 +17,39 @@ function groupPersonas(personas) {
 
 export function PersonaPill() {
   const { active, openSwitcher } = usePersona();
+  const [hidden, setHidden] = useState(false);
+
+  // Auto-hide on scroll down, reveal on scroll up or when near top.
+  // Keeps the centered pill out of the way while reading long pages.
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const dy = y - lastY;
+        if (y < 8) setHidden(false);           // near top — always show
+        else if (dy > 4) setHidden(true);      // scrolling down — hide
+        else if (dy < -4) setHidden(false);    // scrolling up ("pull down") — show
+        lastY = y;
+        ticking = false;
+      });
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <button type="button" className={styles.pill} onClick={openSwitcher} aria-label={`Switch persona · current: ${active.badge}`}>
+    <button
+      type="button"
+      className={`${styles.pill} ${hidden ? styles.pillHidden : ''}`}
+      onClick={openSwitcher}
+      aria-label={`Switch persona · current: ${active.badge}`}
+    >
       <UserCircle2 size={13} strokeWidth={2.4} />
       <span className={styles.pillRole}>{active.badge}</span>
       <span className={styles.pillName}>{active.employeeName}</span>
