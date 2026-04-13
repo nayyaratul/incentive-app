@@ -1,0 +1,148 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-milestone);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 22, 40, 0.42);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: overlayFade 240ms ease-out both;
+  pointer-events: auto;
+}
+
+@keyframes overlayFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.card {
+  position: relative;
+  z-index: 2;
+  max-width: 320px;
+  padding: 22px 24px 24px;
+  background: var(--surface-card);
+  border-radius: 20px;
+  box-shadow:
+    0 4px 16px rgba(10, 22, 40, 0.18),
+    0 24px 60px rgba(10, 22, 40, 0.32);
+  text-align: center;
+  animation: cardPop 380ms cubic-bezier(0.4, 1.6, 0.5, 1) both;
+}
+
+@keyframes cardPop {
+  from { opacity: 0; transform: translateY(20px) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.iconWrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  border: 1px solid rgba(189, 41, 37, 0.22);
+}
+
+.kind-up .iconWrap {
+  background: rgba(15, 122, 58, 0.12);
+  color: var(--success);
+  border-color: rgba(15, 122, 58, 0.28);
+}
+
+.kind-down .iconWrap {
+  background: rgba(193, 75, 0, 0.12);
+  color: var(--warn);
+  border-color: rgba(193, 75, 0, 0.28);
+}
+
+.eyebrow {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.kind-up .eyebrow { color: var(--success); }
+.kind-down .eyebrow { color: var(--warn); }
+
+.tierPct {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 720;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 6px;
+}
+
+.kind-up .tierPct { color: var(--success); }
+.kind-down .tierPct { color: var(--warn); }
+
+.dept {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.note {
+  margin-top: 10px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ---------- Confetti ---------- */
+
+.confettiLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetto {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--brand);
+  --angle: calc(var(--i) * 16.36deg);
+  --dist: calc(180px + (var(--i) % 5) * 24px);
+  transform: translate(-50%, -50%) rotate(var(--angle));
+  animation: confettoFly 1400ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: calc(var(--i) * 14ms);
+  opacity: 0;
+}
+
+.kind-up .confetto:nth-child(3n)   { background: var(--success); }
+.kind-up .confetto:nth-child(3n+1) { background: var(--brand); }
+.kind-up .confetto:nth-child(3n+2) { background: var(--secondary); }
+
+.kind-down .confetto:nth-child(2n) { background: var(--warn); }
+.kind-down .confetto:nth-child(2n+1) { background: var(--text-muted); }
+
+@keyframes confettoFly {
+  0%   { opacity: 0; transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) rotate(calc(var(--angle) + 60deg)) translateY(calc(-1 * var(--dist))); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confettoFly, .confetto, .card { animation: none; }
+  .confetto { display: none; }
+}

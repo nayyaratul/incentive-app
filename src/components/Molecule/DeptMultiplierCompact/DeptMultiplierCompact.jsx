@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Sparkles } from 'lucide-react';
 import styles from './DeptMultiplierCompact.module.scss';
 import { electronicsMultiplierTiers } from '../../../data/configs';
+import TierCelebration from '../../Organism/TierCelebration/TierCelebration';
 
 /**
  * Compact display of the department multiplier — shows only the user's
@@ -10,11 +11,28 @@ import { electronicsMultiplierTiers } from '../../../data/configs';
  */
 export default function DeptMultiplierCompact({ primaryDepartment, allDepartments }) {
   const [open, setOpen] = useState(false);
+  const [celebOpen, setCelebOpen] = useState(false);
 
   const primary = allDepartments.find((d) => d.department === primaryDepartment) || allDepartments[0];
   const others = allDepartments.filter((d) => d.department !== primary.department);
 
   const isZero = primary.multiplier === 0;
+
+  // Pick the next tier above the primary's current multiplier — what a
+  // crossing celebration would unlock. Used by the demo trigger.
+  const sortedTiers = [...electronicsMultiplierTiers].sort((a, b) => a.gateFromPct - b.gateFromPct);
+  const currentTierIdx = sortedTiers.findIndex(
+    (t) => primary.achievementPct >= t.gateFromPct && primary.achievementPct < t.gateToPct
+  );
+  const nextTier = sortedTiers[currentTierIdx + 1] || sortedTiers[currentTierIdx];
+  const celebTier = nextTier && {
+    label: nextTier.multiplier === 0 ? 'No payout' : `${Math.round(nextTier.multiplier * 100)}%`,
+    dept: primary.department,
+    note: nextTier.multiplier > primary.multiplier
+      ? `Your ${primary.department} sales now pay at ${Math.round(nextTier.multiplier * 100)}% — up from ${Math.round(primary.multiplier * 100)}%.`
+      : `Your ${primary.department} multiplier is now ${Math.round(nextTier.multiplier * 100)}%.`,
+  };
+  const celebKind = nextTier && nextTier.multiplier > primary.multiplier ? 'up' : 'down';
 
   return (
     <section className={styles.card}>
@@ -37,6 +55,13 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
         </div>
       </button>
 
+      <TierCelebration
+        open={celebOpen}
+        kind={celebKind}
+        tier={celebTier}
+        onDismiss={() => setCelebOpen(false)}
+      />
+
       {open && (
         <div className={styles.panel}>
           {others.length > 0 && (
@@ -58,6 +83,19 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
               </div>
             </div>
           )}
+
+          {/* Demo trigger — POC only. In production, the celebration fires
+              automatically when the dept's tier actually changes (server push). */}
+          <div className={styles.section}>
+            <button
+              type="button"
+              className={styles.demoBtn}
+              onClick={() => setCelebOpen(true)}
+            >
+              <Sparkles size={12} strokeWidth={2.4} />
+              Simulate tier change
+            </button>
+          </div>
 
           <div className={styles.section}>
             <div className={styles.sectionTitle}>How the multiplier works</div>

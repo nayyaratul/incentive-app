@@ -4,6 +4,7 @@ import styles from './VerticalViews.module.scss';
 import EarningsHero from '../../../components/Molecule/EarningsHero/EarningsHero';
 import OpportunityStrip from '../../../components/Organism/OpportunityStrip/OpportunityStrip';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
+import MomentumPills from '../../../components/Molecule/MomentumPills/MomentumPills';
 import DeptMultiplierCompact from '../../../components/Molecule/DeptMultiplierCompact/DeptMultiplierCompact';
 import ComplianceLink from '../../../components/Molecule/ComplianceLink/ComplianceLink';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
@@ -69,6 +70,15 @@ export default function ElectronicsView({ payout, employee, store, role }) {
           <StreakNote streak={payout.streak} />
         </section>
       )}
+
+      <section className={`${styles.streakRow} rise rise-3`}>
+        <MomentumPills
+          thisPeriodAmount={finalTotal}
+          lastPeriodAmount={payout.lastMonthPayout}
+          lastPeriodLabel="last month"
+          nextPayoutDate={payout.nextPayoutDate}
+        />
+      </section>
 
       <section className={`rise rise-3`}>
         <OpportunityStrip opportunities={OPPS} />

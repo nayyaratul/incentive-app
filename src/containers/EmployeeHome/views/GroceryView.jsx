@@ -6,6 +6,7 @@ import { formatINR } from '../../../utils/format';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
+import MomentumPills from '../../../components/Molecule/MomentumPills/MomentumPills';
 import ComplianceLink from '../../../components/Molecule/ComplianceLink/ComplianceLink';
 
 export default function GroceryView({ payout, employee, store, role }) {
@@ -103,6 +104,15 @@ export default function GroceryView({ payout, employee, store, role }) {
           <StreakNote streak={payout.streak} />
         </section>
       )}
+
+      <section className={`${styles.streakRow} rise rise-3`}>
+        <MomentumPills
+          thisPeriodAmount={payout.individualPayout}
+          lastPeriodAmount={payout.lastCampaignPayoutPerEmp}
+          lastPeriodLabel="last campaign"
+          nextPayoutDate={payout.nextPayoutDate}
+        />
+      </section>
 
       {/* Active quest */}
       <section className={`${styles.pad} rise rise-3`}>

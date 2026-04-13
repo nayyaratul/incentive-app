@@ -6,6 +6,7 @@ import { fnlWeeklyRules } from '../../../data/configs';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
+import MomentumPills from '../../../components/Molecule/MomentumPills/MomentumPills';
 import ComplianceLink from '../../../components/Molecule/ComplianceLink/ComplianceLink';
 
 function findSplit(sms, dms) {
@@ -77,6 +78,15 @@ export default function FnlView({ payout, employee, store, role }) {
           <StreakNote streak={payout.streak} />
         </section>
       )}
+
+      <section className={`${styles.streakRow} rise rise-3`}>
+        <MomentumPills
+          thisPeriodAmount={myPayout}
+          lastPeriodAmount={payout.lastWeekSaPayout}
+          lastPeriodLabel="last week"
+          nextPayoutDate={payout.nextPayoutDate}
+        />
+      </section>
 
       {/* 5-day eligibility card */}
       <section className={`${styles.pad} rise rise-3`}>
