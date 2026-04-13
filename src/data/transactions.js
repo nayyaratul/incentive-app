@@ -2,6 +2,12 @@
 // DUMMY TRANSACTIONS — mirrors brief §9 (16-field common transaction format).
 // Used by the HistoryScreen (read-only per-employee view) and by the SM's
 // transactions tab (store-wide).
+//
+// SKU/price/article placeholders below are dummy and brief-compliant (the brief
+// only enumerates Grocery campaign articles + Electronics product families and
+// brand groups, not SKUs). When the Reliance SKU master arrives, swap article
+// codes / brands / unit prices in this file; the slab + multiplier logic in
+// `configs.js` and the rendering layers don't need to change.
 // ============================================================================
 
 import { TX_TYPE, CHANNEL } from './masters';
