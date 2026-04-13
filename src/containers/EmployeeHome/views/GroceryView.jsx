@@ -70,7 +70,7 @@ export default function GroceryView({ payout, employee, store, role }) {
       <section className={`${styles.pad} rise rise-3`}>
         <div className={styles.cardDark}>
           <div className={styles.cardHead}>
-            <span className={styles.eyebrow}>Payout slabs · §7.2</span>
+            <span className={styles.eyebrow}>Payout slabs</span>
           </div>
           <div className={styles.slabGrid}>
             {payout.projections.map((p) => (
@@ -147,7 +147,7 @@ export default function GroceryView({ payout, employee, store, role }) {
       <section className={`${styles.pad} rise rise-5`}>
         <div className={styles.complianceCard}>
           <div className={styles.complianceHead}>
-            <span>Distribution rule (§7.4)</span>
+            <span>Distribution rule</span>
           </div>
           <ul>
             <li><span>Store incentive</span><strong>{formatINR(totalStoreIncentive)}</strong></li>

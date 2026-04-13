@@ -73,7 +73,6 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
                 </div>
               ))}
             </div>
-            <p className={styles.refLine}>Brief §6.4 Step 2</p>
           </div>
         </div>
       )}

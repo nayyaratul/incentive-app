@@ -32,7 +32,7 @@ export default function HistoryScreen({ employeeId, vertical }) {
     <div className={styles.screen}>
       <header className={styles.screenHead}>
         <h1 className={styles.title}>Sales history</h1>
-        <p className={styles.sub}>Read-only log of your sales, per brief §9 (16-field transaction format).</p>
+        <p className={styles.sub}>Read-only log of your sales for the period.</p>
       </header>
 
       <div className={styles.tabs} role="tablist">

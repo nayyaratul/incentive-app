@@ -36,7 +36,7 @@ export const badgesByEmployee = {
     { id: 'all-brands',     icon: '✨', label: 'Every brand',         note: 'Sold at least one piece from every campaign brand', unlockedAt: '2026-04-18T14:15:00' },
   ],
   'FNL-3103': [
-    { id: 'full-week',      icon: '📅', label: 'Full week present',   note: '7 PRESENT days — exceeds the §8.5 minimum',        unlockedAt: '2026-04-18T19:00:00' },
+    { id: 'full-week',      icon: '📅', label: 'Full week present',   note: '7 PRESENT days — exceeds the weekly minimum',      unlockedAt: '2026-04-18T19:00:00' },
     { id: 'first-qualify',  icon: '✅', label: 'Store qualified',     note: 'Store beat the weekly target — pool unlocked',     unlockedAt: '2026-04-11T20:00:00' },
     { id: 'consistency',    icon: '🏆', label: '3 weeks in a row',    note: 'Store qualified three consecutive weeks',          unlockedAt: null },
   ],
@@ -54,7 +54,6 @@ export const questsByEmployee = {
       title: 'Help Telecom reach 85% of target',
       progress: { current: 75, target: 85, unit: '%' },
       reward: 'Unlocks 50% payout on your Telecom base incentive',
-      reference: 'Brief §6.4 Step 2',
       status: 'active',
     },
     {
@@ -63,7 +62,6 @@ export const questsByEmployee = {
       title: 'Stretch — Telecom at 100%',
       progress: { current: 75, target: 100, unit: '%' },
       reward: 'Unlocks full 100% payout on Telecom base',
-      reference: 'Brief §6.4 Step 2',
       status: 'active',
     },
     {
@@ -72,7 +70,6 @@ export const questsByEmployee = {
       title: 'Sell one TV in the ₹60k+ band',
       progress: { current: 0, target: 1, unit: 'sold' },
       reward: '₹225 per unit — highest TV base incentive slab',
-      reference: 'Brief §6.4 Step 1',
       status: 'active',
     },
     {
@@ -81,7 +78,6 @@ export const questsByEmployee = {
       title: 'Large Appliances at 120%',
       progress: { current: 127, target: 120, unit: '%' },
       reward: '1.20× on your Large Appliance base — active now',
-      reference: 'Brief §6.4 Step 2',
       status: 'completed',
     },
   ],
@@ -94,7 +90,6 @@ export const questsByEmployee = {
       title: 'Get store to 100% of ₹1.67L target',
       progress: { current: 92, target: 100, unit: '%' },
       reward: '₹2 per piece across all eligible articles sold',
-      reference: 'Brief §7.2',
       status: 'active',
     },
     {
@@ -103,7 +98,6 @@ export const questsByEmployee = {
       title: 'Stretch — Store at 120%',
       progress: { current: 92, target: 120, unit: '%' },
       reward: '₹3 per piece — applies to every piece, not just above 120%',
-      reference: 'Brief §7.2',
       status: 'active',
     },
     {
@@ -112,7 +106,6 @@ export const questsByEmployee = {
       title: 'Stretch — Store at 130%',
       progress: { current: 92, target: 130, unit: '%' },
       reward: '₹4 per piece — top slab; applies to all pieces',
-      reference: 'Brief §7.2',
       status: 'active',
     },
   ],
@@ -125,7 +118,6 @@ export const questsByEmployee = {
       title: 'Store beats ₹12L weekly target',
       progress: { current: 1260000, target: 1200000, unit: '₹' },
       reward: 'Unlocks 1% of weekly gross as store pool',
-      reference: 'Brief §8.6 Step 1',
       status: 'completed',
     },
     {
@@ -134,7 +126,6 @@ export const questsByEmployee = {
       title: 'Be present 5+ days this week',
       progress: { current: 7, target: 5, unit: 'days' },
       reward: 'Keeps you eligible for this week\'s payout',
-      reference: 'Brief §8.5',
       status: 'completed',
     },
   ],

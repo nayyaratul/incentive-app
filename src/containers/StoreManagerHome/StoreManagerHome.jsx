@@ -238,7 +238,7 @@ export default function StoreManagerHome() {
                     <AlertTriangle size={14} strokeWidth={2.4} />
                     <div>
                       <div className={styles.noticeTitle}>Store didn't beat target</div>
-                      <div className={styles.noticeBody}>Per §8.6, no payout this week for any role. Gap: {formatINR(summary.totalTarget - summary.totalActual)}.</div>
+                      <div className={styles.noticeBody}>No payout this week for any role — the store needed to beat the weekly target. Gap: {formatINR(summary.totalTarget - summary.totalActual)}.</div>
                     </div>
                   </div>
                 </section>

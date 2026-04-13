@@ -52,7 +52,6 @@ export default function QuestCard({ employeeId }) {
               </div>
 
               <div className={styles.qReward}>{q.reward}</div>
-              <div className={styles.qRef}>{q.reference}</div>
             </div>
           );
         })}

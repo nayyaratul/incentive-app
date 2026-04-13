@@ -71,7 +71,7 @@ export const electronicsPayoutsRD3675 = [
     monthlyGoalTarget: 7000,
     streak: 0,
     milestones: [],
-    ineligibleReason: 'On notice period — not eligible for disbursement (brief §6.3 / §10)',
+    ineligibleReason: 'On notice period — not eligible for this month\'s disbursement.',
   },
   {
     employeeId: 'EMP-0045', // Kiran Pawar (SA) — new joiner
@@ -201,6 +201,6 @@ export const centralReporting = {
     { id: 'FLG-02', storeCode: 'T28V',   vertical: 'GROCERY',     severity: 'warn',   message: 'Cake Rush at 92% — still 8pp below gate with 12 days left' },
     { id: 'FLG-03', storeCode: 'TGL5',   vertical: 'GROCERY',     severity: 'info',   message: 'Crossed 110% — tracking to ₹3/pc slab' },
     { id: 'FLG-04', storeCode: 'TRN0241',vertical: 'FNL',         severity: 'info',   message: 'Week 3 qualified; week 2 missed target by 2pp' },
-    { id: 'FLG-05', storeCode: 'RD3682', vertical: 'ELECTRONICS', severity: 'alert',  message: 'Operational days = 14 — at risk of failing 15-day minimum (brief §6.3)' },
+    { id: 'FLG-05', storeCode: 'RD3682', vertical: 'ELECTRONICS', severity: 'alert',  message: 'Operational days = 14 — at risk of failing the 15-day monthly minimum' },
   ],
 };

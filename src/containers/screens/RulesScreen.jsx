@@ -67,7 +67,7 @@ function ElectronicsRules() {
         <h2 className={styles.sectionTitle}>Step 1 · Base incentive per product</h2>
         <p className={styles.lede}>
           For each eligible product sold, the Store Associate earns a fixed amount based on product family, brand group,
-          and selling price (pre-tax). §6.4
+          and selling price (pre-tax).
         </p>
 
         {Object.values(groups).map((g, idx) => (
@@ -191,7 +191,7 @@ function GroceryRules() {
         <div className={styles.excludeList}>
           <div className={styles.excludeRow}>
             <Info size={13} strokeWidth={2.2} />
-            <span>Total store incentive is <strong>split equally</strong> across all store employees — SM, DM, SA, and BA. §7.4</span>
+            <span>Total store incentive is <strong>split equally</strong> across all store employees — Store Manager, Deputy Store Manager, Store Associates, and Brand Associates.</span>
           </div>
         </div>
       </section>
@@ -226,7 +226,7 @@ function FnlRules() {
           </div>
           <div className={styles.excludeRow}>
             <Info size={13} strokeWidth={2.2} />
-            <span>Employee must have <strong>≥ {r.minWorkingDays} PRESENT days</strong> in the week. §8.5</span>
+            <span>Employee must have <strong>≥ {r.minWorkingDays} PRESENT days</strong> in the week.</span>
           </div>
           <div className={styles.excludeRow}>
             <Info size={13} strokeWidth={2.2} />

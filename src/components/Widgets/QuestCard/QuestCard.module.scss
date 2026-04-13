@@ -137,17 +137,9 @@
   background: var(--brand-soft);
   border-radius: 8px;
   border: 1px solid rgba(189, 41, 37, 0.14);
-  margin-bottom: 6px;
 }
 .questDone .qReward {
   background: rgba(15, 122, 58, 0.08);
   border-color: rgba(15, 122, 58, 0.2);
   color: var(--text-secondary);
-}
-.qRef {
-  font-family: 'Geist Mono', monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  text-transform: uppercase;
 }

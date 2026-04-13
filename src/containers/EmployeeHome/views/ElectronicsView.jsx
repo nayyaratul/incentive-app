@@ -115,7 +115,6 @@ function EligibilityFootnote({ employee, store, role }) {
           <div><span>Store operational days</span><strong>{store?.operationalDaysInMonth} / 30</strong></div>
           <div><span>SFS / PAS / JioMart</span><strong>Excluded from incentive</strong></div>
           <div><span>Apple / OnePlus / MS Surface</span><strong>Excluded entirely</strong></div>
-          <div className={styles.eligFoot}>§6.3 · §6.4 · §10</div>
         </div>
       )}
     </div>

@@ -50,9 +50,9 @@ export default function BrandAssociateHome() {
               <div>
                 <div className={styles.ineligTitle}>You don't earn a personal sales incentive</div>
                 <p className={styles.ineligBody}>
-                  Per §6.3 of the incentive policy, Brand Associates are <strong>not eligible</strong> for individual
-                  sales incentives. All sales you record are attributed under your Store Manager's ID for calculation
-                  and reporting purposes.
+                  As a Brand Associate, you are <strong>not eligible</strong> for an individual sales incentive.
+                  All sales you record are attributed under your Store Manager's ID for calculation and reporting
+                  purposes.
                 </p>
                 <div className={styles.ineligMeta}>
                   <span>SM of record</span>
@@ -82,7 +82,7 @@ export default function BrandAssociateHome() {
               </div>
               <p className={styles.contribNote}>
                 Your department-level performance still affects the store's achievement %, which sets the multiplier
-                the SM's payout is scaled by (§6.4 Step 2).
+                the Store Manager's payout is scaled by.
               </p>
             </div>
           </section>

@@ -80,7 +80,7 @@ export default function FnlView({ payout, employee, store, role }) {
               {eligible5Day ? 'Eligible this week' : 'Not eligible this week'}
             </div>
             <div className={styles.eligSub}>
-              You have <strong>{myDays}</strong> PRESENT days · minimum {fnlWeeklyRules.minWorkingDays} needed (§8.5)
+              You have <strong>{myDays}</strong> PRESENT days · minimum {fnlWeeklyRules.minWorkingDays} needed
             </div>
           </div>
           <div className={styles.dayPips} aria-hidden="true">
@@ -105,7 +105,7 @@ export default function FnlView({ payout, employee, store, role }) {
       <section className={`${styles.pad} rise rise-4`}>
         <div className={styles.cardDark}>
           <div className={styles.cardHead}>
-            <span className={styles.eyebrow}>Split matrix · §8.6</span>
+            <span className={styles.eyebrow}>Split matrix</span>
             <span className={styles.smallPill}>This store: {payout.staffing.sms} SM · {payout.staffing.dms} DM</span>
           </div>
           <div className={styles.splitGrid}>
@@ -149,7 +149,7 @@ export default function FnlView({ payout, employee, store, role }) {
       <section className={`${styles.pad} rise rise-5`}>
         <div className={styles.complianceCard}>
           <div className={styles.complianceHead}>
-            <span>Eligibility (§8.5)</span>
+            <span>Eligibility</span>
           </div>
           <ul>
             <li><span>Role</span><strong>{role} · {employee?.employeeId}</strong></li>
