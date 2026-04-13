@@ -3,6 +3,8 @@ import { Calendar, Check, X as XIcon } from 'lucide-react';
 import styles from './VerticalViews.module.scss';
 import { formatINR } from '../../../utils/format';
 import { fnlWeeklyRules } from '../../../data/configs';
+import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
+import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 
 function findSplit(sms, dms) {
   return fnlWeeklyRules.splitMatrix.find((m) => m.sms === sms && m.dms === dms) || fnlWeeklyRules.splitMatrix[0];
@@ -87,6 +89,16 @@ export default function FnlView({ payout, employee, store, role }) {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Active quest */}
+      <section className={`${styles.pad} rise rise-4`}>
+        <QuestCard employeeId={employee.employeeId} />
+      </section>
+
+      {/* Badges */}
+      <section className={`rise rise-4`}>
+        <BadgesStrip employeeId={employee.employeeId} />
       </section>
 
       {/* Split matrix */}

@@ -3,6 +3,8 @@ import { Calendar, Users } from 'lucide-react';
 import styles from './VerticalViews.module.scss';
 import { groceryCampaign } from '../../../data/configs';
 import { formatINR } from '../../../utils/format';
+import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
+import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 
 export default function GroceryView({ payout, employee, store, role }) {
   const appliedRate = payout.appliedRate;
@@ -91,6 +93,16 @@ export default function GroceryView({ payout, employee, store, role }) {
             Higher slab rates apply to <strong>all pieces sold</strong>, not just the incremental pieces above the threshold.
           </p>
         </div>
+      </section>
+
+      {/* Active quest */}
+      <section className={`${styles.pad} rise rise-3`}>
+        <QuestCard employeeId={employee.employeeId} />
+      </section>
+
+      {/* Badges */}
+      <section className={`rise rise-4`}>
+        <BadgesStrip employeeId={employee.employeeId} />
       </section>
 
       {/* Campaign leaderboard — 3 Kerala stores */}

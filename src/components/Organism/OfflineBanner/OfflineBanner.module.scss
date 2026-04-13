@@ -1,0 +1,54 @@
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: calc(var(--z-overlay) + 2);
+  background: #2B2520;
+  color: #FFFFFF;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+  animation: bannerSlide 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes bannerSlide {
+  from { opacity: 0; transform: translateY(-100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.inner {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.iconWrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.text { min-width: 0; flex: 1; }
+
+.title {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.sub {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.3;
+}

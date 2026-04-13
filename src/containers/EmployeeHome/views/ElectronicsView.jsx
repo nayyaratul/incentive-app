@@ -4,6 +4,9 @@ import styles from './VerticalViews.module.scss';
 import EarningsHero from '../../../components/Molecule/EarningsHero/EarningsHero';
 import OpportunityStrip from '../../../components/Organism/OpportunityStrip/OpportunityStrip';
 import LeaderboardTile from '../../../components/Molecule/LeaderboardTile/LeaderboardTile';
+import LevelCard from '../../../components/Widgets/LevelCard/LevelCard';
+import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
+import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import { formatINR } from '../../../utils/format';
 import { electronicsMultiplierTiers } from '../../../data/configs';
 
@@ -112,11 +115,26 @@ export default function ElectronicsView({ payout, employee, store, role }) {
         </div>
       </section>
 
+      {/* Quests — daily/weekly tasks the admin portal pushes */}
+      <section className={`${styles.pad} rise rise-4`}>
+        <QuestCard employeeId={employee.employeeId} />
+      </section>
+
       <section className={`rise rise-4`}>
         <OpportunityStrip opportunities={OPPS} />
       </section>
 
+      {/* Level / tier card */}
       <section className={`${styles.pad} rise rise-5`}>
+        <LevelCard mtdPayout={finalTotal} />
+      </section>
+
+      {/* Badges */}
+      <section className={`rise rise-5`}>
+        <BadgesStrip employeeId={employee.employeeId} />
+      </section>
+
+      <section className={`${styles.pad} rise rise-6`}>
         <LeaderboardTile rank={3} deltaAbove={40} scope="store" />
       </section>
 
