@@ -130,6 +130,21 @@
 }
 .iconLight { color: var(--accent); }
 
+.brandPill {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--brand-deep);
+  padding: 3px 10px;
+  background: var(--brand-soft);
+  border: 1px solid rgba(189, 41, 37, 0.2);
+  border-radius: 999px;
+}
+
+.iconMuted { color: var(--text-muted); }
+
 .contribGrid {
   display: grid;
   grid-template-columns: 1fr 1px 1fr;
@@ -164,9 +179,78 @@
 }
 .contribNote {
   margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+
+  strong { color: var(--text-primary); font-weight: 700; }
+}
+
+/* ---------- Top SKUs list ---------- */
+.skuList {
+  display: flex;
+  flex-direction: column;
+}
+
+.skuRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--divider);
+
+  &:last-child { border-bottom: none; }
+}
+
+.skuRank {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--brand-deep);
+  letter-spacing: -0.02em;
+  min-width: 22px;
+}
+
+.skuMid { min-width: 0; }
+
+.skuName {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+}
+
+.skuFamily {
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11.5px;
   color: var(--text-muted);
-  line-height: 1.45;
+  letter-spacing: 0.02em;
+}
+
+.skuUnits {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+
+  strong {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+}
+
+.skuUnitsCap {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
 }
 
 .pulseFigures {

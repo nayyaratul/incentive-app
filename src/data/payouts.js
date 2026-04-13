@@ -132,6 +132,34 @@ export const electronicsPayoutsRD3675 = [
   },
 ];
 
+// ---------- BRAND ASSOCIATE contributions (RD3675) ----------
+// BAs don't earn personally — these stats are read-only for visibility.
+// All sales are recorded under the SM's employee ID for calculation.
+export const baContributionsRD3675 = {
+  'EMP-0047': { // Manoj Iyer · Samsung
+    brand: 'Samsung',
+    unitsSold: 18,
+    grossValue: 342500,
+    topSkus: [
+      { sku: 'Samsung M14',         family: 'Wireless Phone', units: 8 },
+      { sku: 'Samsung Soundbar',    family: 'Audio',           units: 4 },
+      { sku: 'Samsung QLED 55"',    family: 'High End TV',     units: 2 },
+      { sku: 'Samsung Refrigerator',family: 'Food Preservation', units: 2 },
+      { sku: 'Samsung Washing M.',  family: 'Laundry & Wash Care', units: 2 },
+    ],
+  },
+  'EMP-0048': { // Deepa Menon · Vivo
+    brand: 'Vivo',
+    unitsSold: 12,
+    grossValue: 210800,
+    topSkus: [
+      { sku: 'Vivo Y28',  family: 'Wireless Phone', units: 7 },
+      { sku: 'Vivo V30',  family: 'Wireless Phone', units: 3 },
+      { sku: 'Vivo X100', family: 'Wireless Phone', units: 2 },
+    ],
+  },
+};
+
 // ---------- GROCERY — SMT-Kalpetta (T28V), Cake Rush campaign ----------
 // Brief §7.3 worked example + §7.4 equal distribution
 export const groceryPayoutT28V = {
