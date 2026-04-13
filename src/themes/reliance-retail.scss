@@ -1,0 +1,27 @@
+@use '../styles/tokens-primitive' as *;
+
+// Maps the semantic CSS vars to primitives for the Reliance Retail brand.
+// To re-skin to another brand: copy this file, tweak values, swap the import in bootstrap.
+
+:root {
+  --_brand:           #{$blue-600};
+  --_brand-contrast:  #{$ink-0};
+  --_accent:          #{$saffron-400};
+  --_accent-soft:     #{$saffron-300};
+
+  --_surface:         #{$ink-0};
+  --_surface-raised:  #{$ink-50};
+  --_surface-sunken:  #{$ink-100};
+
+  --_text-primary:    #{$ink-900};
+  --_text-secondary:  #{$ink-600};
+  --_text-muted:      #{$ink-400};
+  --_text-on-brand:   #{$ink-0};
+
+  --_border:          #{$ink-200};
+  --_divider:         #{$ink-100};
+
+  --_success:         #{$success-500};
+  --_warn:            #{$warn-500};
+  --_error:           #{$error-500};
+}
