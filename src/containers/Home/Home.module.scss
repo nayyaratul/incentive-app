@@ -1,40 +1,32 @@
-.page {
-  max-width: 480px;
-  margin: 0 auto;
+/* =======================================================================
+   Mobile (default) — single column, 480px max width, floating bottom nav
+   ======================================================================= */
+
+.shell {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-  background: transparent;
 }
 
-/* Desktop middle column — Facebook feed rule: ~680px fixed, sidebar pinned left */
-@media (min-width: 900px) {
-  .page {
-    max-width: 680px;
-    margin: 0 auto;
-    padding-left: 44px; // visually balance the floating sidebar on the left
-  }
-
-  .main {
-    gap: 32px;
-    padding: 8px 0 48px;
-  }
+.layout {
+  display: block;
+  max-width: 480px;
+  margin: 0 auto;
 }
 
-/* Larger desktops — stay at the 680px Facebook rule.
-   Extra viewport space becomes ambient margin around the column, not column width. */
-@media (min-width: 1280px) {
-  .page {
-    max-width: 680px;
-    padding-left: 64px;
-  }
+.feed {
+  /* Single-column at mobile */
+}
+
+.rail {
+  display: none; /* Hidden at mobile — right rail is desktop-only */
 }
 
 .main {
   display: flex;
   flex-direction: column;
   gap: 28px;
-  padding: 4px 0 96px;
+  padding: 4px 0 112px; /* extra bottom padding to clear the floating bottom nav */
 }
 
 .heroSection {
@@ -53,7 +45,6 @@
   padding: 0 20px 4px;
 }
 
-// Subtle editorial datemark at the top — grounds the design
 .datemark {
   display: flex;
   align-items: center;
@@ -71,5 +62,64 @@
     height: 1px;
     background: var(--border);
     margin: 0 12px;
+  }
+}
+
+/* =======================================================================
+   Tablet/small desktop (>= 900px) — left sidebar nav + center feed (680)
+   ======================================================================= */
+
+@media (min-width: 900px) {
+  .layout {
+    max-width: 680px;
+    margin: 0 auto;
+    padding-left: 44px; /* visual balance for the floating sidebar rail on the left */
+  }
+
+  .main {
+    gap: 32px;
+    padding: 8px 0 48px;
+  }
+}
+
+/* =======================================================================
+   Wide desktop (>= 1200px) — three-column: sidebar + feed 600 + rail 320
+   Facebook / X layout convention.
+   ======================================================================= */
+
+@media (min-width: 1200px) {
+  .layout {
+    display: grid;
+    grid-template-columns: 600px 320px;
+    gap: 32px;
+    max-width: 984px; /* 600 + 32 + 320 + slight right breathing */
+    padding-left: 140px; /* clear the sidebar rail (84w + 24 left + gap) */
+    padding-right: 24px;
+    margin: 0 auto;
+    align-items: flex-start;
+  }
+
+  .feed {
+    min-width: 0; /* allow children to respect container instead of intrinsic */
+  }
+
+  .rail {
+    display: block;
+    position: sticky;
+    top: 24px;
+  }
+
+  .main {
+    gap: 32px;
+    padding: 8px 0 48px;
+  }
+}
+
+/* Ultrawide (>= 1440px) — more ambient margin, same column widths */
+@media (min-width: 1440px) {
+  .layout {
+    max-width: 1040px;
+    padding-left: 180px;
+    padding-right: 60px;
   }
 }

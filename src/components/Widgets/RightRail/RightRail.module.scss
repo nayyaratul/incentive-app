@@ -1,0 +1,269 @@
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 320px;
+  flex-shrink: 0;
+  padding-top: 36px; // align with content that starts after the datemark row
+}
+
+.card {
+  position: relative;
+  padding: 16px 16px 14px;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(10, 22, 40, 0.03);
+}
+
+.cardHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.iconBrand {
+  color: var(--brand);
+}
+
+.iconMuted {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.eyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* --- Momentum --- */
+.momentumRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.momentumPct {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 700;
+  font-size: 44px;
+  line-height: 0.85;
+  color: var(--success);
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.sign {
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 520;
+  font-size: 28px;
+  color: var(--success);
+}
+
+.momentumCaption {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.3;
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+}
+
+.divider {
+  height: 1px;
+  background: var(--divider);
+  margin: 2px 0 12px;
+}
+
+.miniRow {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px;
+
+  & + & {
+    border-top: 1px solid var(--divider);
+  }
+}
+
+.miniLabel {
+  color: var(--text-secondary);
+  font-size: 11.5px;
+}
+
+.miniValue {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.miniUnit {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* --- Floor feed --- */
+.live {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 0 3px rgba(200, 32, 46, 0.14);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid var(--brand);
+    opacity: 0;
+    animation: live-pulse 2s ease-out infinite;
+  }
+}
+
+@keyframes live-pulse {
+  0%   { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+
+.feed {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.feedItem {
+  display: grid;
+  grid-template-columns: auto 14px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--divider);
+  font-size: 12px;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.who {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.feedIcon {
+  color: var(--text-muted);
+}
+
+.feedIconAccent {
+  color: var(--accent);
+}
+
+.feedBody {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feedEarn {
+  color: var(--accent-deep);
+  font-family: 'Geist Mono', monospace;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-left: 4px;
+}
+
+.feedTime {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.feedAll {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  letter-spacing: 0.02em;
+  transition: all var(--dur-med) var(--ease-out);
+
+  &:hover {
+    background: var(--text-primary);
+    color: var(--brand-contrast);
+    border-color: var(--text-primary);
+  }
+}
+
+/* --- Quote --- */
+.quoteCard {
+  background: linear-gradient(165deg, var(--surface-raised) 0%, var(--surface-sunken) 100%);
+  border-color: rgba(200, 32, 46, 0.14);
+}
+
+.quoteMark {
+  position: absolute;
+  top: 4px;
+  right: 16px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 700;
+  font-size: 72px;
+  color: var(--brand);
+  opacity: 0.16;
+  line-height: 1;
+}
+
+.quote {
+  margin: 0 0 10px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 70, 'wght' 460;
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+  position: relative;
+  z-index: 1;
+}
+
+.quoteAttr {
+  margin: 0;
+  font-family: 'Geist Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}

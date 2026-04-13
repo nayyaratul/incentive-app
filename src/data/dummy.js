@@ -31,4 +31,18 @@ export const dummyData = {
     { sku: 'Noise ColorFit', band: '₹2k–5k', earn: 55 },
   ],
   myRank: { rank: 3, deltaAbove: 40, scope: 'store' },
+
+  // Right-rail supplementary content (desktop only)
+  momentum: {
+    vsLastMonth: { pct: 0.18, direction: 'up', lastMonth: 3620 },
+    nextMilestone: { amount: 5000, remaining: 720, label: '₹5,000 this month' },
+    bestWindow: { range: '6–8 PM', category: 'Electronics', lift: '2.3×' },
+  },
+  floorFeed: [
+    { who: 'Priya S.', action: 'sold', sku: 'boAt Airdopes', earned: 40, mins: 2 },
+    { who: 'Vikram D.', action: 'sold', sku: 'Samsung M14', earned: 75, mins: 6 },
+    { who: 'Anita R.', action: 'milestone', label: '₹3,000 crossed', mins: 11 },
+    { who: 'Rohit S.', action: 'sold', sku: 'Vivo Y28', earned: 90, mins: 14 },
+    { who: 'Kiran P.', action: 'sold', sku: 'Noise ColorFit', earned: 55, mins: 18 },
+  ],
 };

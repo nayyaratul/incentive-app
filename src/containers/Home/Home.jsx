@@ -7,6 +7,7 @@ import StoreBoostCard from '../../components/Molecule/StoreBoostCard/StoreBoostC
 import OpportunityStrip from '../../components/Organism/OpportunityStrip/OpportunityStrip';
 import LeaderboardTile from '../../components/Molecule/LeaderboardTile/LeaderboardTile';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
+import RightRail from '../../components/Widgets/RightRail/RightRail';
 
 const TODAY = new Date().toLocaleDateString('en-IN', {
   weekday: 'long',
@@ -15,45 +16,64 @@ const TODAY = new Date().toLocaleDateString('en-IN', {
 });
 
 export default function Home() {
-  const { employee, streak, earnings, goal, storeBoost, opportunities, myRank } = dummyData;
+  const {
+    employee,
+    streak,
+    earnings,
+    goal,
+    storeBoost,
+    opportunities,
+    myRank,
+    momentum,
+    floorFeed,
+  } = dummyData;
 
   return (
-    <div className={styles.page}>
-      <HeaderBar employeeName={employee.name} streak={streak.current} />
+    <div className={styles.shell}>
+      <BottomNav active="home" employeeInitial={employee.name[0]} />
 
-      <main className={styles.main}>
-        <div className={`${styles.datemark} rise rise-1`}>
-          <span>Shift · {TODAY}</span>
-          <span className={styles.line} />
-          <span>Live</span>
+      <div className={styles.layout}>
+        <div className={styles.feed}>
+          <HeaderBar employeeName={employee.name} streak={streak.current} />
+
+          <main className={styles.main}>
+            <div className={`${styles.datemark} rise rise-1`}>
+              <span>Shift · {TODAY}</span>
+              <span className={styles.line} />
+              <span>Live</span>
+            </div>
+
+            <section className={`${styles.heroSection} rise rise-2`}>
+              <EarningsHero
+                thisMonth={earnings.thisMonth}
+                today={earnings.today}
+                goal={goal}
+              />
+            </section>
+
+            <section className={`${styles.boostSection} rise rise-3`}>
+              <StoreBoostCard storeBoost={storeBoost} />
+            </section>
+
+            <section className={`${styles.stripSection} rise rise-4`}>
+              <OpportunityStrip opportunities={opportunities} />
+            </section>
+
+            <section className={`${styles.rankSection} rise rise-5`}>
+              <LeaderboardTile
+                rank={myRank.rank}
+                deltaAbove={myRank.deltaAbove}
+                scope={myRank.scope}
+              />
+            </section>
+          </main>
         </div>
 
-        <section className={`${styles.heroSection} rise rise-2`}>
-          <EarningsHero
-            thisMonth={earnings.thisMonth}
-            today={earnings.today}
-            goal={goal}
-          />
-        </section>
-
-        <section className={`${styles.boostSection} rise rise-3`}>
-          <StoreBoostCard storeBoost={storeBoost} />
-        </section>
-
-        <section className={`${styles.stripSection} rise rise-4`}>
-          <OpportunityStrip opportunities={opportunities} />
-        </section>
-
-        <section className={`${styles.rankSection} rise rise-5`}>
-          <LeaderboardTile
-            rank={myRank.rank}
-            deltaAbove={myRank.deltaAbove}
-            scope={myRank.scope}
-          />
-        </section>
-      </main>
-
-      <BottomNav active="home" employeeInitial={employee.name[0]} />
+        {/* Right rail — only rendered on wide desktops via CSS; always in DOM for a11y */}
+        <div className={styles.rail}>
+          <RightRail momentum={momentum} floorFeed={floorFeed} />
+        </div>
+      </div>
     </div>
   );
 }
