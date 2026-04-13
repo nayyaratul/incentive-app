@@ -5,6 +5,7 @@ import { groceryCampaign } from '../../../data/configs';
 import { formatINR } from '../../../utils/format';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
+import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
 
 export default function GroceryView({ payout, employee, store, role }) {
   const appliedRate = payout.appliedRate;
@@ -94,6 +95,13 @@ export default function GroceryView({ payout, employee, store, role }) {
           </p>
         </div>
       </section>
+
+      {/* Streak note — always positive */}
+      {payout.streak && payout.streak.current > 0 && (
+        <section className={`${styles.streakRow} rise rise-2`}>
+          <StreakNote streak={payout.streak} />
+        </section>
+      )}
 
       {/* Active quest */}
       <section className={`${styles.pad} rise rise-3`}>

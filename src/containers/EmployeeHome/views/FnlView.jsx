@@ -5,6 +5,7 @@ import { formatINR } from '../../../utils/format';
 import { fnlWeeklyRules } from '../../../data/configs';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
+import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
 
 function findSplit(sms, dms) {
   return fnlWeeklyRules.splitMatrix.find((m) => m.sms === sms && m.dms === dms) || fnlWeeklyRules.splitMatrix[0];
@@ -68,6 +69,13 @@ export default function FnlView({ payout, employee, store, role }) {
           </div>
         </div>
       </section>
+
+      {/* Streak note — always positive */}
+      {payout.streak && payout.streak.current > 0 && (
+        <section className={`${styles.streakRow} rise rise-2`}>
+          <StreakNote streak={payout.streak} />
+        </section>
+      )}
 
       {/* 5-day eligibility card */}
       <section className={`${styles.pad} rise rise-3`}>

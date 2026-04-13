@@ -4,6 +4,16 @@
 // Real system will compute these nightly from transactions + configs.
 // ============================================================================
 
+// Streak metric: Shape 1 — "Professional discipline".
+// Consecutive WORKING days where the employee was PRESENT and logged ≥1
+// qualifying sale. Off-days (week-off, approved leave, holidays) pause the
+// streak rather than break it. Always-positive; no 'broken' state shown.
+// Dummy data per-employee below.
+
+// Leaderboard shape: per-store rankings for SA roles. For Grocery/F&L where
+// payouts are pooled, this represents rank by volume contribution, not ₹
+// earned — useful for recognition even when payouts are equal.
+
 // ---------- ELECTRONICS — RD3675 Andheri, April 2026 ----------
 // Rohit (EMP-0041) sold across several departments; payout shown per department
 // because each department has its own achievement multiplier (brief §6.4 Step 2)
@@ -22,7 +32,28 @@ export const electronicsPayoutsRD3675 = [
     todayEarned: 180,
     monthToDateEarned: 3760,
     monthlyGoalTarget: 7000,
-    streak: 7,
+    // Streak — Shape 1, working-days present + active
+    streak: {
+      current: 7,
+      longest: 14,
+      lastActiveDay: '2026-04-13',
+      kind: 'working-days-active',
+      label: 'working days',
+      caption: 'present + selling',
+    },
+    // Rank within store (among SA peers)
+    myRank: {
+      rank: 3,
+      deltaAbove: 40,
+      scope: 'store',
+      top: [
+        { rank: 1, name: 'Vikram Patil',  earned: 5480, isSelf: false },
+        { rank: 2, name: 'Priya Desai',   earned: 3800, isSelf: false },
+        { rank: 3, name: 'Rohit Sharma',  earned: 3760, isSelf: true  },
+        { rank: 4, name: 'Kiran Pawar',   earned: 2210, isSelf: false },
+        { rank: 5, name: 'Anita Reddy',   earned: 0,    isSelf: false, note: 'On notice' },
+      ],
+    },
     milestones: [
       { id: 'MS-1000', threshold: 1000, label: '₹1,000 this month', crossed: true  },
       { id: 'MS-3000', threshold: 3000, label: '₹3,000 this month', crossed: true  },
@@ -39,7 +70,7 @@ export const electronicsPayoutsRD3675 = [
     todayEarned: 240,
     monthToDateEarned: 2808,
     monthlyGoalTarget: 7000,
-    streak: 5,
+    streak: { current: 5, longest: 9, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
     milestones: [
       { id: 'MS-1000', threshold: 1000, label: '₹1,000 this month', crossed: true  },
       { id: 'MS-3000', threshold: 3000, label: '₹3,000 this month', crossed: false },
@@ -56,7 +87,7 @@ export const electronicsPayoutsRD3675 = [
     todayEarned: 320,
     monthToDateEarned: 5480,
     monthlyGoalTarget: 7000,
-    streak: 12,
+    streak: { current: 12, longest: 18, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
     milestones: [
       { id: 'MS-1000', threshold: 1000, label: '₹1,000 this month', crossed: true  },
       { id: 'MS-3000', threshold: 3000, label: '₹3,000 this month', crossed: true  },
@@ -69,7 +100,7 @@ export const electronicsPayoutsRD3675 = [
     todayEarned: 0,
     monthToDateEarned: 1820, // accrued but will not be paid out due to payroll status
     monthlyGoalTarget: 7000,
-    streak: 0,
+    streak: { current: 0, longest: 8, lastActiveDay: null, kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
     milestones: [],
     ineligibleReason: 'On notice period — not eligible for this month\'s disbursement.',
   },
@@ -82,7 +113,7 @@ export const electronicsPayoutsRD3675 = [
     todayEarned: 55,
     monthToDateEarned: 352,
     monthlyGoalTarget: 5000,
-    streak: 3,
+    streak: { current: 3, longest: 3, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
     milestones: [],
   },
   {
@@ -95,7 +126,7 @@ export const electronicsPayoutsRD3675 = [
     todayEarned: 120,
     monthToDateEarned: 720,
     monthlyGoalTarget: 4000,
-    streak: 4,
+    streak: { current: 4, longest: 11, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
     milestones: [],
     note: 'SM earns via BA attribution per brief §6.3',
   },
@@ -114,6 +145,21 @@ export const groceryPayoutT28V = {
   totalStoreIncentive: 0,
   staffCount: 7,                    // SM + DM + 4 SA + 1 BA
   individualPayout: 0,
+  streak: { current: 6, longest: 11, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
+  myRank: {
+    rank: 2,
+    deltaAbove: 14,
+    scope: 'store',
+    scopeNote: 'by pieces sold',
+    top: [
+      { rank: 1, name: 'Ravi Krishnan', earned: 45, isSelf: false },
+      { rank: 2, name: 'Meena Nair',    earned: 38, isSelf: true  },
+      { rank: 3, name: 'Soumya George', earned: 31, isSelf: false },
+      { rank: 4, name: 'Ajit Pillai',   earned: 27, isSelf: false },
+      { rank: 5, name: 'Thomas Jacob',  earned: 19, isSelf: false },
+    ],
+    unitLabel: 'pieces',
+  },
   projections: [
     { scenario: 'Hit 100%', atSalesValue: 167000, rate: 2, estTotalIncentive: 620,  estPerEmployee: 89 },
     { scenario: 'Hit 120%', atSalesValue: 200400, rate: 3, estTotalIncentive: 1116, estPerEmployee: 159 },
@@ -142,6 +188,21 @@ export const fnlPayoutTRN0241 = {
   smPayout: 3024,
   dmPayoutEach: 2016,
   saPayoutEach: 1080, // 7560 / 7
+  streak: { current: 9, longest: 15, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
+  myRank: {
+    rank: 4,
+    deltaAbove: 6,
+    scope: 'store',
+    scopeNote: 'by units this week',
+    top: [
+      { rank: 1, name: 'Rahul Shetty',   earned: 48, isSelf: false },
+      { rank: 2, name: 'Ishaan Joshi',   earned: 42, isSelf: false },
+      { rank: 3, name: 'Dhruv Joshi',    earned: 39, isSelf: false },
+      { rank: 4, name: 'Sara Khan',      earned: 33, isSelf: true  },
+      { rank: 5, name: 'Pooja Kulkarni', earned: 29, isSelf: false },
+    ],
+    unitLabel: 'units',
+  },
   // Per-employee breakdown for the SM view
   employees: [
     { employeeId: 'FNL-3101', role: 'SM', daysPresent: 7, eligible: true, payout: 3024 },

@@ -1,0 +1,54 @@
+.note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, var(--brand-soft) 0%, var(--brand-tint, #FBEBEA) 100%);
+  border: 1px solid rgba(189, 41, 37, 0.18);
+  border-radius: 999px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12.5px;
+  color: var(--brand-deep);
+  letter-spacing: -0.005em;
+}
+
+.iconWrap {
+  display: inline-flex;
+  color: var(--brand);
+  animation: flame-pulse 2.4s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.count {
+  font-family: 'Geist Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--brand-deep);
+}
+
+.label {
+  font-weight: 600;
+  color: var(--brand-deep);
+}
+
+.divider {
+  color: rgba(189, 41, 37, 0.3);
+  margin: 0 2px;
+}
+
+.caption {
+  color: rgba(142, 30, 28, 0.85);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.longest {
+  margin-left: 4px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(189, 41, 37, 0.2);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  color: rgba(142, 30, 28, 0.65);
+  letter-spacing: 0.02em;
+}

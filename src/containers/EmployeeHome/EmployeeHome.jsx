@@ -5,6 +5,7 @@ import { VERTICALS } from '../../data/masters';
 import { electronicsPayoutsRD3675, groceryPayoutT28V, fnlPayoutTRN0241 } from '../../data/payouts';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
+import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
 import ElectronicsView from './views/ElectronicsView';
 import GroceryView from './views/GroceryView';
 import FnlView from './views/FnlView';
@@ -19,6 +20,7 @@ const TODAY = new Date().toLocaleDateString('en-IN', {
 
 export default function EmployeeHome() {
   const [tab, setTab] = useState('home');
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const { active, employee, store } = usePersona();
 
   const firstName = employee.employeeName.split(' ')[0];
@@ -32,15 +34,23 @@ export default function EmployeeHome() {
     myPayout = fnlPayoutTRN0241;
   }
 
+  const myRank = myPayout?.myRank;
+
   return (
     <div className={styles.shell}>
       <BottomNav active={tab} role={active.role} onNavigate={setTab} />
 
+      <LeaderboardDrawer
+        open={leaderboardOpen}
+        onClose={() => setLeaderboardOpen(false)}
+        myRank={myRank}
+      />
+
       <div className={styles.layout}>
         <HeaderBar
           employeeName={tab === 'home' ? firstName : null}
-          streak={myPayout?.streak ?? 0}
-          showStreak={tab === 'home'}
+          rank={tab === 'home' ? myRank?.rank : undefined}
+          onOpenLeaderboard={() => setLeaderboardOpen(true)}
         />
 
         <main className={styles.main}>

@@ -3,7 +3,7 @@ import { AlertTriangle, ShieldCheck, ChevronRight } from 'lucide-react';
 import styles from './VerticalViews.module.scss';
 import EarningsHero from '../../../components/Molecule/EarningsHero/EarningsHero';
 import OpportunityStrip from '../../../components/Organism/OpportunityStrip/OpportunityStrip';
-import RankSummary from '../../../components/Molecule/RankSummary/RankSummary';
+import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
 import DeptMultiplierCompact from '../../../components/Molecule/DeptMultiplierCompact/DeptMultiplierCompact';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
@@ -29,7 +29,6 @@ export default function ElectronicsView({ payout, employee, store, role }) {
     pct: payout.monthlyGoalTarget ? finalTotal / payout.monthlyGoalTarget : 0,
   };
 
-  // Shape department data for DeptMultiplierCompact
   const allDepartments = payout.byDepartment.map((d) => ({
     department: d.department,
     achievementPct: d.achievementPct,
@@ -48,11 +47,6 @@ export default function ElectronicsView({ payout, employee, store, role }) {
         </div>
       )}
 
-      {/* Compact rank chip at top — tap to expand */}
-      <section className={`rise rise-1`}>
-        <RankSummary rank={3} deltaAbove={40} scope="store" />
-      </section>
-
       {/* Earnings hero — the dominant element */}
       <section className={`${styles.heroPad} rise rise-2`}>
         <EarningsHero
@@ -62,23 +56,29 @@ export default function ElectronicsView({ payout, employee, store, role }) {
         />
       </section>
 
-      {/* Push now — the existing opportunity strip */}
+      {/* Streak note — always-positive, quiet placement */}
+      {payout.streak && payout.streak.current > 0 && (
+        <section className={`${styles.streakRow} rise rise-2`}>
+          <StreakNote streak={payout.streak} />
+        </section>
+      )}
+
+      {/* Push now */}
       <section className={`rise rise-3`}>
         <OpportunityStrip opportunities={OPPS} />
       </section>
 
-      {/* Brief-driven quests */}
+      {/* Brief-aligned quests */}
       <section className={`${styles.pad} rise rise-4`}>
         <QuestCard employeeId={employee.employeeId} />
       </section>
 
-      {/* Badges — recognition only, no rupee value added */}
+      {/* Badges */}
       <section className={`rise rise-5`}>
         <BadgesStrip employeeId={employee.employeeId} />
       </section>
 
-      {/* Department multiplier — compact, showing only user's primary dept.
-          Full breakdown behind a tap to reduce visual weight. */}
+      {/* Department multiplier — compact, tap to expand */}
       <section className={`${styles.pad} rise rise-5`}>
         <DeptMultiplierCompact
           primaryDepartment={employee.primaryDepartment}
@@ -86,8 +86,7 @@ export default function ElectronicsView({ payout, employee, store, role }) {
         />
       </section>
 
-      {/* Store eligibility — moved out of prominence; rendered as a quiet
-          inline link. Tapping opens a lightweight details drawer. */}
+      {/* Eligibility — demoted to quiet inline link */}
       <section className={`${styles.pad} rise rise-5`}>
         <EligibilityFootnote employee={employee} store={store} role={role} />
       </section>

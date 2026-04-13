@@ -3,6 +3,12 @@
 .pad    { padding: 0 20px; }
 .heroPad{ padding: 0 20px; }
 
+/* Streak sits right under the hero — left-aligned, narrow footprint */
+.streakRow {
+  padding: 0 20px;
+  margin-top: -14px;
+}
+
 /* ---------- Cards ---------- */
 .cardDark {
   position: relative;
