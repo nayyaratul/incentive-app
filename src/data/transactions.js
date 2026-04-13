@@ -43,9 +43,53 @@ export const transactionsByEmployee = {
   ],
 };
 
-// Store-wide totals (for SM transactions tab)
+// Store-wide totals (for SM transactions tab — aggregate count)
 export const transactionsByStore = {
   'RD3675': 240,   // 240 transactions this month
   'T28V':   86,
   'TRN0241': 412,
 };
+
+// ---------- Additional per-employee transactions for other RD3675 staff ----------
+// So the Store Manager's transactions view has enough rows to feel real.
+transactionsByEmployee['EMP-0042'] = [
+  { transactionId: 'TX-900412', transactionDate: '2026-04-13', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0042', department: 'ENT',              articleCode: 'SAM-QLED-55',    productFamilyCode: 'FH01', brand: 'Samsung', productFamily: 'High End TV',   quantity: 1, grossAmount: 62999, taxAmount: 11340, totalAmount: 74339, transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 225, multiplierApplied: 1.0, finalIncentive: 225 },
+  { transactionId: 'TX-900405', transactionDate: '2026-04-12', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0042', department: 'Large Appliances', articleCode: 'LG-AC-15T',      productFamilyCode: 'FJ01', brand: 'LG',      productFamily: 'Air Care',       quantity: 1, grossAmount: 38999, taxAmount: 7020,  totalAmount: 46019, transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 100, multiplierApplied: 1.2, finalIncentive: 120 },
+  { transactionId: 'TX-900389', transactionDate: '2026-04-11', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0042', department: 'Telecom',          articleCode: 'SAM-M14-6GB',    productFamilyCode: 'FK01', brand: 'Samsung', productFamily: 'Wireless Phone', quantity: 2, grossAmount: 28598, taxAmount: 5148,  totalAmount: 33746, transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 50,  multiplierApplied: 0.0, finalIncentive: 0, note: 'Dept at 75% — zeroed' },
+  { transactionId: 'TX-900361', transactionDate: '2026-04-10', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0042', department: 'AIOT',             articleCode: 'BOAT-ADPODS',    productFamilyCode: 'FG01', brand: 'boAt',    productFamily: 'Personal AV',    quantity: 3, grossAmount: 4497,  taxAmount: 810,   totalAmount: 5307,  transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 120, multiplierApplied: 0.8, finalIncentive: 96 },
+];
+
+transactionsByEmployee['EMP-0043'] = [
+  { transactionId: 'TX-900419', transactionDate: '2026-04-13', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0043', department: 'Large Appliances', articleCode: 'SAM-REF-Q',      productFamilyCode: 'FJ02', brand: 'Samsung', productFamily: 'Food Preservation', quantity: 1, grossAmount: 44999, taxAmount: 8100,  totalAmount: 53099, transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 150, multiplierApplied: 1.2, finalIncentive: 180 },
+  { transactionId: 'TX-900407', transactionDate: '2026-04-12', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0043', department: 'ENT',              articleCode: 'SAM-QLED-55',    productFamilyCode: 'FH01', brand: 'Samsung', productFamily: 'High End TV',    quantity: 1, grossAmount: 62999, taxAmount: 11340, totalAmount: 74339, transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 225, multiplierApplied: 1.0, finalIncentive: 225 },
+  { transactionId: 'TX-900373', transactionDate: '2026-04-11', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0043', department: 'IT',               articleCode: 'HP-PAV-14',      productFamilyCode: 'FF01', brand: 'HP',      productFamily: 'Laptop',          quantity: 1, grossAmount: 54999, taxAmount: 9900,  totalAmount: 64899, transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 90,  multiplierApplied: 0.8, finalIncentive: 72 },
+  { transactionId: 'TX-900359', transactionDate: '2026-04-10', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0043', department: 'Telecom',          articleCode: 'VIVO-Y28-64GB',  productFamilyCode: 'FK01', brand: 'Vivo',    productFamily: 'Wireless Phone', quantity: 1, grossAmount: 17499, taxAmount: 3150,  totalAmount: 20649, transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 25,  multiplierApplied: 0.0, finalIncentive: 0, note: 'Dept at 75% — zeroed' },
+];
+
+transactionsByEmployee['EMP-0045'] = [
+  { transactionId: 'TX-900415', transactionDate: '2026-04-13', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0045', department: 'AIOT',             articleCode: 'NOISE-CLRFIT',   productFamilyCode: 'FG02', brand: 'Noise',   productFamily: 'AI & Wearables', quantity: 2, grossAmount: 6998,  taxAmount: 1260,  totalAmount: 8258,  transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 100, multiplierApplied: 0.8, finalIncentive: 80 },
+  { transactionId: 'TX-900392', transactionDate: '2026-04-12', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0045', department: 'Small Appliances', articleCode: 'PHIL-MIXER',     productFamilyCode: 'FI05', brand: 'Philips', productFamily: 'Kitchen Care',    quantity: 1, grossAmount: 4999,  taxAmount: 900,   totalAmount: 5899,  transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 100, multiplierApplied: 0.8, finalIncentive: 80 },
+];
+
+// Sunil the SM has BA-attributed sales under his ID (brief §6.3)
+transactionsByEmployee['EMP-0046'] = [
+  { transactionId: 'TX-900411', transactionDate: '2026-04-13', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0046', department: 'Telecom',          articleCode: 'VIVO-Y28-64GB',  productFamilyCode: 'FK01', brand: 'Vivo',    productFamily: 'Wireless Phone', quantity: 2, grossAmount: 34998, taxAmount: 6300,  totalAmount: 41298, transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 50, multiplierApplied: 0.0, finalIncentive: 0, note: 'BA-attributed · Dept at 75%' },
+  { transactionId: 'TX-900400', transactionDate: '2026-04-12', storeCode: 'RD3675', vertical: 'ELECTRONICS', storeFormat: 'Reliance Digital', employeeId: 'EMP-0046', department: 'Large Appliances', articleCode: 'SAM-REF-Q',      productFamilyCode: 'FJ02', brand: 'Samsung', productFamily: 'Food Preservation', quantity: 1, grossAmount: 44999, taxAmount: 8100,  totalAmount: 53099, transactionType: 'NORMAL', channel: 'OFFLINE', baseIncentive: 150, multiplierApplied: 1.2, finalIncentive: 180, note: 'BA-attributed (Manoj)' },
+];
+
+/**
+ * Store-wide transaction stream for SM view. Flattens all per-employee lists
+ * for a given store and sorts newest first.
+ */
+export function getStoreTransactions(storeCode, employeesList) {
+  const out = [];
+  for (const emp of employeesList) {
+    const rows = transactionsByEmployee[emp.employeeId];
+    if (!rows) continue;
+    for (const tx of rows) {
+      if (tx.storeCode === storeCode) out.push(tx);
+    }
+  }
+  out.sort((a, b) => b.transactionDate.localeCompare(a.transactionDate) || b.transactionId.localeCompare(a.transactionId));
+  return out;
+}

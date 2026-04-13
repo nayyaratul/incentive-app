@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Users, TrendingUp, AlertTriangle, Receipt } from 'lucide-react';
+import { Users, TrendingUp, AlertTriangle } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS, employees } from '../../data/masters';
@@ -15,10 +15,10 @@ import {
   groceryCampaign,
   fnlWeeklyRules,
 } from '../../data/configs';
-import { transactionsByStore } from '../../data/transactions';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import RulesScreen from '../screens/RulesScreen';
+import StoreTransactions from '../screens/StoreTransactions';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import { formatINR } from '../../utils/format';
 
@@ -109,7 +109,6 @@ export default function StoreManagerHome() {
   }, [active, store, storeTeam]);
 
   if (!summary) return null;
-  const txCount = transactionsByStore[store.storeCode] || 0;
 
   return (
     <div className={styles.shell}>
@@ -138,32 +137,7 @@ export default function StoreManagerHome() {
             </>
           )}
 
-          {tab === 'tx' && (
-            <>
-              <div className={`${styles.datemark} rise rise-1`}>
-                <span>Store transactions</span>
-                <span className={styles.line} />
-                <span>{txCount} this month</span>
-              </div>
-              <section className={`${styles.pad} rise rise-2`}>
-                <div className={styles.txPlaceholder}>
-                  <Receipt size={22} strokeWidth={2} />
-                  <div>
-                    <div className={styles.txTitle}>Store-wide transactions</div>
-                    <p className={styles.txBody}>
-                      {txCount.toLocaleString('en-IN')} transactions were recorded at <strong>{store.storeName}</strong> this
-                      month, across {summary.employees.length} staff.
-                    </p>
-                    <p className={styles.txBody}>
-                      A drill-down by article, day, and employee will be surfaced in Phase 2 once the admin portal's
-                      transaction stream is wired in. For now, each employee's own sales log is visible to them via
-                      their <strong>History</strong> tab.
-                    </p>
-                  </div>
-                </div>
-              </section>
-            </>
-          )}
+          {tab === 'tx' && <StoreTransactions storeCode={store.storeCode} />}
 
           {tab === 'home' && (
             <>
