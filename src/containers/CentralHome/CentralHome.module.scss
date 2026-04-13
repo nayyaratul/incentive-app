@@ -332,16 +332,16 @@
 .wfDraft     { background: var(--surface-sunken);  color: var(--text-secondary); border: 1px solid var(--border); }
 .wfRejected  { background: rgba(182, 30, 30, 0.1); color: var(--error);   border: 1px solid rgba(182, 30, 30, 0.3);  }
 
-.makerBadge {
+.readOnlyBadge {
   font-family: 'Geist Mono', monospace;
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 3px 8px;
   border-radius: 999px;
-  background: rgba(200, 32, 46, 0.08);
-  color: var(--brand);
-  border: 1px solid rgba(200, 32, 46, 0.24);
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
   font-weight: 600;
 }
 

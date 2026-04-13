@@ -68,30 +68,30 @@
 }
 
 .active {
-  color: var(--text-primary);
-  background: var(--accent);
+  color: #FFFFFF;
+  background: var(--brand);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    0 6px 14px rgba(255, 107, 0, 0.45);
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 6px 14px rgba(189, 41, 37, 0.45);
 
   &:hover {
-    color: var(--text-primary);
-    background: var(--accent);
+    color: #FFFFFF;
+    background: var(--brand);
   }
 
   .label {
-    color: var(--text-primary);
+    color: #FFFFFF;
     font-weight: 700;
   }
 }
 
 .label {
   font-family: 'Instrument Sans', sans-serif;
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: 0.03em;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.82);
   transition: color var(--dur-fast) var(--ease-out);
 }
 

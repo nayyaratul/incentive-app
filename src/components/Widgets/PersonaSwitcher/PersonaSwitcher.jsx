@@ -3,14 +3,14 @@ import { UserCircle2, X, Check } from 'lucide-react';
 import styles from './PersonaSwitcher.module.scss';
 import { usePersona } from '../../../context/PersonaContext';
 
-const roleOrder = ['SA', 'DM', 'SM', 'BA', 'CENTRAL_MAKER', 'CENTRAL_CHECKER'];
+const roleOrder = ['SA', 'DM', 'SM', 'BA', 'CENTRAL'];
 
 function groupPersonas(personas) {
   const groups = { Employees: [], Management: [], Central: [] };
   for (const p of personas) {
     if (p.role === 'SA' || p.role === 'BA') groups.Employees.push(p);
     else if (p.role === 'DM' || p.role === 'SM') groups.Management.push(p);
-    else groups.Central.push(p);
+    else if (p.role === 'CENTRAL') groups.Central.push(p);
   }
   return groups;
 }

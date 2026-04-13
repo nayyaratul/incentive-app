@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Info, Store, ArrowUpRight } from 'lucide-react';
 import styles from './BrandAssociateHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
@@ -7,9 +7,11 @@ import { electronicsPayoutsRD3675 } from '../../data/payouts';
 import { electronicsActualsRD3675 } from '../../data/configs';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
+import RulesScreen from '../screens/RulesScreen';
 import { formatINR } from '../../utils/format';
 
 export default function BrandAssociateHome() {
+  const [tab, setTab] = useState('home');
   const { active, employee, store } = usePersona();
   const firstName = employee.employeeName.split(' ')[0];
   const sm = employees.find((e) => e.storeCode === store.storeCode && e.role === 'SM');
@@ -23,12 +25,18 @@ export default function BrandAssociateHome() {
 
   return (
     <div className={styles.shell}>
-      <BottomNav active="home" employeeInitial={firstName[0]} />
+      <BottomNav active={tab} role="BA" onNavigate={setTab} />
 
       <div className={styles.layout}>
-        <HeaderBar employeeName={firstName} streak={0} />
+        <HeaderBar
+          employeeName={tab === 'home' ? firstName : null}
+          streak={0}
+          showStreak={false}
+        />
 
         <main className={styles.main}>
+          {tab === 'rules' && <RulesScreen defaultVertical={active.vertical} />}
+          {tab === 'home' && (<>
           <div className={`${styles.datemark} rise rise-1`}>
             <span>Brand Associate · {active.brandRep}</span>
             <span className={styles.line} />
@@ -118,6 +126,7 @@ export default function BrandAssociateHome() {
               </ul>
             </div>
           </section>
+          </>)}
         </main>
       </div>
     </div>

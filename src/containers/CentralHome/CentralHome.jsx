@@ -1,11 +1,12 @@
-import React from 'react';
-import { Flag, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { Flag, CheckCircle2, XCircle } from 'lucide-react';
 import styles from './CentralHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { centralReporting } from '../../data/payouts';
-import { makerCheckerLog, electronicsRuleMeta, groceryCampaign, fnlWeeklyRules, WORKFLOW } from '../../data/configs';
+import { electronicsRuleMeta, groceryCampaign, fnlWeeklyRules } from '../../data/configs';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
+import RulesScreen from '../screens/RulesScreen';
 import { formatINR } from '../../utils/format';
 
 const SEVERITY_ICONS = {
@@ -23,21 +24,103 @@ const WORKFLOW_COLORS = {
 };
 
 export default function CentralHome() {
-  const { active, employee } = usePersona();
+  const [tab, setTab] = useState('home');
+  const { employee } = usePersona();
   const firstName = employee.employeeName.split(' ')[0];
   const cr = centralReporting;
-  const isMaker = active.role === 'CENTRAL_MAKER';
 
   return (
     <div className={styles.shell}>
-      <BottomNav active="home" employeeInitial={firstName[0]} />
+      <BottomNav active={tab} role="CENTRAL" onNavigate={setTab} />
 
       <div className={styles.layout}>
-        <HeaderBar employeeName={firstName} streak={0} />
+        <HeaderBar
+          employeeName={tab === 'home' ? firstName : null}
+          streak={0}
+          showStreak={false}
+        />
 
         <main className={styles.main}>
+          {tab === 'rules' && <RulesScreen defaultVertical="ELECTRONICS" />}
+
+          {tab === 'stores' && (
+            <>
+              <div className={`${styles.datemark} rise rise-1`}>
+                <span>Stores · drill-down</span>
+                <span className={styles.line} />
+                <span>{cr.topStores.length} shown</span>
+              </div>
+              <section className={`${styles.pad} rise rise-2`}>
+                <div className={styles.cardLight}>
+                  <div className={styles.cardHead}>
+                    <span className={styles.eyebrow}>Top stores</span>
+                  </div>
+                  {cr.topStores.map((s, i) => (
+                    <div key={s.storeCode} className={styles.storeRow}>
+                      <div className={styles.storeRank}>#{i + 1}</div>
+                      <div className={styles.storeMid}>
+                        <div className={styles.storeName}>{s.storeName}</div>
+                        <div className={styles.storeMeta}>{s.vertical} · {s.storeCode} · {s.achievementPct}%</div>
+                      </div>
+                      <div className={styles.storePay}>{formatINR(s.payoutMTD)}</div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+              <section className={`${styles.pad} rise rise-3`}>
+                <div className={styles.cardLight}>
+                  <div className={styles.cardHead}>
+                    <span className={styles.eyebrow}>By state</span>
+                  </div>
+                  <div className={styles.stateGrid}>
+                    {cr.byState.map((s) => (
+                      <div key={s.state} className={styles.stateCard}>
+                        <div className={styles.stateName}>{s.state}</div>
+                        <div className={styles.statePay}>{formatINR(s.payoutMTD)}</div>
+                        <div className={styles.stateMeta}>{s.stores} stores</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            </>
+          )}
+
+          {tab === 'alerts' && (
+            <>
+              <div className={`${styles.datemark} rise rise-1`}>
+                <span>Alerts · anomalies</span>
+                <span className={styles.line} />
+                <span>{cr.flags.length} active</span>
+              </div>
+              <section className={`${styles.pad} rise rise-2`}>
+                <div className={styles.cardDark}>
+                  <div className={styles.cardHead}>
+                    <span className={styles.eyebrowLight}>Anomalies</span>
+                  </div>
+                  <div className={styles.flagList}>
+                    {cr.flags.map((f) => {
+                      const Icon = SEVERITY_ICONS[f.severity] || Flag;
+                      return (
+                        <div key={f.id} className={`${styles.flagRow} ${styles[`sev-${f.severity}`]}`}>
+                          <Icon size={14} strokeWidth={2.4} />
+                          <div>
+                            <div className={styles.flagStore}>{f.storeCode} · {f.vertical}</div>
+                            <div className={styles.flagMsg}>{f.message}</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+            </>
+          )}
+
+          {tab === 'home' && (
+            <>
           <div className={`${styles.datemark} rise rise-1`}>
-            <span>Central Ops · {isMaker ? 'Maker' : 'Checker'}</span>
+            <span>Central Reporting · read-only</span>
             <span className={styles.line} />
             <span>As of {new Date(cr.asOf).toLocaleString('en-IN')}</span>
           </div>
@@ -142,14 +225,12 @@ export default function CentralHome() {
             </div>
           </section>
 
-          {/* Rule catalog (read-only summary) */}
+          {/* Rule catalog (read-only summary — Maker/Checker flow lives in admin portal) */}
           <section className={`${styles.pad} rise rise-5`}>
             <div className={styles.cardLight}>
               <div className={styles.cardHead}>
                 <span className={styles.eyebrow}>Active rule catalog</span>
-                <span className={styles.makerBadge}>
-                  {isMaker ? 'You can draft changes' : 'You approve submissions'}
-                </span>
+                <span className={styles.readOnlyBadge}>Read-only</span>
               </div>
               <div className={styles.ruleList}>
                 <RuleRow
@@ -157,7 +238,6 @@ export default function CentralHome() {
                   name={electronicsRuleMeta.name}
                   version={electronicsRuleMeta.version}
                   state={electronicsRuleMeta.workflowState}
-                  draft={electronicsRuleMeta.pendingDraft}
                 />
                 <RuleRow
                   ruleId={groceryCampaign.ruleMeta.ruleId}
@@ -174,40 +254,15 @@ export default function CentralHome() {
               </div>
             </div>
           </section>
-
-          {/* Maker-checker audit log */}
-          <section className={`${styles.pad} rise rise-5`}>
-            <div className={styles.cardLight}>
-              <div className={styles.cardHead}>
-                <span className={styles.eyebrow}>Maker–checker · recent</span>
-                <Clock size={12} strokeWidth={2.2} className={styles.headIcon} />
-              </div>
-              <div className={styles.auditList}>
-                {makerCheckerLog.map((l) => (
-                  <div key={l.id} className={styles.auditRow}>
-                    <span className={`${styles.wfChip} ${WORKFLOW_COLORS[l.event] || ''}`}>{l.event}</span>
-                    <div className={styles.auditMid}>
-                      <div className={styles.auditRule}>{l.ruleId} · v{l.version}</div>
-                      <div className={styles.auditNote}>{l.note}</div>
-                    </div>
-                    <div className={styles.auditMeta}>
-                      <div>{l.actor}</div>
-                      <div className={styles.auditTime}>
-                        {new Date(l.at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+            </>
+          )}
         </main>
       </div>
     </div>
   );
 }
 
-function RuleRow({ ruleId, name, version, state, draft }) {
+function RuleRow({ ruleId, name, version, state }) {
   return (
     <div className={styles.ruleRow}>
       <div className={styles.ruleLeft}>
@@ -216,11 +271,6 @@ function RuleRow({ ruleId, name, version, state, draft }) {
       </div>
       <div className={styles.ruleRight}>
         <span className={`${styles.wfChip} ${WORKFLOW_COLORS[state] || ''}`}>{state}</span>
-        {draft && (
-          <span className={`${styles.wfChip} ${WORKFLOW_COLORS[draft.workflowState] || ''}`}>
-            v{draft.version} {draft.workflowState}
-          </span>
-        )}
       </div>
     </div>
   );

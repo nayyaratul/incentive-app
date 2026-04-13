@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Users, TrendingUp, AlertTriangle } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Users, TrendingUp, AlertTriangle, Receipt } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS, employees } from '../../data/masters';
@@ -15,16 +15,15 @@ import {
   groceryCampaign,
   fnlWeeklyRules,
 } from '../../data/configs';
+import { transactionsByStore } from '../../data/transactions';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
+import RulesScreen from '../screens/RulesScreen';
 import { formatINR } from '../../utils/format';
 
 function sumTarget(code, targets) {
-  // Department target = sum of family targets
   const byDept = {};
-  targets.forEach((t) => {
-    byDept[t.department] = (byDept[t.department] || 0) + t.monthlyTarget;
-  });
+  targets.forEach((t) => { byDept[t.department] = (byDept[t.department] || 0) + t.monthlyTarget; });
   return byDept;
 }
 
@@ -34,12 +33,12 @@ function findMultiplier(pct) {
 }
 
 export default function StoreManagerHome() {
+  const [tab, setTab] = useState('home');
   const { active, employee, store } = usePersona();
   const firstName = employee.employeeName.split(' ')[0];
 
   const storeTeam = employees.filter((e) => e.storeCode === store.storeCode);
 
-  // Build store-level summary per vertical
   const summary = useMemo(() => {
     if (active.vertical === VERTICALS.ELECTRONICS) {
       const targets = sumTarget(store.storeCode, electronicsTargetsRD3675);
@@ -51,14 +50,10 @@ export default function StoreManagerHome() {
       );
       return {
         kind: 'ELECTRONICS',
-        totalTarget,
-        totalActual,
-        totalPayout,
+        totalTarget, totalActual, totalPayout,
         achievementPct: Math.round((totalActual / totalTarget) * 100),
         departments: electronicsActualsRD3675.map((d) => ({
-          ...d,
-          target: targets[d.department] || 0,
-          multiplier: findMultiplier(d.achievementPct),
+          ...d, target: targets[d.department] || 0, multiplier: findMultiplier(d.achievementPct),
         })),
         employees: electronicsPayoutsRD3675.map((emp) => {
           const e = storeTeam.find((x) => x.employeeId === emp.employeeId);
@@ -68,8 +63,7 @@ export default function StoreManagerHome() {
             employeeName: e?.employeeName || emp.employeeId,
             role: e?.role || '—',
             payrollStatus: e?.payrollStatus || 'ACTIVE',
-            total,
-            ineligible: !!emp.ineligibleReason,
+            total, ineligible: !!emp.ineligibleReason,
           };
         }),
       };
@@ -77,22 +71,14 @@ export default function StoreManagerHome() {
     if (active.vertical === VERTICALS.GROCERY) {
       const p = groceryPayoutT28V;
       const allEmployees = storeTeam.map((e) => ({
-        employeeId: e.employeeId,
-        employeeName: e.employeeName,
-        role: e.role,
-        payrollStatus: e.payrollStatus,
-        total: p.individualPayout,
-        ineligible: false,
+        employeeId: e.employeeId, employeeName: e.employeeName, role: e.role,
+        payrollStatus: e.payrollStatus, total: p.individualPayout, ineligible: false,
       }));
       return {
-        kind: 'GROCERY',
-        campaign: groceryCampaign,
-        totalTarget: p.targetSalesValue,
-        totalActual: p.actualSalesValue,
-        totalPayout: p.totalStoreIncentive,
-        achievementPct: p.achievementPct,
-        employees: allEmployees,
-        projections: p.projections,
+        kind: 'GROCERY', campaign: groceryCampaign,
+        totalTarget: p.targetSalesValue, totalActual: p.actualSalesValue,
+        totalPayout: p.totalStoreIncentive, achievementPct: p.achievementPct,
+        employees: allEmployees, projections: p.projections,
       };
     }
     if (active.vertical === VERTICALS.FNL) {
@@ -111,176 +97,224 @@ export default function StoreManagerHome() {
         };
       });
       return {
-        kind: 'FNL',
-        week: { start: p.weekStart, end: p.weekEnd },
-        totalTarget: p.weeklySalesTarget,
-        totalActual: p.actualWeeklyGrossSales,
+        kind: 'FNL', week: { start: p.weekStart, end: p.weekEnd },
+        totalTarget: p.weeklySalesTarget, totalActual: p.actualWeeklyGrossSales,
         totalPayout: p.totalStoreIncentive,
         achievementPct: Math.round((p.actualWeeklyGrossSales / p.weeklySalesTarget) * 100),
-        storeQualifies: p.storeQualifies,
-        employees: allEmployees,
+        storeQualifies: p.storeQualifies, employees: allEmployees,
       };
     }
     return null;
   }, [active, store, storeTeam]);
 
   if (!summary) return null;
+  const txCount = transactionsByStore[store.storeCode] || 0;
 
   return (
     <div className={styles.shell}>
-      <BottomNav active="home" employeeInitial={firstName[0]} />
+      <BottomNav active={tab} role="SM" onNavigate={setTab} />
 
       <div className={styles.layout}>
-        <HeaderBar employeeName={firstName} streak={0} />
+        <HeaderBar
+          employeeName={tab === 'home' ? firstName : null}
+          streak={0}
+          showStreak={false}
+        />
 
         <main className={styles.main}>
-          <div className={`${styles.datemark} rise rise-1`}>
-            <span>Store Manager · {store.storeName}</span>
-            <span className={styles.line} />
-            <span>{active.vertical}</span>
-          </div>
+          {tab === 'rules' && <RulesScreen defaultVertical={active.vertical} />}
 
-          {/* Store hero */}
-          <section className={`${styles.pad} rise rise-2`}>
-            <div className={styles.storeHero}>
-              <div className={styles.heroEyebrow}>
-                {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
-                {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${summary.campaign.campaignStart} → ${summary.campaign.campaignEnd}`}
-                {summary.kind === 'FNL' && `Week · ${summary.week.start} → ${summary.week.end}`}
+          {tab === 'team' && (
+            <>
+              <div className={`${styles.datemark} rise rise-1`}>
+                <span>Team · {store.storeName}</span>
+                <span className={styles.line} />
+                <span>{summary.employees.length} staff</span>
               </div>
-
-              <div className={styles.heroRow}>
-                <div>
-                  <div className={styles.bigPct}>{summary.achievementPct}<span className={styles.sign}>%</span></div>
-                  <div className={styles.bigCap}>of store {summary.kind === 'FNL' ? 'weekly' : 'period'} target</div>
-                </div>
-                <div className={styles.heroDivider} />
-                <div>
-                  <div className={styles.miniFig}>{formatINR(summary.totalActual)}</div>
-                  <div className={styles.miniCap}>of {formatINR(summary.totalTarget)}</div>
-                </div>
-              </div>
-
-              <div className={styles.payoutRow}>
-                <div>
-                  <div className={styles.payoutLabel}>Total store payout</div>
-                  <div className={styles.payoutValue}>{formatINR(summary.totalPayout)}</div>
-                </div>
-                <div className={styles.teamNote}>
-                  <Users size={11} strokeWidth={2.2} />
-                  <span>{summary.employees.length} staff</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Electronics: department multipliers applied to each dept */}
-          {summary.kind === 'ELECTRONICS' && (
-            <section className={`${styles.pad} rise rise-3`}>
-              <div className={styles.cardDark}>
-                <div className={styles.cardHead}>
-                  <span className={styles.eyebrow}>Department multipliers</span>
-                </div>
-                <div className={styles.deptList}>
-                  {summary.departments.map((d) => {
-                    const mPct = Math.round(d.multiplier * 100);
-                    return (
-                      <div key={d.department} className={styles.deptRow}>
-                        <div>
-                          <div className={styles.deptName}>{d.department}</div>
-                          <div className={styles.deptSub}>{formatINR(d.actualSales)} of {formatINR(d.target)}</div>
-                        </div>
-                        <div className={styles.deptAch}>{d.achievementPct}%</div>
-                        <div className={`${styles.deptMult} ${d.multiplier === 0 ? styles.multZero : ''}`}>
-                          {d.multiplier === 0 ? 'NO PAYOUT' : `${mPct}%`}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
+              <section className={`${styles.pad} rise rise-2`}>
+                <TeamRoster summary={summary} />
+              </section>
+            </>
           )}
 
-          {/* F&L: qualification flag */}
-          {summary.kind === 'FNL' && !summary.storeQualifies && (
-            <section className={`${styles.pad} rise rise-3`}>
-              <div className={styles.notice}>
-                <AlertTriangle size={14} strokeWidth={2.4} />
-                <div>
-                  <div className={styles.noticeTitle}>Store didn't beat target</div>
-                  <div className={styles.noticeBody}>Per §8.6, no payout this week for any role. Gap: {formatINR(summary.totalTarget - summary.totalActual)}.</div>
-                </div>
+          {tab === 'tx' && (
+            <>
+              <div className={`${styles.datemark} rise rise-1`}>
+                <span>Store transactions</span>
+                <span className={styles.line} />
+                <span>{txCount} this month</span>
               </div>
-            </section>
-          )}
-
-          {/* Grocery projections */}
-          {summary.kind === 'GROCERY' && (
-            <section className={`${styles.pad} rise rise-3`}>
-              <div className={styles.cardDark}>
-                <div className={styles.cardHead}>
-                  <span className={styles.eyebrow}>Projections · per employee</span>
-                </div>
-                <div className={styles.projList}>
-                  {summary.projections.map((p) => (
-                    <div key={p.scenario} className={styles.projRow}>
-                      <span className={styles.projName}>{p.scenario}</span>
-                      <span className={styles.projRate}>₹{p.rate}/pc</span>
-                      <span className={styles.projTotal}>{formatINR(p.estPerEmployee)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
-
-          {/* Team roster with individual payouts */}
-          <section className={`${styles.pad} rise rise-4`}>
-            <div className={styles.cardLight}>
-              <div className={styles.cardHead}>
-                <span className={styles.eyebrow}>Team · {summary.employees.length}</span>
-                <span className={styles.headSub}>
-                  <TrendingUp size={10} strokeWidth={2.4} />
-                  Individual payouts
-                </span>
-              </div>
-              <div className={styles.rosterList}>
-                {summary.employees.map((e) => (
-                  <div key={e.employeeId} className={`${styles.rosterRow} ${e.ineligible ? styles.rosterInelig : ''}`}>
-                    <div className={styles.rosterLeft}>
-                      <span className={styles.rosterRole}>{e.role}</span>
-                      <span className={styles.rosterName}>{e.employeeName}</span>
-                      {e.payrollStatus !== 'ACTIVE' && (
-                        <span className={styles.rosterStatus}>{e.payrollStatus.replace(/_/g, ' ')}</span>
-                      )}
-                      {typeof e.daysPresent === 'number' && (
-                        <span className={styles.rosterDays}>{e.daysPresent}/7 days</span>
-                      )}
-                    </div>
-                    <span className={styles.rosterPayout}>
-                      {e.ineligible ? '—' : formatINR(e.total)}
-                    </span>
+              <section className={`${styles.pad} rise rise-2`}>
+                <div className={styles.txPlaceholder}>
+                  <Receipt size={22} strokeWidth={2} />
+                  <div>
+                    <div className={styles.txTitle}>Store-wide transactions</div>
+                    <p className={styles.txBody}>
+                      {txCount.toLocaleString('en-IN')} transactions were recorded at <strong>{store.storeName}</strong> this
+                      month, across {summary.employees.length} staff.
+                    </p>
+                    <p className={styles.txBody}>
+                      A drill-down by article, day, and employee will be surfaced in Phase 2 once the admin portal's
+                      transaction stream is wired in. For now, each employee's own sales log is visible to them via
+                      their <strong>History</strong> tab.
+                    </p>
                   </div>
-                ))}
-              </div>
-            </div>
-          </section>
+                </div>
+              </section>
+            </>
+          )}
 
-          {/* Compliance footer */}
-          <section className={`${styles.pad} rise rise-5`}>
-            <div className={styles.complianceCard}>
-              <div className={styles.complianceHead}><span>Store eligibility</span></div>
-              <ul>
-                <li><span>Store code</span><strong>{store.storeCode}</strong></li>
-                <li><span>Format</span><strong>{store.storeFormat}</strong></li>
-                <li><span>City · State</span><strong>{store.city}, {store.state}</strong></li>
-                <li><span>Status</span><strong>{store.storeStatus}</strong></li>
-                <li><span>Operational days (month)</span><strong>{store.operationalDaysInMonth} / 30</strong></li>
-              </ul>
-            </div>
-          </section>
+          {tab === 'home' && (
+            <>
+              <div className={`${styles.datemark} rise rise-1`}>
+                <span>Store Manager · {store.storeName}</span>
+                <span className={styles.line} />
+                <span>{active.vertical}</span>
+              </div>
+
+              <section className={`${styles.pad} rise rise-2`}>
+                <div className={styles.storeHero}>
+                  <div className={styles.heroEyebrow}>
+                    {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
+                    {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${summary.campaign.campaignStart} → ${summary.campaign.campaignEnd}`}
+                    {summary.kind === 'FNL' && `Week · ${summary.week.start} → ${summary.week.end}`}
+                  </div>
+
+                  <div className={styles.heroRow}>
+                    <div>
+                      <div className={styles.bigPct}>{summary.achievementPct}<span className={styles.sign}>%</span></div>
+                      <div className={styles.bigCap}>of store {summary.kind === 'FNL' ? 'weekly' : 'period'} target</div>
+                    </div>
+                    <div className={styles.heroDivider} />
+                    <div>
+                      <div className={styles.miniFig}>{formatINR(summary.totalActual)}</div>
+                      <div className={styles.miniCap}>of {formatINR(summary.totalTarget)}</div>
+                    </div>
+                  </div>
+
+                  <div className={styles.payoutRow}>
+                    <div>
+                      <div className={styles.payoutLabel}>Total store payout</div>
+                      <div className={styles.payoutValue}>{formatINR(summary.totalPayout)}</div>
+                    </div>
+                    <div className={styles.teamNote}>
+                      <Users size={12} strokeWidth={2.2} />
+                      <span>{summary.employees.length} staff</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {summary.kind === 'ELECTRONICS' && (
+                <section className={`${styles.pad} rise rise-3`}>
+                  <div className={styles.cardDark}>
+                    <div className={styles.cardHead}>
+                      <span className={styles.eyebrow}>Department multipliers</span>
+                    </div>
+                    <div className={styles.deptList}>
+                      {summary.departments.map((d) => {
+                        const mPct = Math.round(d.multiplier * 100);
+                        return (
+                          <div key={d.department} className={styles.deptRow}>
+                            <div>
+                              <div className={styles.deptName}>{d.department}</div>
+                              <div className={styles.deptSub}>{formatINR(d.actualSales)} of {formatINR(d.target)}</div>
+                            </div>
+                            <div className={styles.deptAch}>{d.achievementPct}%</div>
+                            <div className={`${styles.deptMult} ${d.multiplier === 0 ? styles.multZero : ''}`}>
+                              {d.multiplier === 0 ? 'NO PAYOUT' : `${mPct}%`}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {summary.kind === 'FNL' && !summary.storeQualifies && (
+                <section className={`${styles.pad} rise rise-3`}>
+                  <div className={styles.notice}>
+                    <AlertTriangle size={14} strokeWidth={2.4} />
+                    <div>
+                      <div className={styles.noticeTitle}>Store didn't beat target</div>
+                      <div className={styles.noticeBody}>Per §8.6, no payout this week for any role. Gap: {formatINR(summary.totalTarget - summary.totalActual)}.</div>
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {summary.kind === 'GROCERY' && (
+                <section className={`${styles.pad} rise rise-3`}>
+                  <div className={styles.cardDark}>
+                    <div className={styles.cardHead}>
+                      <span className={styles.eyebrow}>Projections · per employee</span>
+                    </div>
+                    <div className={styles.projList}>
+                      {summary.projections.map((p) => (
+                        <div key={p.scenario} className={styles.projRow}>
+                          <span className={styles.projName}>{p.scenario}</span>
+                          <span className={styles.projRate}>₹{p.rate}/pc</span>
+                          <span className={styles.projTotal}>{formatINR(p.estPerEmployee)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              <section className={`${styles.pad} rise rise-4`}>
+                <TeamRoster summary={summary} />
+              </section>
+
+              <section className={`${styles.pad} rise rise-5`}>
+                <div className={styles.complianceCard}>
+                  <div className={styles.complianceHead}><span>Store eligibility</span></div>
+                  <ul>
+                    <li><span>Store code</span><strong>{store.storeCode}</strong></li>
+                    <li><span>Format</span><strong>{store.storeFormat}</strong></li>
+                    <li><span>City · State</span><strong>{store.city}, {store.state}</strong></li>
+                    <li><span>Status</span><strong>{store.storeStatus}</strong></li>
+                    <li><span>Operational days (month)</span><strong>{store.operationalDaysInMonth} / 30</strong></li>
+                  </ul>
+                </div>
+              </section>
+            </>
+          )}
         </main>
+      </div>
+    </div>
+  );
+}
+
+function TeamRoster({ summary }) {
+  return (
+    <div className={styles.cardLight}>
+      <div className={styles.cardHead}>
+        <span className={styles.eyebrow}>Team · {summary.employees.length}</span>
+        <span className={styles.headSub}>
+          <TrendingUp size={11} strokeWidth={2.4} />
+          Individual payouts
+        </span>
+      </div>
+      <div className={styles.rosterList}>
+        {summary.employees.map((e) => (
+          <div key={e.employeeId} className={`${styles.rosterRow} ${e.ineligible ? styles.rosterInelig : ''}`}>
+            <div className={styles.rosterLeft}>
+              <span className={styles.rosterRole}>{e.role}</span>
+              <span className={styles.rosterName}>{e.employeeName}</span>
+              {e.payrollStatus !== 'ACTIVE' && (
+                <span className={styles.rosterStatus}>{e.payrollStatus.replace(/_/g, ' ')}</span>
+              )}
+              {typeof e.daysPresent === 'number' && (
+                <span className={styles.rosterDays}>{e.daysPresent}/7 days</span>
+              )}
+            </div>
+            <span className={styles.rosterPayout}>
+              {e.ineligible ? '—' : formatINR(e.total)}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );

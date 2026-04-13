@@ -97,27 +97,19 @@ export const personas = [
     color: 'navy',
   },
   {
-    id: 'p-rashmi-central-maker',
+    id: 'p-rashmi-central-reporting',
     employeeId: 'OPS-0001',
     employeeName: 'Rashmi Iyer',
-    role: 'CENTRAL_MAKER',
+    role: 'CENTRAL',
     vertical: null,
     storeCode: null,
-    badge: 'Central Ops · Maker',
-    tagline: 'Creates incentive configs, target uploads',
-    color: 'crimson',
-  },
-  {
-    id: 'p-vikas-central-checker',
-    employeeId: 'OPS-0002',
-    employeeName: 'Vikas Chauhan',
-    role: 'CENTRAL_CHECKER',
-    vertical: null,
-    storeCode: null,
-    badge: 'Central Ops · Checker',
-    tagline: 'Approves or rejects submitted configs',
+    badge: 'Central Reporting',
+    tagline: 'Read-only org-level dashboards, vertical & store drill-down',
     color: 'navy',
   },
 ];
+
+// Note: Maker & Checker personas live in the Reliance admin portal, not in this
+// employee-facing app. They were removed per user request.
 
 export const DEFAULT_PERSONA_ID = 'p-rohit-sa-electronics';

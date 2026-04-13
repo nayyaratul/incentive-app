@@ -18,7 +18,7 @@ export default function RootRouter() {
 
   if (role === 'SM') return <StoreManagerHome />;
   if (role === 'BA') return <BrandAssociateHome />;
-  if (role === 'CENTRAL_MAKER' || role === 'CENTRAL_CHECKER') return <CentralHome />;
+  if (role === 'CENTRAL') return <CentralHome />;
   // SA / DM both see the employee home; internally it reacts to vertical
   return <EmployeeHome />;
 }

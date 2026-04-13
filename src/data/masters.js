@@ -128,6 +128,17 @@ export const stores = [
     operationalSince: '2020-11-10',
     operationalDaysInMonth: 28,
   },
+  {
+    storeCode: 'TEX0109',
+    storeName: 'Trends Extension, Thrissur',
+    vertical: VERTICALS.FNL,
+    storeFormat: 'Trends Extension',
+    state: 'Kerala',
+    city: 'Thrissur',
+    storeStatus: STORE_STATUS.ACTIVE,
+    operationalSince: '2022-10-04',
+    operationalDaysInMonth: 28,
+  },
 ];
 
 // ---------- EMPLOYEE MASTER ----------

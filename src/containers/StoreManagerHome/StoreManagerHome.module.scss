@@ -349,6 +349,40 @@
   font-weight: 600;
   margin-bottom: 8px;
 }
+/* SM transactions placeholder tab */
+.txPlaceholder {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  > svg {
+    color: var(--brand);
+    margin-top: 2px;
+  }
+}
+.txTitle {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 600;
+  font-size: 18px;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.txBody {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+
+  strong { color: var(--text-primary); font-weight: 700; }
+
+  &:last-child { margin-bottom: 0; }
+}
+
 .complianceCard ul { list-style: none; padding: 0; margin: 0; }
 .complianceCard li {
   display: flex;
