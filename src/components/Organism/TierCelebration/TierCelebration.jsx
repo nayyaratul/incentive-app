@@ -41,12 +41,30 @@ export default function TierCelebration({ open, tier, onDismiss }) {
       {/* Halo glow behind the card — scales with intensity */}
       {cfg.halo && <div className={`${styles.halo} ${styles[`halo-${cfg.halo}`]}`} aria-hidden="true" />}
 
-      {/* Concentric ring burst for top-tier moments (100%+) */}
-      {cfg.rings && (
+      {/* Ring burst — count varies by tier (1 ring at 80%, 3 at 100%+) */}
+      {cfg.rings > 0 && (
         <div className={styles.ringLayer} aria-hidden="true">
-          <span className={styles.ring} style={{ animationDelay: '0ms' }} />
-          <span className={styles.ring} style={{ animationDelay: '200ms' }} />
-          <span className={styles.ring} style={{ animationDelay: '400ms' }} />
+          {Array.from({ length: cfg.rings }).map((_, i) => (
+            <span key={i} className={styles.ring} style={{ animationDelay: `${i * 200}ms` }} />
+          ))}
+        </div>
+      )}
+
+      {/* Continuous gold sparkles for bonus / top tiers */}
+      {cfg.sparkles && (
+        <div className={styles.sparkleLayer} aria-hidden="true">
+          {Array.from({ length: 14 }).map((_, i) => (
+            <span
+              key={i}
+              className={styles.sparkle}
+              style={{
+                '--left':  `${10 + Math.random() * 80}%`,
+                '--top':   `${10 + Math.random() * 80}%`,
+                '--delay': `${i * 110}ms`,
+                '--size':  `${6 + (i % 4) * 3}px`,
+              }}
+            />
+          ))}
         </div>
       )}
 
@@ -125,18 +143,32 @@ function Wave({ count, delayBase, palette, maxDistance }) {
 }
 
 // ---------- Tuning per intensity level ----------
+// Each tier has its own *character* (color theme + special layers), not just
+// 'more confetti'. Every celebratory tier carries: halo + confetti + pulse.
+// The ladder differentiates via WHAT layers are present, not whether they are.
 
-const PALETTE_LIGHT  = ['#0F7A3A', '#0F7A3A', '#0F7A3A', '#0F7A3A'];                       // green only
-const PALETTE_MED    = ['#0F7A3A', '#BD2925', '#0F7A3A', '#BD2925'];                       // green + red
-const PALETTE_BIG    = ['#FFC233', '#0F7A3A', '#BD2925', '#FFC233'];                       // gold + green + red
-const PALETTE_MAX    = ['#FFC233', '#FFB703', '#0F7A3A', '#BD2925', '#2F427D', '#FFC233']; // gold heavy + brand
+const PALETTE_GREEN  = ['#0F7A3A', '#37A85B', '#0F7A3A', '#7CC487', '#0F7A3A']; // 50% — relief / unlock
+const PALETTE_AMBER  = ['#FFA833', '#FFC233', '#0F7A3A', '#FF8B1A', '#FFC233']; // 80% — climbing / warming up
+const PALETTE_GOLD   = ['#FFC233', '#0F7A3A', '#BD2925', '#FFB703', '#FFC233']; // 100% — triumph
+const PALETTE_RICH   = ['#FFC233', '#FFB703', '#FFC233', '#BD2925', '#FFC233', '#0F7A3A']; // 110% — bonus
+const PALETTE_MAX    = ['#FFC233', '#FFB703', '#0F7A3A', '#BD2925', '#2F427D', '#FFC233', '#FFB703']; // 120% — full
 const STREAMER_PALETTE = ['#FFC233', '#FFB703', '#BD2925', '#FFC233', '#0F7A3A'];
 
 const INTENSITY = {
-  0: { pieces: 0,  waves: 0, duration: 600,  halo: null,     rings: false, streamers: false, pulse: false, distance: 0,   palette: [],            cardSize: null,    iconSize: 22 },
-  1: { pieces: 18, waves: 1, duration: 1400, halo: null,     rings: false, streamers: false, pulse: false, distance: 240, palette: PALETTE_LIGHT, cardSize: null,    iconSize: 22 }, // 50%
-  2: { pieces: 32, waves: 1, duration: 1700, halo: 'soft',   rings: false, streamers: false, pulse: false, distance: 280, palette: PALETTE_MED,   cardSize: null,    iconSize: 22 }, // 80%
-  3: { pieces: 60, waves: 2, duration: 2300, halo: 'medium', rings: true,  streamers: false, pulse: true,  distance: 340, palette: PALETTE_BIG,   cardSize: 'big',   iconSize: 26 }, // 100%
-  4: { pieces: 80, waves: 2, duration: 2500, halo: 'bright', rings: true,  streamers: false, pulse: true,  distance: 380, palette: PALETTE_BIG,   cardSize: 'big',   iconSize: 28 }, // 110%
-  5: { pieces: 110, waves: 3, duration: 2800, halo: 'max',   rings: true,  streamers: true,  pulse: true,  distance: 440, palette: PALETTE_MAX,   cardSize: 'max',   iconSize: 30 }, // 120%
+  0: { pieces: 0,   waves: 0, duration: 600,  halo: null,           rings: 0, sparkles: false, streamers: false, pulse: false, distance: 0,   palette: [],           cardSize: null,  iconSize: 22 },
+
+  // 50% — Green / "back in the game"
+  1: { pieces: 30,  waves: 1, duration: 1700, halo: 'green-soft',   rings: 0, sparkles: false, streamers: false, pulse: true,  distance: 280, palette: PALETTE_GREEN, cardSize: null,  iconSize: 24 },
+
+  // 80% — Amber / "climbing"
+  2: { pieces: 48,  waves: 1, duration: 2000, halo: 'amber',        rings: 1, sparkles: false, streamers: false, pulse: true,  distance: 320, palette: PALETTE_AMBER, cardSize: 'big', iconSize: 26 },
+
+  // 100% — Gold / "target hit"
+  3: { pieces: 70,  waves: 2, duration: 2400, halo: 'gold',         rings: 3, sparkles: false, streamers: false, pulse: true,  distance: 360, palette: PALETTE_GOLD,  cardSize: 'big', iconSize: 28 },
+
+  // 110% — Gold-rich / "bonus"
+  4: { pieces: 90,  waves: 2, duration: 2600, halo: 'gold-bright',  rings: 3, sparkles: true,  streamers: false, pulse: true,  distance: 400, palette: PALETTE_RICH,  cardSize: 'big', iconSize: 30 },
+
+  // 120% — Max / "legendary"
+  5: { pieces: 120, waves: 3, duration: 2900, halo: 'max',          rings: 3, sparkles: true,  streamers: true,  pulse: true,  distance: 460, palette: PALETTE_MAX,   cardSize: 'max', iconSize: 32 },
 };

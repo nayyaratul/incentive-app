@@ -30,25 +30,35 @@
   animation: haloExpand 1500ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
 
-.halo-soft {
-  width: 420px;
-  height: 420px;
-  background: radial-gradient(circle, rgba(15, 122, 58, 0.32) 0%, transparent 65%);
+/* 50% — soft green relief glow */
+.halo-green-soft {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(55, 168, 91, 0.42) 0%, rgba(15, 122, 58, 0.18) 45%, transparent 70%);
 }
-.halo-medium {
-  width: 560px;
-  height: 560px;
-  background: radial-gradient(circle, rgba(255, 195, 51, 0.42) 0%, rgba(15, 122, 58, 0.18) 50%, transparent 70%);
+/* 80% — amber climbing glow */
+.halo-amber {
+  width: 580px;
+  height: 580px;
+  background: radial-gradient(circle, rgba(255, 168, 51, 0.5) 0%, rgba(255, 195, 51, 0.22) 40%, transparent 70%);
 }
-.halo-bright {
-  width: 700px;
-  height: 700px;
-  background: radial-gradient(circle, rgba(255, 195, 51, 0.55) 0%, rgba(189, 41, 37, 0.18) 50%, transparent 72%);
+/* 100% — gold target halo */
+.halo-gold {
+  width: 660px;
+  height: 660px;
+  background: radial-gradient(circle, rgba(255, 195, 51, 0.55) 0%, rgba(15, 122, 58, 0.18) 45%, transparent 70%);
 }
+/* 110% — bright gold-leaning halo */
+.halo-gold-bright {
+  width: 760px;
+  height: 760px;
+  background: radial-gradient(circle, rgba(255, 195, 51, 0.65) 0%, rgba(255, 183, 3, 0.32) 32%, rgba(189, 41, 37, 0.16) 60%, transparent 75%);
+}
+/* 120% — max multi-color halo */
 .halo-max {
-  width: 880px;
-  height: 880px;
-  background: radial-gradient(circle, rgba(255, 195, 51, 0.7) 0%, rgba(189, 41, 37, 0.22) 40%, rgba(47, 66, 125, 0.12) 65%, transparent 75%);
+  width: 920px;
+  height: 920px;
+  background: radial-gradient(circle, rgba(255, 195, 51, 0.75) 0%, rgba(255, 183, 3, 0.4) 28%, rgba(189, 41, 37, 0.22) 50%, rgba(47, 66, 125, 0.14) 68%, transparent 78%);
 }
 
 @keyframes haloExpand {
@@ -80,6 +90,12 @@
 
 .kind-top .ring { border-color: #FFC233; }
 .kind-up  .ring { border-color: var(--success); }
+
+/* Per-intensity ring colours so 80% (amber) ≠ 100%+ (gold) */
+.intensity-2 .ring { border-color: #FFA833; }   /* amber */
+.intensity-3 .ring,
+.intensity-4 .ring,
+.intensity-5 .ring { border-color: #FFC233; }   /* gold */
 
 @keyframes ringPulse {
   0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0.3); border-width: 4px; }
@@ -268,6 +284,37 @@
   }
 }
 
+/* ---------- Sparkles (110%+ — continuous gold glints) ---------- */
+.sparkleLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  top: var(--top, 50%);
+  left: var(--left, 50%);
+  width: var(--size, 8px);
+  height: var(--size, 8px);
+  transform: translate(-50%, -50%) rotate(45deg) scale(0);
+  background: linear-gradient(135deg, #FFE99A 0%, #FFC233 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(255, 195, 51, 0.65);
+  opacity: 0;
+  animation: sparkleTwinkle 1700ms cubic-bezier(0.4, 1.6, 0.5, 1) forwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes sparkleTwinkle {
+  0%   { opacity: 0; transform: translate(-50%, -50%) rotate(45deg) scale(0); }
+  20%  { opacity: 1; transform: translate(-50%, -50%) rotate(45deg) scale(1.4); }
+  40%  { opacity: 0.9; transform: translate(-50%, -50%) rotate(135deg) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) rotate(225deg) scale(0.4); }
+}
+
 /* ---------- Streamers (top tier only) ---------- */
 .streamerLayer {
   position: absolute;
@@ -298,6 +345,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .confetto, .streamer, .ring, .halo { display: none; }
+  .confetto, .streamer, .ring, .halo, .sparkle { display: none; }
   .card, .bigPctPulse { animation: none; }
 }
