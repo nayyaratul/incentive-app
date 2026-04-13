@@ -121,72 +121,35 @@ function framingFor(targetMult, currentMult, dept) {
     : `Up from ${currentPct}%.`;
 
   if (targetMult === 0) {
-    return {
-      kind: 'down',
-      eyebrow: 'Payout paused',
-      title: `${dept} below threshold`,
-      multiplier: '0%',
-      dept,
-      note: 'Department dropped below 85% of target. No payout this period until it recovers.',
-    };
+    return { kind: 'down', intensity: 0,
+      eyebrow: 'Payout paused', title: `${dept} below threshold`, multiplier: '0%', dept,
+      note: 'Department dropped below 85% of target. No payout this period until it recovers.' };
   }
   if (targetMult === 0.50) {
-    return {
-      kind: 'up',
-      eyebrow: 'Payout unlocked',
-      title: 'First tier crossed',
-      multiplier: '50%',
-      dept,
-      note: `Your ${dept} sales now pay at 50%. ${fromNote}`,
-    };
+    return { kind: 'up', intensity: 1,
+      eyebrow: 'Payout unlocked', title: 'First tier crossed', multiplier: '50%', dept,
+      note: `Your ${dept} sales now pay at 50%. ${fromNote}` };
   }
   if (targetMult === 0.80) {
-    return {
-      kind: 'up',
-      eyebrow: 'Tier up',
-      title: '80% payout band',
-      multiplier: '80%',
-      dept,
-      note: `Your ${dept} sales now pay at 80%. ${fromNote}`,
-    };
+    return { kind: 'up', intensity: 2,
+      eyebrow: 'Tier up', title: '80% payout band', multiplier: '80%', dept,
+      note: `Your ${dept} sales now pay at 80%. ${fromNote}` };
   }
   if (targetMult === 1.00) {
-    return {
-      kind: 'top',
-      eyebrow: 'Target hit',
-      title: 'Full payout',
-      multiplier: '100%',
-      dept,
-      note: `${dept} reached its monthly target. Sales pay at the full rate.`,
-    };
+    return { kind: 'top', intensity: 3,
+      eyebrow: 'Target hit', title: 'Full payout', multiplier: '100%', dept,
+      note: `${dept} reached its monthly target. Sales pay at the full rate.` };
   }
   if (targetMult === 1.10) {
-    return {
-      kind: 'top',
-      eyebrow: 'Bonus tier',
-      title: 'Above target',
-      multiplier: '110%',
-      dept,
-      note: `${dept} is over target. Your incentive scales by 1.10×.`,
-    };
+    return { kind: 'top', intensity: 4,
+      eyebrow: 'Bonus tier', title: 'Above target', multiplier: '110%', dept,
+      note: `${dept} is over target. Your incentive scales by 1.10×.` };
   }
   if (targetMult === 1.20) {
-    return {
-      kind: 'top',
-      eyebrow: 'Top tier',
-      title: 'Above 120%',
-      multiplier: '120%',
-      dept,
-      note: `${dept} is at the top tier. Your incentive scales by 1.20× — the highest band.`,
-    };
+    return { kind: 'top', intensity: 5,
+      eyebrow: 'Top tier', title: 'Legendary · above 120%', multiplier: '120%', dept,
+      note: `${dept} is at the top tier. Your incentive scales by 1.20× — the highest band.` };
   }
-  // Fallback (shouldn't occur with brief's defined values)
-  return {
-    kind: 'up',
-    eyebrow: 'Tier change',
-    title: 'New band',
-    multiplier: `${targetPct}%`,
-    dept,
-    note: '',
-  };
+  return { kind: 'up', intensity: 1,
+    eyebrow: 'Tier change', title: 'New band', multiplier: `${targetPct}%`, dept, note: '' };
 }

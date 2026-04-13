@@ -17,10 +17,80 @@
   to   { opacity: 1; }
 }
 
+/* ---------- Halo (radial glow behind the card) ---------- */
+.halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.4);
+  opacity: 0;
+  z-index: 1;
+  animation: haloExpand 1500ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.halo-soft {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(15, 122, 58, 0.32) 0%, transparent 65%);
+}
+.halo-medium {
+  width: 560px;
+  height: 560px;
+  background: radial-gradient(circle, rgba(255, 195, 51, 0.42) 0%, rgba(15, 122, 58, 0.18) 50%, transparent 70%);
+}
+.halo-bright {
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(255, 195, 51, 0.55) 0%, rgba(189, 41, 37, 0.18) 50%, transparent 72%);
+}
+.halo-max {
+  width: 880px;
+  height: 880px;
+  background: radial-gradient(circle, rgba(255, 195, 51, 0.7) 0%, rgba(189, 41, 37, 0.22) 40%, rgba(47, 66, 125, 0.12) 65%, transparent 75%);
+}
+
+@keyframes haloExpand {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+  35%  { opacity: 1; }
+  100% { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ---------- Ring burst (concentric expanding circles, 100%+) ---------- */
+.ringLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--brand);
+  transform: translate(-50%, -50%) scale(0.3);
+  opacity: 0;
+  animation: ringPulse 1700ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.kind-top .ring { border-color: #FFC233; }
+.kind-up  .ring { border-color: var(--success); }
+
+@keyframes ringPulse {
+  0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0.3); border-width: 4px; }
+  20%  { opacity: 0.9; }
+  100% { opacity: 0;   transform: translate(-50%, -50%) scale(7);   border-width: 1px; }
+}
+
 /* ---------- Card ---------- */
 .card {
   position: relative;
-  z-index: 2;
+  z-index: 4;
   max-width: 320px;
   padding: 24px 26px 26px;
   background: var(--surface-card);
@@ -31,6 +101,9 @@
   text-align: center;
   animation: cardPop 380ms cubic-bezier(0.4, 1.6, 0.5, 1) both;
 }
+
+.card-big { max-width: 340px; padding: 28px 28px 28px; }
+.card-max { max-width: 360px; padding: 32px 30px 30px; }
 
 @keyframes cardPop {
   from { opacity: 0; transform: translateY(20px) scale(0.92); }
@@ -66,6 +139,12 @@
   border-color: rgba(193, 75, 0, 0.28);
 }
 
+.card-big .iconWrap { width: 64px; height: 64px; margin-bottom: 16px; }
+.card-max .iconWrap {
+  width: 72px; height: 72px; margin-bottom: 18px;
+  box-shadow: 0 0 0 6px rgba(255, 195, 51, 0.2), 0 0 0 12px rgba(255, 195, 51, 0.1);
+}
+
 .eyebrow {
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
@@ -89,6 +168,9 @@
   margin-bottom: 8px;
 }
 
+.card-big .title { font-size: 24px; margin-bottom: 10px; }
+.card-max .title { font-size: 26px; margin-bottom: 12px; }
+
 .bigPct {
   font-family: 'Fraunces', Georgia, serif;
   font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 720;
@@ -98,11 +180,31 @@
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
   margin-bottom: 6px;
+  display: inline-block;
 }
 
+.card-big .bigPct { font-size: 68px; }
+.card-max .bigPct { font-size: 80px; }
+
 .kind-up .bigPct { color: var(--success); }
-.kind-top .bigPct { color: #B58400; }
+.kind-top .bigPct {
+  background: linear-gradient(135deg, #FFC233 0%, #B58400 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(181, 132, 0, 0.4));
+}
 .kind-down .bigPct { color: var(--warn); }
+
+.bigPctPulse {
+  animation: pctPulse 800ms cubic-bezier(0.4, 1.6, 0.5, 1) 380ms both;
+}
+
+@keyframes pctPulse {
+  0%   { transform: scale(1); }
+  60%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
 
 .dept {
   font-family: 'Inter', system-ui, sans-serif;
@@ -126,7 +228,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 3;     /* above the card so pieces fly visibly across it */
+  z-index: 3;     /* above halo + rings, beneath card content */
   overflow: hidden;
 }
 
@@ -145,6 +247,11 @@
   will-change: transform, opacity;
 }
 
+/* Bigger pieces for bigger moments */
+.intensity-3 .confetto { width: 13px; height: 20px; }
+.intensity-4 .confetto { width: 14px; height: 22px; animation-duration: 2000ms; }
+.intensity-5 .confetto { width: 15px; height: 24px; animation-duration: 2200ms; }
+
 @keyframes confettoFly {
   0% {
     opacity: 0;
@@ -161,7 +268,36 @@
   }
 }
 
+/* ---------- Streamers (top tier only) ---------- */
+.streamerLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.streamer {
+  position: absolute;
+  top: -40px;
+  left: var(--left, 50%);
+  width: 5px;
+  height: 60px;
+  background: var(--bg, #FFC233);
+  border-radius: 999px;
+  opacity: 0;
+  animation: streamerFall 2400ms cubic-bezier(0.4, 0.2, 0.6, 1) forwards;
+  animation-delay: var(--delay, 0ms);
+  transform-origin: top center;
+}
+
+@keyframes streamerFall {
+  0%   { opacity: 0; transform: translateY(0) rotate(-3deg); }
+  10%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(110vh) rotate(15deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .confetto { display: none; }
-  .card { animation: none; }
+  .confetto, .streamer, .ring, .halo { display: none; }
+  .card, .bigPctPulse { animation: none; }
 }
