@@ -1,43 +1,38 @@
-@use '../styles/tokens-primitive' as *;
-
-// Reliance Retail — "Editorial warmth" variant.
-// Ivory surface, deep-navy ink, brand blue reserved for primary action, saffron for earnings.
+// Reliance Retail — official brand palette as supplied by the brand team.
+// Red #BD2925, Navy #2F427D, White surface, Black text, WCAG AA verified.
 
 :root {
-  // Reliance Retail brand — crimson red primary, navy secondary, saffron money-accent.
-  // Matched to https://relianceretail.com brand signature (crimson logo + footer bar + navy callouts).
-  --_brand:           #C8202E;          // Reliance crimson (5.82:1 on ivory, 5.97:1 on white)
-  --_brand-deep:      #9B1822;          // Hover / emphasis
-  --_brand-soft:      #F4D3D6;          // Tinted backgrounds
+  --_brand:           #BD2925;          // crimson — 5.52:1 on white (AA small text)
+  --_brand-deep:      #8E1E1C;          // darker red for hover/emphasis
+  --_brand-soft:      #F5D4D1;          // tinted background
+  --_brand-tint:      #FBEBEA;          // lightest tint for hero washes
   --_brand-contrast:  #FFFFFF;
 
-  --_secondary:       #1F2B5E;          // Reliance navy — matches "DELIVERING HAPPINESS" callout
-  --_secondary-soft:  #E2E5F0;
+  --_secondary:       #2F427D;          // Reliance navy — 9.93:1 on white
+  --_secondary-deep:  #1E2B55;
+  --_secondary-soft:  #DDE1EE;
 
-  --_accent:          #FF6B00;          // Saffron — reserved for money / earnings / streaks
-  --_accent-soft:     #FFE3C2;
-  --_accent-deep:     #A03E00;          // WCAG AA on all surfaces incl. saffron gradient
-  --_accent-display:  #C14B00;          // Reserved for large serif (≥ 24px) where warmth trumps strict AA
+  // Money / streak accent shares the brand red — single dominant accent,
+  // no saffron. Reliance corporate aesthetic.
+  --_accent:          var(--_brand);
+  --_accent-soft:     var(--_brand-tint);
+  --_accent-deep:     var(--_brand-deep);
+  --_accent-display:  var(--_brand);
 
-  --_surface:         #F7F2E8;          // warm ivory — the signature move
-  --_surface-raised:  #FFFBF1;          // one notch warmer than pure white
-  --_surface-sunken:  #EDE6D4;
-  --_surface-card:    #FFFFFF;          // cards pop slightly against the ivory
+  --_surface:         #FFFFFF;
+  --_surface-raised:  #FAFAFA;
+  --_surface-sunken:  #F2F2F2;
+  --_surface-card:    #FFFFFF;
 
-  --_text-primary:    #0A1628;          // deep navy ink
-  --_text-secondary:  #3A4A5F;          // 8.9:1 on ivory, 9.7:1 on white
-  --_text-muted:      #5B6676;          // 5.3:1 on ivory, 5.8:1 on white (AA small-text safe)
+  --_text-primary:    #000000;          // pure black, 21:1 on white
+  --_text-secondary:  #4D4D4D;          // 8.63:1 on white
+  --_text-muted:      #595959;          // 7.02:1 on white (AA for small text)
   --_text-on-brand:   #FFFFFF;
 
-  --_border:          #E2D9C4;          // warmer than the old gray-200
-  --_divider:         #EDE6D4;
+  --_border:          #E5E5E5;
+  --_divider:         #F0F0F0;
 
   --_success:         #0F7A3A;
   --_warn:            #C14B00;
   --_error:           #B61E1E;
-
-  // Editorial extras consumed directly in components
-  --hero-grad-start:  #FFF6E1;
-  --hero-grad-end:    #FFDEAA;
-  --hero-ring:        #FF9933;
 }

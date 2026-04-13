@@ -18,28 +18,25 @@ body {
   background: var(--surface);
   color: var(--text-primary);
   font-family: 'Instrument Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 15px;
+  font-size: 16px;                      // bumped from 15px for legibility on store floors
   line-height: 1.5;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.003em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-size-adjust: 100%;
 
-  /* Editorial dot grid — 1px dots at 32px intervals, barely-there opacity.
-     Reads as architectural paper / measuring rhythm, not as texture/noise. */
-  background-image: radial-gradient(circle at center, rgba(10, 22, 40, 0.08) 0.8px, transparent 1px);
-  background-size: 32px 32px;
-  background-position: 0 0;
+  /* Subtle dot grid — architectural measuring rhythm, not texture. */
+  background-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.04) 0.8px, transparent 1px);
+  background-size: 40px 40px;
   background-attachment: fixed;
 }
 
-/* App is mobile-only — no desktop-specific decorative overlays.
-   The same mobile layout renders, centered, at any viewport width. */
+/* App is mobile-only — no desktop-specific decorative overlays. */
 
-/* Display font for the hero — Fraunces variable with optical sizing + SOFT axis tuned for warmth */
+/* Display font for hero amounts — Fraunces variable with warm SOFT axis */
 .display {
   font-family: 'Fraunces', 'Georgia', 'Times New Roman', serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 60, 'wght' 480;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 480;
   letter-spacing: -0.02em;
   line-height: 0.95;
 }
@@ -58,16 +55,10 @@ body {
   border-radius: 4px;
 }
 
-/* Staggered page-load cascade — one delightful entrance */
+/* Staggered page-load cascade */
 @keyframes incentive-rise {
-  0% {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 .rise {
@@ -78,17 +69,16 @@ body {
 .rise-3 { animation-delay: 230ms; }
 .rise-4 { animation-delay: 320ms; }
 .rise-5 { animation-delay: 410ms; }
+.rise-6 { animation-delay: 500ms; }
+.rise-7 { animation-delay: 590ms; }
 
 @keyframes flame-pulse {
-  0%, 100% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 6px rgba(255,107,0,0.45)); }
-  50%      { transform: scale(1.08) rotate(2deg); filter: drop-shadow(0 0 14px rgba(255,107,0,0.65)); }
+  0%, 100% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 6px rgba(189, 41, 37, 0.45)); }
+  50%      { transform: scale(1.08) rotate(2deg); filter: drop-shadow(0 0 14px rgba(189, 41, 37, 0.65)); }
 }
 
-/* Disable motion above --dur-fast when user requests */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -106,6 +96,6 @@ button {
 }
 
 ::selection {
-  background: rgba(255, 107, 0, 0.25);
+  background: rgba(189, 41, 37, 0.2);
   color: var(--text-primary);
 }

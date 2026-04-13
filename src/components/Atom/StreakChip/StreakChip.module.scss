@@ -2,35 +2,35 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px 6px 8px;
-  background: linear-gradient(135deg, #FFE7C2 0%, #FFD089 100%);
-  color: var(--accent-deep);
-  border: 1px solid rgba(193, 75, 0, 0.18);
+  padding: 6px 12px 6px 10px;
+  background: var(--brand-soft);
+  color: var(--brand-deep);
+  border: 1px solid rgba(189, 41, 37, 0.2);
   border-radius: var(--radius-chip);
   white-space: nowrap;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 2px 6px rgba(193, 75, 0, 0.12);
 }
 
 .flame {
   display: inline-flex;
-  color: var(--accent);
+  color: var(--brand);
   animation: flame-pulse 2.4s ease-in-out infinite;
   transform-origin: center bottom;
 }
 
 .count {
   font-family: 'Geist Mono', monospace;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--accent-deep);
+  color: var(--brand-deep);
 }
 
 .unit {
   font-family: 'Instrument Sans', sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  color: var(--brand-deep);
   opacity: 0.85;
 }

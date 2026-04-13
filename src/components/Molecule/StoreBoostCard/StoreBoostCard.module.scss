@@ -3,7 +3,7 @@
   padding: 18px 20px 22px;
   border-radius: 20px;
   background:
-    linear-gradient(135deg, #2A366C 0%, var(--secondary, #1F2B5E) 60%, #111A40 100%);
+    linear-gradient(135deg, #3D55A0 0%, var(--secondary, #1F2B5E) 60%, #1E2B55 100%);
   color: var(--brand-contrast);
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow:
@@ -210,7 +210,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #0A1628;
+    background: #1E2B55;
     border: 2px solid rgba(255, 255, 255, 0.24);
     transition: all var(--dur-med) var(--ease-out);
   }

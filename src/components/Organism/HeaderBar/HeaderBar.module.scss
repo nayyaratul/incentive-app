@@ -6,7 +6,7 @@
   position: relative;
 }
 
-/* Crimson signature strip — echoes Reliance's footer red bar */
+/* Crimson signature stripe at top edge — echoes Reliance's footer red bar */
 .brandStrip {
   position: absolute;
   top: 0;
@@ -21,7 +21,7 @@
     position: absolute;
     right: 0;
     top: 0;
-    width: 28px;
+    width: 32px;
     height: 100%;
     background: linear-gradient(90deg, var(--brand-deep) 0%, var(--secondary) 100%);
     border-radius: 0 0 2px 2px;
@@ -36,70 +36,10 @@
   padding-top: 8px;
 }
 
-.wordmark {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 10px;
-  text-decoration: none;
-}
-
-/* "Reliance" — styled to approximate the brand wordmark.
-   Italic Fraunces in the official crimson. */
-.reliance {
-  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
-  font-variation-settings: 'opsz' 72, 'SOFT' 60, 'wght' 660;
-  font-style: italic;
-  font-size: 22px;
-  line-height: 1;
-  color: var(--brand);
-  letter-spacing: -0.035em;
-
-  /* Custom flourish: the initial R is slightly larger for wordmark feel */
-  &::first-letter {
-    font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 720;
-  }
-}
-
-.pipe {
-  width: 1px;
-  height: 18px;
-  background: var(--border);
-  align-self: center;
-  transform: translateY(1px);
-}
-
-.product {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  font-family: 'Geist Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-
-.productLead {
-  color: var(--text-primary);
-}
-
-.productDot {
-  color: var(--brand);
-  font-weight: 900;
-  font-size: 14px;
-  line-height: 0.5;
-  transform: translateY(-1px);
-}
-
-.productTail {
-  color: var(--text-secondary);
-}
-
 .greeting {
   font-family: 'Fraunces', Georgia, serif;
   font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 380;
-  font-size: 34px;
+  font-size: 36px;
   line-height: 1;
   color: var(--text-primary);
   letter-spacing: -0.025em;
@@ -121,7 +61,7 @@
 }
 
 .period {
-  color: var(--accent);
+  color: var(--brand);
   font-weight: 700;
   transform: translateX(-4px);
 }
