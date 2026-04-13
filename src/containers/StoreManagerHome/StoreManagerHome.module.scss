@@ -265,6 +265,27 @@
 
   &:last-child { border-bottom: none; }
 }
+
+/* Tappable variant — hover / active feedback while preserving the row look */
+.rosterRowBtn {
+  width: 100%;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 10px 8px;
+  margin: 0 -8px;
+  border-radius: 8px;
+  border-bottom: 1px solid var(--divider);
+  transition: background var(--dur-fast) var(--ease-out);
+
+  &:hover { background: var(--surface-sunken); }
+  &:active { background: var(--brand-soft); }
+  &:last-child { border-bottom: none; }
+}
+
 .rosterInelig {
   opacity: 0.55;
   .rosterPayout { color: var(--text-muted); }

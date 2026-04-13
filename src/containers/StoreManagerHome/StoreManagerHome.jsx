@@ -20,6 +20,7 @@ import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import RulesScreen from '../screens/RulesScreen';
 import StoreTransactions from '../screens/StoreTransactions';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
+import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
 import { formatINR } from '../../utils/format';
 
 function sumTarget(code, targets) {
@@ -35,6 +36,7 @@ function findMultiplier(pct) {
 
 export default function StoreManagerHome() {
   const [tab, setTab] = useState('home');
+  const [selectedRow, setSelectedRow] = useState(null);
   const { active, employee, store } = usePersona();
   const firstName = employee.employeeName.split(' ')[0];
 
@@ -110,9 +112,21 @@ export default function StoreManagerHome() {
 
   if (!summary) return null;
 
+  // Look up the full master record for the selected roster row (drawer needs it)
+  const selectedEmployee = selectedRow
+    ? employees.find((e) => e.employeeId === selectedRow.employeeId) || null
+    : null;
+
   return (
     <div className={styles.shell}>
       <BottomNav active={tab} role="SM" onNavigate={setTab} />
+
+      <EmployeeDetailDrawer
+        employee={selectedEmployee}
+        summaryRow={selectedRow?.row}
+        open={!!selectedRow}
+        onClose={() => setSelectedRow(null)}
+      />
 
       <div className={styles.layout}>
         <HeaderBar
@@ -132,7 +146,7 @@ export default function StoreManagerHome() {
                 <span>{summary.employees.length} staff</span>
               </div>
               <section className={`${styles.pad} rise rise-2`}>
-                <TeamRoster summary={summary} />
+                <TeamRoster summary={summary} onSelectRow={(row) => setSelectedRow({ row, employeeId: row.employeeId })} />
               </section>
             </>
           )}
@@ -239,7 +253,7 @@ export default function StoreManagerHome() {
               )}
 
               <section className={`${styles.pad} rise rise-4`}>
-                <TeamRoster summary={summary} />
+                <TeamRoster summary={summary} onSelectRow={(row) => setSelectedRow({ row, employeeId: row.employeeId })} />
               </section>
 
               <section className={`${styles.pad} rise rise-5`}>
@@ -262,19 +276,24 @@ export default function StoreManagerHome() {
   );
 }
 
-function TeamRoster({ summary }) {
+function TeamRoster({ summary, onSelectRow }) {
   return (
     <div className={styles.cardLight}>
       <div className={styles.cardHead}>
         <span className={styles.eyebrow}>Team · {summary.employees.length}</span>
         <span className={styles.headSub}>
           <TrendingUp size={11} strokeWidth={2.4} />
-          Individual payouts
+          Tap a row for detail
         </span>
       </div>
       <div className={styles.rosterList}>
         {summary.employees.map((e) => (
-          <div key={e.employeeId} className={`${styles.rosterRow} ${e.ineligible ? styles.rosterInelig : ''}`}>
+          <button
+            key={e.employeeId}
+            type="button"
+            className={`${styles.rosterRow} ${styles.rosterRowBtn} ${e.ineligible ? styles.rosterInelig : ''}`}
+            onClick={() => onSelectRow && onSelectRow(e)}
+          >
             <div className={styles.rosterLeft}>
               <span className={styles.rosterRole}>{e.role}</span>
               <span className={styles.rosterName}>{e.employeeName}</span>
@@ -288,7 +307,7 @@ function TeamRoster({ summary }) {
             <span className={styles.rosterPayout}>
               {e.ineligible ? '—' : formatINR(e.total)}
             </span>
-          </div>
+          </button>
         ))}
       </div>
     </div>
