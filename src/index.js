@@ -1,7 +1,11 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 import './styles/globals.scss';
+import App from './App';
 
-const root = document.getElementById('root');
-root.innerHTML = '<p style="padding:24px;font-family:Inter,system-ui">Incentive App — Phase 1 scaffold ✓</p>';
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<App />);
 
 if (module.hot) {
   module.hot.accept();

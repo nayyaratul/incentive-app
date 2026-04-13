@@ -1,0 +1,56 @@
+.hero {
+  background: linear-gradient(135deg, #fff7e6, #ffe8b3);
+  border-radius: var(--radius-card);
+  padding: 28px 24px 24px;
+  margin: 0 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.label {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #92400e;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.amount {
+  margin: 0 0 8px;
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.subtext {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #78350f;
+  font-weight: 500;
+}
+
+.progressTrack {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius-chip);
+  height: 8px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progressBar {
+  height: 100%;
+  background: #d97706;
+  border-radius: var(--radius-chip);
+  transition: width var(--dur-med) var(--ease-out);
+}
+
+.progressLabel {
+  margin: 0;
+  font-size: 12px;
+  color: #92400e;
+  font-weight: 600;
+  text-align: right;
+}

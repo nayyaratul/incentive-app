@@ -1,0 +1,28 @@
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #eff6ff;
+  border-radius: var(--radius-card);
+  padding: 14px 16px;
+  margin: 0 16px;
+  border: 1px solid #bfdbfe;
+  cursor: pointer;
+}
+
+.text {
+  flex: 1;
+}
+
+.primary {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.secondary {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}

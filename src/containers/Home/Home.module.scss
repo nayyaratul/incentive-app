@@ -1,0 +1,27 @@
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--surface);
+  position: relative;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 80px;
+  padding-top: 20px;
+}
+
+.heroSection {
+  // 75% visual weight — large card
+}
+
+.stripSection {
+  // 20% visual weight — horizontal scroll
+}
+
+.rankSection {
+  // 5% visual weight — mini tile
+}
