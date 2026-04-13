@@ -1,0 +1,369 @@
+.shell { min-height: 100vh; position: relative; overflow-x: hidden; }
+.layout { max-width: 480px; margin: 0 auto; }
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 4px 0 112px;
+}
+
+.datemark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+
+  .line { flex: 1; height: 1px; background: var(--border); }
+}
+
+.pad { padding: 0 20px; }
+
+/* ---------- Store hero ---------- */
+.storeHero {
+  padding: 18px 18px 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #2A366C 0%, var(--secondary) 70%, #111A40 100%);
+  color: var(--brand-contrast);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(10, 22, 40, 0.05), 0 16px 32px -12px rgba(10, 22, 40, 0.24);
+
+  &::before {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 107, 0, 0.22) 0%, transparent 70%);
+    pointer-events: none;
+  }
+}
+
+.heroEyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.heroRow {
+  display: grid;
+  grid-template-columns: auto 1px 1fr;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.bigPct {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 20, 'wght' 700;
+  font-size: 52px;
+  line-height: 0.85;
+  color: var(--brand-contrast);
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+}
+.sign {
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 520;
+  font-size: 32px;
+  color: var(--accent);
+}
+.bigCap {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 4px;
+}
+
+.heroDivider { height: 52px; width: 1px; background: rgba(255, 255, 255, 0.14); }
+
+.miniFig {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.94);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.miniCap {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.62);
+  margin-top: 2px;
+}
+
+.payoutRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+.payoutLabel {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 2px;
+}
+.payoutValue {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 680;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.teamNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ---------- Cards ---------- */
+.cardDark {
+  padding: 14px 16px 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #2A366C 0%, var(--secondary) 70%, #111A40 100%);
+  color: var(--brand-contrast);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 2px rgba(10, 22, 40, 0.04), 0 10px 24px -10px rgba(10, 22, 40, 0.2);
+}
+.cardLight {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+}
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+.eyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 600;
+
+  .cardDark & { color: rgba(255, 255, 255, 0.7); }
+}
+.headSub {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ---------- Electronics department rows ---------- */
+.deptList { display: flex; flex-direction: column; gap: 6px; }
+.deptRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+.deptName {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-contrast);
+}
+.deptSub {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 2px;
+}
+.deptAch {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: -0.01em;
+}
+.deptMult {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
+  font-size: 15px;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.multZero {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--error);
+  background: rgba(182, 30, 30, 0.16);
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+/* Projections (Grocery SM view) */
+.projList { display: flex; flex-direction: column; gap: 6px; }
+.projRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  font-family: 'Geist Mono', monospace;
+}
+.projName { color: var(--brand-contrast); font-size: 12px; font-weight: 600; }
+.projRate { color: var(--accent); font-size: 12px; font-weight: 700; }
+.projTotal { color: var(--brand-contrast); font-size: 13px; font-weight: 700; }
+
+/* ---------- Roster ---------- */
+.rosterList { display: flex; flex-direction: column; }
+.rosterRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--divider);
+
+  &:last-child { border-bottom: none; }
+}
+.rosterInelig {
+  opacity: 0.55;
+  .rosterPayout { color: var(--text-muted); }
+}
+.rosterLeft {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.rosterRole {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  background: var(--surface-sunken);
+  color: var(--text-secondary);
+  border-radius: 4px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+}
+.rosterName {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.rosterStatus {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  background: rgba(193, 75, 0, 0.08);
+  color: var(--warn);
+  border-radius: 4px;
+  border: 1px solid rgba(193, 75, 0, 0.2);
+}
+.rosterDays {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+.rosterPayout {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
+  font-size: 16px;
+  color: var(--accent-deep);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Notice */
+.notice {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #FBDADA;
+  color: #8F1A1A;
+  border: 1px solid rgba(182, 30, 30, 0.24);
+  border-radius: 12px;
+  align-items: flex-start;
+}
+.noticeTitle { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+.noticeBody { font-size: 11.5px; line-height: 1.4; }
+
+/* Compliance */
+.complianceCard {
+  padding: 12px 14px 14px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.complianceHead {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.complianceCard ul { list-style: none; padding: 0; margin: 0; }
+.complianceCard li {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--divider);
+  font-size: 12px;
+  color: var(--text-secondary);
+
+  &:last-child { border-bottom: none; }
+
+  strong {
+    color: var(--text-primary);
+    font-family: 'Geist Mono', monospace;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+}

@@ -1,6 +1,5 @@
-/* =============================================================
-   Mobile default — floating dark horizontal pill at screen bottom
-   ============================================================= */
+/* Mobile-only floating dark horizontal pill at screen bottom.
+   The app is a mobile-first product — the nav does not transform on desktop. */
 
 .nav {
   position: fixed;
@@ -23,9 +22,10 @@
   margin-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+/* Sidebar-only elements — never rendered visually */
 .brandMark,
 .footer {
-  display: none; /* only surface on sidebar variant */
+  display: none;
 }
 
 .items {
@@ -93,97 +93,6 @@
   line-height: 1;
   color: rgba(255, 255, 255, 0.8);
   transition: color var(--dur-fast) var(--ease-out);
-}
-
-/* =========================================================
-   Desktop (≥ 900px) — vertical floating rail on the left
-   ========================================================= */
-
-@media (min-width: 900px) {
-  .nav {
-    top: 24px;
-    bottom: 24px;
-    left: 24px;
-    right: auto;
-    transform: none;
-    width: 84px;
-    max-width: 84px;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    gap: 6px;
-    padding: 16px 10px;
-    border-radius: 44px;
-    box-shadow:
-      0 2px 4px rgba(10, 22, 40, 0.08),
-      0 32px 80px rgba(10, 22, 40, 0.24);
-    margin-bottom: 0;
-  }
-
-  .brandMark {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--accent);
-    font-family: 'Fraunces', Georgia, serif;
-    font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 700;
-    font-size: 20px;
-    letter-spacing: -0.02em;
-    flex: 0 0 auto;
-  }
-
-  .items {
-    flex: 1 1 auto;
-    flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
-    gap: 6px;
-    width: 100%;
-
-    > * {
-      flex: 0 0 auto;
-      min-width: 0;
-    }
-  }
-
-  .item {
-    width: 64px;
-    min-width: 64px;
-    min-height: 56px;
-    padding: 10px 6px;
-    gap: 4px;
-    border-radius: 22px;
-    margin: 0 auto;
-  }
-
-  .active {
-    border-radius: 22px;
-  }
-
-  .label {
-    font-size: 9px;
-    letter-spacing: 0.06em;
-  }
-
-  .footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #FF9933 0%, #FF6B00 100%);
-    color: var(--text-primary);
-    font-family: 'Fraunces', Georgia, serif;
-    font-variation-settings: 'opsz' 72, 'SOFT' 20, 'wght' 680;
-    font-size: 14px;
-    border: 2px solid rgba(255, 255, 255, 0.12);
-    flex: 0 0 auto;
-  }
 }
 
 /* Very narrow phones — tighten item padding so 5 labels don't clip */

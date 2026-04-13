@@ -1,6 +1,14 @@
 import React from 'react';
-import Home from './containers/Home/Home';
+import { PersonaProvider } from './context/PersonaContext';
+import { PersonaPill, PersonaModal } from './components/Widgets/PersonaSwitcher/PersonaSwitcher';
+import RootRouter from './containers/RootRouter';
 
 export default function App() {
-  return <Home />;
+  return (
+    <PersonaProvider>
+      <RootRouter />
+      <PersonaPill />
+      <PersonaModal />
+    </PersonaProvider>
+  );
 }

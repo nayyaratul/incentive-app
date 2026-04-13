@@ -33,26 +33,8 @@ body {
   background-attachment: fixed;
 }
 
-/* Desktop brand accent: a single thin crimson hairline in the left margin.
-   Echoes a magazine fore-edge rule. Invisible on mobile where space is tight. */
-@media (min-width: 900px) {
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 136px;           /* just outside the sidebar rail */
-    width: 1px;
-    background: linear-gradient(180deg,
-      transparent 0%,
-      rgba(200, 32, 46, 0.18) 14%,
-      rgba(200, 32, 46, 0.28) 50%,
-      rgba(200, 32, 46, 0.18) 86%,
-      transparent 100%);
-    pointer-events: none;
-    z-index: 1;
-  }
-}
+/* App is mobile-only — no desktop-specific decorative overlays.
+   The same mobile layout renders, centered, at any viewport width. */
 
 /* Display font for the hero — Fraunces variable with optical sizing + SOFT axis tuned for warmth */
 .display {

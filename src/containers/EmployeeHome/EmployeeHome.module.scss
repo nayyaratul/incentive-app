@@ -1,0 +1,35 @@
+.shell {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.layout {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 4px 0 112px; // bottom padding clears floating bottom nav
+}
+
+.datemark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+
+  .line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+}
