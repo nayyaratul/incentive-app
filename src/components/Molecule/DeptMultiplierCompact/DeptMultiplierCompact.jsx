@@ -18,21 +18,22 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
 
   const isZero = primary.multiplier === 0;
 
-  // Pick the next tier above the primary's current multiplier — what a
-  // crossing celebration would unlock. Used by the demo trigger.
+  // Compute the celebration target for the demo trigger:
+  // pick the next tier above the user's current multiplier band.
   const sortedTiers = [...electronicsMultiplierTiers].sort((a, b) => a.gateFromPct - b.gateFromPct);
   const currentTierIdx = sortedTiers.findIndex(
     (t) => primary.achievementPct >= t.gateFromPct && primary.achievementPct < t.gateToPct
   );
   const nextTier = sortedTiers[currentTierIdx + 1] || sortedTiers[currentTierIdx];
-  const celebTier = nextTier && {
-    label: nextTier.multiplier === 0 ? 'No payout' : `${Math.round(nextTier.multiplier * 100)}%`,
-    dept: primary.department,
-    note: nextTier.multiplier > primary.multiplier
-      ? `Your ${primary.department} sales now pay at ${Math.round(nextTier.multiplier * 100)}% — up from ${Math.round(primary.multiplier * 100)}%.`
-      : `Your ${primary.department} multiplier is now ${Math.round(nextTier.multiplier * 100)}%.`,
-  };
-  const celebKind = nextTier && nextTier.multiplier > primary.multiplier ? 'up' : 'down';
+
+  // Brief-aligned framing per tier value. The brief defines six bands:
+  //   <85%   → 0%   (no payout)
+  //   85-90% → 50%
+  //   90-100%→ 80%
+  //   100-110%→ 100%   (target hit — biggest moment)
+  //   110-120%→ 110%
+  //   120%+  → 120%   (top tier)
+  const celebTier = nextTier && framingFor(nextTier.multiplier, primary.multiplier, primary.department);
 
   return (
     <section className={styles.card}>
@@ -57,7 +58,6 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
 
       <TierCelebration
         open={celebOpen}
-        kind={celebKind}
         tier={celebTier}
         onDismiss={() => setCelebOpen(false)}
       />
@@ -116,4 +116,86 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
       )}
     </section>
   );
+}
+
+/**
+ * Build the celebration framing for a given target multiplier value.
+ * All copy is grounded in the brief's six bands; tier values shown are exact.
+ */
+function framingFor(targetMult, currentMult, dept) {
+  const targetPct  = Math.round(targetMult  * 100);
+  const currentPct = Math.round(currentMult * 100);
+  const fromNote = currentMult === 0
+    ? `Up from no payout (was below 85%).`
+    : `Up from ${currentPct}%.`;
+
+  if (targetMult === 0) {
+    return {
+      kind: 'down',
+      eyebrow: 'Payout paused',
+      title: `${dept} below threshold`,
+      multiplier: '0%',
+      dept,
+      note: 'Department dropped below 85% of target. No payout this period until it recovers.',
+    };
+  }
+  if (targetMult === 0.50) {
+    return {
+      kind: 'up',
+      eyebrow: 'Payout unlocked',
+      title: 'First tier crossed',
+      multiplier: '50%',
+      dept,
+      note: `Your ${dept} sales now pay at 50%. ${fromNote}`,
+    };
+  }
+  if (targetMult === 0.80) {
+    return {
+      kind: 'up',
+      eyebrow: 'Tier up',
+      title: '80% payout band',
+      multiplier: '80%',
+      dept,
+      note: `Your ${dept} sales now pay at 80%. ${fromNote}`,
+    };
+  }
+  if (targetMult === 1.00) {
+    return {
+      kind: 'top',
+      eyebrow: 'Target hit',
+      title: 'Full payout',
+      multiplier: '100%',
+      dept,
+      note: `${dept} reached its monthly target. Sales pay at the full rate.`,
+    };
+  }
+  if (targetMult === 1.10) {
+    return {
+      kind: 'top',
+      eyebrow: 'Bonus tier',
+      title: 'Above target',
+      multiplier: '110%',
+      dept,
+      note: `${dept} is over target. Your incentive scales by 1.10×.`,
+    };
+  }
+  if (targetMult === 1.20) {
+    return {
+      kind: 'top',
+      eyebrow: 'Top tier',
+      title: 'Above 120%',
+      multiplier: '120%',
+      dept,
+      note: `${dept} is at the top tier. Your incentive scales by 1.20× — the highest band.`,
+    };
+  }
+  // Fallback (shouldn't occur with brief's defined values)
+  return {
+    kind: 'up',
+    eyebrow: 'Tier change',
+    title: 'New band',
+    multiplier: `${targetPct}%`,
+    dept,
+    note: '',
+  };
 }
