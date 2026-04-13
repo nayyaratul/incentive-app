@@ -7,11 +7,26 @@
   background: transparent;
 }
 
+/* Desktop middle column — Facebook feed rule: ~680px fixed, sidebar pinned left */
 @media (min-width: 900px) {
   .page {
-    max-width: 560px;
+    max-width: 680px;
     margin: 0 auto;
     padding-left: 44px; // visually balance the floating sidebar on the left
+  }
+
+  .main {
+    gap: 32px;
+    padding: 8px 0 48px;
+  }
+}
+
+/* Larger desktops — stay at the 680px Facebook rule.
+   Extra viewport space becomes ambient margin around the column, not column width. */
+@media (min-width: 1280px) {
+  .page {
+    max-width: 680px;
+    padding-left: 64px;
   }
 }
 
