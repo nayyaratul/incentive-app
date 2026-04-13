@@ -17,22 +17,13 @@ body,
 body {
   background: var(--surface);
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 16px;
+  font-family: 'Instrument Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;                      // bumped from 15px for legibility on store floors
   line-height: 1.5;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.003em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-size-adjust: 100%;
-
-  /* Inter stylistic features for clarity:
-     - cv11 = single-story 'a'  (cleaner at small sizes)
-     - ss03 = open digits  (0 slashed, 1 with serif)
-     - tnum = tabular (monospaced) numerals — numbers now always line up
-     - zero = slashed zero (disambiguates from O)
-  */
-  font-feature-settings: 'cv11' 1, 'ss03' 1, 'tnum' 1, 'zero' 1;
-  font-variant-numeric: tabular-nums;
 
   /* Subtle dot grid — architectural measuring rhythm, not texture. */
   background-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.04) 0.8px, transparent 1px);
@@ -40,12 +31,21 @@ body {
   background-attachment: fixed;
 }
 
-/* Legacy helper classes kept as no-op mappings onto Inter so old references
-   (e.g. `.display`, `.mono`) don't break. */
-.display,
+/* App is mobile-only — no desktop-specific decorative overlays. */
+
+/* Display font for hero amounts — Fraunces variable with warm SOFT axis */
+.display {
+  font-family: 'Fraunces', 'Georgia', 'Times New Roman', serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 480;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
 .mono {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', 'SFMono-Regular', 'Menlo', monospace;
   font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.01em;
 }
 
 /* Non-removable focus ring */

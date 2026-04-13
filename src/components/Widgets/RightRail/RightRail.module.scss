@@ -33,7 +33,7 @@
 }
 
 .eyebrow {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 9.5px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -50,7 +50,8 @@
 }
 
 .momentumPct {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 700;
   font-size: 44px;
   line-height: 0.85;
   color: var(--success);
@@ -60,12 +61,13 @@
 
 .sign {
   font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 520;
   font-size: 28px;
   color: var(--success);
 }
 
 .momentumCaption {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Instrument Sans', sans-serif;
   font-size: 11.5px;
   color: var(--text-secondary);
   line-height: 1.3;
@@ -88,7 +90,7 @@
   align-items: center;
   gap: 8px;
   padding: 6px 0;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Instrument Sans', sans-serif;
   font-size: 12px;
 
   & + & {
@@ -102,7 +104,7 @@
 }
 
 .miniValue {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
@@ -162,7 +164,7 @@
 }
 
 .who {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Instrument Sans', sans-serif;
   font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
@@ -178,7 +180,7 @@
 }
 
 .feedBody {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Instrument Sans', sans-serif;
   font-size: 11.5px;
   color: var(--text-secondary);
   overflow: hidden;
@@ -188,14 +190,14 @@
 
 .feedEarn {
   color: var(--accent-deep);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-weight: 600;
   letter-spacing: -0.01em;
   margin-left: 4px;
 }
 
 .feedTime {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 10px;
   color: var(--text-muted);
   letter-spacing: 0.02em;
@@ -206,7 +208,7 @@
   width: 100%;
   padding: 8px 10px;
   margin-top: 4px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Instrument Sans', sans-serif;
   font-size: 11px;
   font-weight: 600;
   color: var(--text-primary);
@@ -233,7 +235,8 @@
   position: absolute;
   top: 4px;
   right: 16px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 700;
   font-size: 72px;
   color: var(--brand);
   opacity: 0.16;
@@ -242,7 +245,8 @@
 
 .quote {
   margin: 0 0 10px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 70, 'wght' 460;
   font-style: italic;
   font-size: 16px;
   line-height: 1.35;
@@ -254,7 +258,7 @@
 
 .quoteAttr {
   margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 9.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;

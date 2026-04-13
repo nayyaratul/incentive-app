@@ -11,7 +11,7 @@
   align-items: center;
   gap: 8px;
   padding: 0 24px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -39,7 +39,8 @@
   display: flex; align-items: center; justify-content: center;
 }
 .ineligTitle {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 620;
   font-size: 17px;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -47,7 +48,7 @@
 }
 .ineligBody {
   margin: 0 0 10px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Instrument Sans', sans-serif;
   font-size: 12.5px;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -66,7 +67,7 @@
   color: var(--text-secondary);
 
   strong {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Instrument Sans', sans-serif;
     color: var(--text-primary);
     font-weight: 700;
   }
@@ -94,7 +95,7 @@
   gap: 8px;
 }
 .eyebrow {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -102,7 +103,7 @@
   font-weight: 600;
 }
 .eyebrowLight {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -120,7 +121,8 @@
 }
 .contribDiv { height: 48px; width: 1px; background: var(--divider); }
 .contribVal {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
   font-size: 26px;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -128,13 +130,14 @@
   font-variant-numeric: tabular-nums;
 }
 .contribVal2 {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
   font-size: 22px;
   letter-spacing: -0.02em;
   color: var(--brand);
 }
 .contribCap {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -160,7 +163,8 @@
 }
 .pulseDiv { height: 40px; width: 1px; background: rgba(255, 255, 255, 0.12); }
 .pulseVal {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
   font-size: 22px;
   line-height: 1;
   color: var(--brand-contrast);
@@ -168,18 +172,18 @@
   font-variant-numeric: tabular-nums;
 }
 .pulseCap {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.55);
   margin-top: 4px;
 }
 .ctaLink {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Instrument Sans', sans-serif;
   font-size: 11.5px;
   font-weight: 600;
   color: var(--accent);
@@ -196,7 +200,7 @@
   border-radius: 12px;
 }
 .complianceHead {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -217,7 +221,7 @@
 
   strong {
     color: var(--text-primary);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Geist Mono', monospace;
     font-weight: 600;
     letter-spacing: -0.01em;
   }

@@ -53,7 +53,8 @@
 }
 
 .hash {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 420;
   font-style: italic;
   font-size: 28px;
   color: var(--accent);
@@ -62,7 +63,8 @@
 }
 
 .rank {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 20, 'wght' 700;
   font-size: 56px;
   line-height: 0.85;
   color: var(--brand-contrast);
@@ -80,11 +82,11 @@
 }
 
 .eyebrow {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .line {
@@ -95,7 +97,8 @@
 }
 
 .qty {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
   font-size: 19px;
   color: var(--accent);
   letter-spacing: -0.02em;
@@ -103,14 +106,14 @@
 }
 
 .qtyUnit {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Instrument Sans', sans-serif;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.65);
   font-weight: 500;
 }
 
 .rival {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Geist Mono', monospace;
   font-size: 12px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.85);
@@ -124,7 +127,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Instrument Sans', sans-serif;
   font-size: 11px;
   font-weight: 600;
   color: var(--accent);
