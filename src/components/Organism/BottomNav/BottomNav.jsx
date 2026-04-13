@@ -10,21 +10,32 @@ const NAV_ITEMS = [
   { id: 'me', label: 'Me', Icon: User },
 ];
 
-export default function BottomNav({ active = 'home' }) {
+export default function BottomNav({ active = 'home', employeeInitial = 'R' }) {
   return (
-    <nav className={styles.nav}>
-      {NAV_ITEMS.map(({ id, label, Icon }) => {
-        const isActive = id === active;
-        return (
-          <button
-            key={id}
-            className={`${styles.item} ${isActive ? styles.active : ''}`}
-          >
-            <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
-            <span className={styles.label}>{label}</span>
-          </button>
-        );
-      })}
+    <nav className={styles.nav} aria-label="Primary">
+      {/* Only visible on sidebar variant (desktop) */}
+      <div className={styles.brandMark} aria-hidden="true">◆</div>
+
+      <div className={styles.items}>
+        {NAV_ITEMS.map(({ id, label, Icon }) => {
+          const isActive = id === active;
+          return (
+            <button
+              key={id}
+              type="button"
+              className={`${styles.item} ${isActive ? styles.active : ''}`}
+              aria-current={isActive ? 'page' : undefined}
+              aria-label={label}
+            >
+              <Icon size={20} strokeWidth={isActive ? 2.5 : 1.8} aria-hidden="true" />
+              <span className={styles.label}>{label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Only visible on sidebar variant (desktop) */}
+      <div className={styles.footer} aria-hidden="true">{employeeInitial}</div>
     </nav>
   );
 }

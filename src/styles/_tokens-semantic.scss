@@ -7,7 +7,8 @@
   --brand-contrast:  var(--_brand-contrast);
   --accent:          var(--_accent);
   --accent-soft:     var(--_accent-soft);
-  --accent-deep:     var(--_accent-deep, #C14B00);
+  --accent-deep:     var(--_accent-deep, #A03E00);
+  --accent-display:  var(--_accent-display, var(--_accent-deep, #C14B00));
 
   // Surfaces
   --surface:         var(--_surface);

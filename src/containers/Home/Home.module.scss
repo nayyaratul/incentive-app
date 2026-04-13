@@ -4,9 +4,15 @@
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-  // Soft edge to blend with the grain background on desktop
-  box-shadow: 0 0 0 1px rgba(226, 217, 196, 0.5);
   background: transparent;
+}
+
+@media (min-width: 900px) {
+  .page {
+    max-width: 560px;
+    margin: 0 auto;
+    padding-left: 44px; // visually balance the floating sidebar on the left
+  }
 }
 
 .main {
@@ -17,6 +23,10 @@
 }
 
 .heroSection {
+  padding: 0 20px;
+}
+
+.boostSection {
   padding: 0 20px;
 }
 

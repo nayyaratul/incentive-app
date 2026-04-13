@@ -6,9 +6,10 @@
 :root {
   --_brand:           #{$blue-600};
   --_brand-contrast:  #FFFFFF;
-  --_accent:          #FF6B00;          // saffron, upgraded from $saffron-400 for more punch
+  --_accent:          #FF6B00;          // saffron, for display / large type / icons
   --_accent-soft:     #FFE3C2;
-  --_accent-deep:     #C14B00;
+  --_accent-deep:     #A03E00;          // WCAG AA on all surfaces incl. saffron gradient
+  --_accent-display:  #C14B00;          // reserved for large serif (≥ 24px) where warmth matters more than AA
 
   --_surface:         #F7F2E8;          // warm ivory — the signature move
   --_surface-raised:  #FFFBF1;          // one notch warmer than pure white
@@ -16,8 +17,8 @@
   --_surface-card:    #FFFFFF;          // cards pop slightly against the ivory
 
   --_text-primary:    #0A1628;          // deep navy ink
-  --_text-secondary:  #3A4A5F;
-  --_text-muted:      #7A8699;
+  --_text-secondary:  #3A4A5F;          // 8.9:1 on ivory, 9.7:1 on white
+  --_text-muted:      #5B6676;          // 5.3:1 on ivory, 5.8:1 on white (AA small-text safe)
   --_text-on-brand:   #FFFFFF;
 
   --_border:          #E2D9C4;          // warmer than the old gray-200

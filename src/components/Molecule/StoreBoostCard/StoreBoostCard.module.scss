@@ -1,0 +1,315 @@
+.card {
+  position: relative;
+  padding: 18px 20px 22px;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, #0F2A4F 0%, #0A1628 100%);
+  color: var(--brand-contrast);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 1px 2px rgba(10, 22, 40, 0.05),
+    0 20px 40px -10px rgba(10, 22, 40, 0.22);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -80px;
+    bottom: -80px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 102, 179, 0.32) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 107, 0, 0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+}
+
+.head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.eyebrowWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon {
+  display: inline-flex;
+  color: var(--accent);
+}
+
+.eyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 600;
+}
+
+.currentTier {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 107, 0, 0.14);
+  border: 1px solid rgba(255, 153, 51, 0.36);
+}
+
+.multiplier {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 20, 'wght' 720;
+  font-size: 16px;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tierLabel {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.02em;
+}
+
+.storeName {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 14px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 560;
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--brand-contrast);
+}
+
+.headline {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto 1px 1fr;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.pctCol,
+.figCol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pctValue {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 144, 'SOFT' 20, 'wght' 700;
+  font-size: 52px;
+  line-height: 0.85;
+  color: var(--brand-contrast);
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.pctSign {
+  color: var(--accent);
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 520;
+  font-size: 32px;
+  margin-left: 2px;
+}
+
+.pctCaption {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.divider {
+  height: 52px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.figValue {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
+  font-size: 22px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.94);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.figCaption {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* -------------- Tier ladder -------------- */
+.ladder {
+  position: relative;
+  z-index: 1;
+  padding: 0 0 28px; // space for gate labels
+  margin-bottom: 6px;
+}
+
+.ladderTrack {
+  position: relative;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.ladderFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(90deg, #FF9933 0%, #FF6B00 100%);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(255, 107, 0, 0.55);
+  transition: width 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.tick {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  &::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #0A1628;
+    border: 2px solid rgba(255, 255, 255, 0.24);
+    transition: all var(--dur-med) var(--ease-out);
+  }
+}
+
+.tickHit {
+  &::before {
+    background: var(--brand-contrast);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(255, 107, 0, 0.6);
+  }
+}
+
+.tickCurrent {
+  &::before {
+    background: var(--accent);
+    border-color: var(--brand-contrast);
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.28);
+  }
+
+  .tickMult,
+  .tickGate {
+    color: var(--accent);
+  }
+}
+
+.tickMult {
+  position: absolute;
+  top: -18px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.tickGate {
+  position: absolute;
+  top: 14px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  transform: translateX(0);
+}
+
+/* Edge-case alignment for tick labels at 0% / 100% so they don't clip */
+.tick:first-of-type .tickGate,
+.tick:first-of-type .tickMult {
+  transform: translateX(12px);
+}
+.tick:last-of-type .tickGate,
+.tick:last-of-type .tickMult {
+  transform: translateX(-12px);
+}
+
+/* -------------- Footer line -------------- */
+.footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.82);
+
+  strong {
+    color: var(--brand-contrast);
+    font-weight: 700;
+  }
+}
+
+.sparkle {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.gap {
+  color: var(--accent);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.mult {
+  color: var(--accent);
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
