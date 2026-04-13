@@ -6,7 +6,8 @@
 /* Streak sits right under the hero — left-aligned, narrow footprint */
 .streakRow {
   padding: 0 20px;
-  margin-top: -14px;
+  display: flex;
+  margin-top: -10px; // pull slightly closer to hero without overlapping
 }
 
 /* ---------- Cards ---------- */
