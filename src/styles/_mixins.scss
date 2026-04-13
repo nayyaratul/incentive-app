@@ -1,0 +1,45 @@
+// Reusable SCSS mixins. Keep small — prefer component-local styles over mixin explosion.
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin stack($gap: 8px) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+@mixin row($gap: 8px) {
+  display: flex;
+  flex-direction: row;
+  gap: $gap;
+  align-items: center;
+}
+
+// Enforces WCAG 2.5.5 minimum touch target (44×44).
+// Required on anything that sets cursor: pointer.
+@mixin tap-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Tabular numerals — use on any element that displays an amount that may update.
+@mixin tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+@mixin respect-reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
