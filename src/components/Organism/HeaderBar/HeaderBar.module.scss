@@ -1,9 +1,31 @@
 .header {
-  padding: 22px 20px 6px;
+  padding: 18px 20px 6px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
   position: relative;
+}
+
+/* Crimson signature strip — echoes Reliance's footer red bar */
+.brandStrip {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand) 0%, var(--brand-deep) 100%);
+  border-radius: 0 0 2px 2px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 28px;
+    height: 100%;
+    background: linear-gradient(90deg, var(--brand-deep) 0%, var(--secondary) 100%);
+    border-radius: 0 0 2px 2px;
+  }
 }
 
 .top {
@@ -11,36 +33,67 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  padding-top: 8px;
 }
 
 .wordmark {
   display: inline-flex;
   align-items: baseline;
-  gap: 8px;
-  font-family: 'Instrument Sans', sans-serif;
+  gap: 10px;
+  text-decoration: none;
 }
 
-.mark {
+/* "Reliance" — styled to approximate the brand wordmark.
+   Italic Fraunces in the official crimson. */
+.reliance {
+  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+  font-variation-settings: 'opsz' 72, 'SOFT' 60, 'wght' 660;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1;
   color: var(--brand);
-  font-size: 14px;
+  letter-spacing: -0.035em;
+
+  /* Custom flourish: the initial R is slightly larger for wordmark feel */
+  &::first-letter {
+    font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 720;
+  }
+}
+
+.pipe {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  align-self: center;
   transform: translateY(1px);
 }
 
-.brand {
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  font-size: 11px;
+.product {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.productLead {
   color: var(--text-primary);
 }
 
-.sub {
-  font-family: 'Geist Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  padding-left: 8px;
-  border-left: 1px solid var(--border);
+.productDot {
+  color: var(--brand);
+  font-weight: 900;
+  font-size: 14px;
+  line-height: 0.5;
+  transform: translateY(-1px);
+}
+
+.productTail {
+  color: var(--text-secondary);
 }
 
 .greeting {

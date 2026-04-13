@@ -4,12 +4,20 @@
 // Ivory surface, deep-navy ink, brand blue reserved for primary action, saffron for earnings.
 
 :root {
-  --_brand:           #{$blue-600};
+  // Reliance Retail brand — crimson red primary, navy secondary, saffron money-accent.
+  // Matched to https://relianceretail.com brand signature (crimson logo + footer bar + navy callouts).
+  --_brand:           #C8202E;          // Reliance crimson (5.82:1 on ivory, 5.97:1 on white)
+  --_brand-deep:      #9B1822;          // Hover / emphasis
+  --_brand-soft:      #F4D3D6;          // Tinted backgrounds
   --_brand-contrast:  #FFFFFF;
-  --_accent:          #FF6B00;          // saffron, for display / large type / icons
+
+  --_secondary:       #1F2B5E;          // Reliance navy — matches "DELIVERING HAPPINESS" callout
+  --_secondary-soft:  #E2E5F0;
+
+  --_accent:          #FF6B00;          // Saffron — reserved for money / earnings / streaks
   --_accent-soft:     #FFE3C2;
   --_accent-deep:     #A03E00;          // WCAG AA on all surfaces incl. saffron gradient
-  --_accent-display:  #C14B00;          // reserved for large serif (≥ 24px) where warmth matters more than AA
+  --_accent-display:  #C14B00;          // Reserved for large serif (≥ 24px) where warmth trumps strict AA
 
   --_surface:         #F7F2E8;          // warm ivory — the signature move
   --_surface-raised:  #FFFBF1;          // one notch warmer than pure white

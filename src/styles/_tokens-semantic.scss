@@ -4,7 +4,13 @@
 :root {
   // Brand & accent
   --brand:           var(--_brand);
+  --brand-deep:      var(--_brand-deep, var(--_brand));
+  --brand-soft:      var(--_brand-soft, rgba(200, 32, 46, 0.08));
   --brand-contrast:  var(--_brand-contrast);
+
+  --secondary:       var(--_secondary, #1F2B5E);
+  --secondary-soft:  var(--_secondary-soft, #E2E5F0);
+
   --accent:          var(--_accent);
   --accent-soft:     var(--_accent-soft);
   --accent-deep:     var(--_accent-deep, #A03E00);
