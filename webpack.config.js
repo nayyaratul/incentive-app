@@ -32,7 +32,7 @@ module.exports = (env, argv) => {
           use: [
             isProd ? MiniCssExtractPlugin.loader : 'style-loader',
             { loader: 'css-loader', options: { modules: { localIdentName: '[name]__[local]___[hash:base64:5]' } } },
-            'sass-loader'
+            { loader: 'sass-loader', options: { api: 'modern' } }
           ]
         },
         {
@@ -41,7 +41,7 @@ module.exports = (env, argv) => {
           use: [
             isProd ? MiniCssExtractPlugin.loader : 'style-loader',
             'css-loader',
-            'sass-loader'
+            { loader: 'sass-loader', options: { api: 'modern' } }
           ]
         },
         {
