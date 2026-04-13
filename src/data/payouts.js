@@ -128,7 +128,7 @@ export const electronicsPayoutsRD3675 = [
     monthlyGoalTarget: 4000,
     streak: { current: 4, longest: 11, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
     milestones: [],
-    note: 'SM earns via BA attribution per brief §6.3',
+    note: 'SM earns via BA attribution',
   },
 ];
 
