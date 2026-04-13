@@ -288,6 +288,38 @@
 .deptZeroFinal { color: var(--text-muted); text-decoration: line-through; }
 
 /* Recent transactions */
+.txHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 10px;
+
+  .sectionTitle { margin: 0; }
+}
+
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--brand);
+  background: transparent;
+  padding: 4px 10px;
+  border: 1px solid rgba(189, 41, 37, 0.24);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-out);
+
+  &:hover {
+    background: var(--brand);
+    color: var(--brand-contrast);
+    border-color: var(--brand);
+  }
+}
+
 .txList {
   display: flex;
   flex-direction: column;

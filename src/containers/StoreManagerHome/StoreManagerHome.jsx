@@ -37,7 +37,19 @@ function findMultiplier(pct) {
 export default function StoreManagerHome() {
   const [tab, setTab] = useState('home');
   const [selectedRow, setSelectedRow] = useState(null);
+  const [txEmpFilter, setTxEmpFilter] = useState('ALL');
   const { active, employee, store } = usePersona();
+
+  const handleViewAllTransactions = (employeeId) => {
+    setTxEmpFilter(employeeId);
+    setSelectedRow(null);   // close the drawer
+    setTab('tx');           // switch to the Transactions tab
+  };
+
+  const handleNavigate = (id) => {
+    if (id !== 'tx') setTxEmpFilter('ALL');  // clear pre-filter when leaving tx
+    setTab(id);
+  };
   const firstName = employee.employeeName.split(' ')[0];
 
   const storeTeam = employees.filter((e) => e.storeCode === store.storeCode);
@@ -119,13 +131,14 @@ export default function StoreManagerHome() {
 
   return (
     <div className={styles.shell}>
-      <BottomNav active={tab} role="SM" onNavigate={setTab} />
+      <BottomNav active={tab} role="SM" onNavigate={handleNavigate} />
 
       <EmployeeDetailDrawer
         employee={selectedEmployee}
         summaryRow={selectedRow?.row}
         open={!!selectedRow}
         onClose={() => setSelectedRow(null)}
+        onViewAllTransactions={handleViewAllTransactions}
       />
 
       <div className={styles.layout}>
@@ -151,7 +164,12 @@ export default function StoreManagerHome() {
             </>
           )}
 
-          {tab === 'tx' && <StoreTransactions storeCode={store.storeCode} />}
+          {tab === 'tx' && (
+            <StoreTransactions
+              storeCode={store.storeCode}
+              initialEmployeeFilter={txEmpFilter}
+            />
+          )}
 
           {tab === 'home' && (
             <>

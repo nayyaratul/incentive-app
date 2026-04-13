@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, ArrowUpRight } from 'lucide-react';
 import styles from './EmployeeDetailDrawer.module.scss';
 import { formatINR } from '../../../utils/format';
 import { transactionsByEmployee } from '../../../data/transactions';
@@ -16,7 +16,7 @@ function findMultiplier(pct) {
  * Shows profile, MTD payout breakdown by department (Electronics), recent
  * transactions, and the eligibility/metadata footer.
  */
-export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClose }) {
+export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClose, onViewAllTransactions }) {
   useEffect(() => {
     if (!open) return;
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -28,7 +28,9 @@ export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClo
 
   const initial = employee.employeeName?.[0] || '?';
   const elecPayout = electronicsPayoutsRD3675.find((p) => p.employeeId === employee.employeeId);
-  const recentTx = (transactionsByEmployee[employee.employeeId] || []).slice(0, 5);
+  const allTx = transactionsByEmployee[employee.employeeId] || [];
+  const recentTx = allTx.slice(0, 5);
+  const totalTxCount = allTx.length;
 
   const ineligible = summaryRow?.ineligible;
   const total = summaryRow?.total ?? 0;
@@ -122,7 +124,19 @@ export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClo
           {/* Recent transactions */}
           {recentTx.length > 0 && (
             <section className={styles.section}>
-              <h3 className={styles.sectionTitle}>Recent transactions</h3>
+              <div className={styles.txHead}>
+                <h3 className={styles.sectionTitle}>Recent transactions</h3>
+                {onViewAllTransactions && totalTxCount > recentTx.length && (
+                  <button
+                    type="button"
+                    className={styles.viewAll}
+                    onClick={() => onViewAllTransactions(employee.employeeId)}
+                  >
+                    See all {totalTxCount}
+                    <ArrowUpRight size={12} strokeWidth={2.4} />
+                  </button>
+                )}
+              </div>
               <div className={styles.txList}>
                 {recentTx.map((tx) => {
                   const earned = typeof tx.finalIncentive === 'number' ? tx.finalIncentive : null;

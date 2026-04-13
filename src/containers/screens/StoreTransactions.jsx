@@ -38,12 +38,18 @@ function dayHeading(dateStr, today) {
   return d.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short' });
 }
 
-export default function StoreTransactions({ storeCode }) {
+export default function StoreTransactions({ storeCode, initialEmployeeFilter = 'ALL' }) {
   const [period, setPeriod]       = useState('month');
   const [query, setQuery]         = useState('');
   const [txType, setTxType]       = useState('ALL');
-  const [empFilter, setEmpFilter] = useState('ALL');
+  const [empFilter, setEmpFilter] = useState(initialEmployeeFilter);
   const [selectedTx, setSelectedTx] = useState(null);
+
+  // If parent forwards a different initial filter (e.g. user drilled in from
+  // another roster row), respect it.
+  React.useEffect(() => {
+    setEmpFilter(initialEmployeeFilter);
+  }, [initialEmployeeFilter]);
 
   const today = '2026-04-13';
   const storeTeam = useMemo(() => employees.filter((e) => e.storeCode === storeCode), [storeCode]);
