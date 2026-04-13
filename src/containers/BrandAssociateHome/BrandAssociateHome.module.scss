@@ -26,17 +26,35 @@
   grid-template-columns: 36px 1fr;
   gap: 12px;
   padding: 16px 16px 16px 14px;
-  background: linear-gradient(135deg, #FFF5E1 0%, #FFE3B8 100%);
-  border: 1px solid rgba(193, 75, 0, 0.2);
+  background: linear-gradient(135deg, var(--brand-tint, #FBEBEA) 0%, #FFFFFF 70%, #FFFFFF 100%);
+  border: 1px solid var(--brand-soft);
   border-radius: 16px;
   color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -12px rgba(189, 41, 37, 0.16);
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(189, 41, 37, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
 }
 .ineligIcon {
   width: 36px; height: 36px;
   border-radius: 50%;
-  background: var(--accent-deep);
+  background: var(--brand);
   color: var(--brand-contrast);
   display: flex; align-items: center; justify-content: center;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
 }
 .ineligTitle {
   font-family: 'Fraunces', Georgia, serif;
@@ -188,8 +206,8 @@
   font-weight: 600;
   color: var(--accent);
   padding: 6px 10px;
-  background: rgba(255, 107, 0, 0.1);
-  border: 1px solid rgba(255, 153, 51, 0.32);
+  background: rgba(189, 41, 37, 0.1);
+  border: 1px solid rgba(189, 41, 37, 0.32);
   border-radius: 999px;
 }
 

@@ -57,8 +57,8 @@
   padding: 3px 8px;
   border-radius: 999px;
   color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 107, 0, 0.12);
-  border: 1px solid rgba(255, 153, 51, 0.36);
+  background: rgba(189, 41, 37, 0.12);
+  border: 1px solid rgba(189, 41, 37, 0.36);
   white-space: nowrap;
 }
 
@@ -76,10 +76,10 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: #FFEFD0;
-  border: 1px solid #F0C274;
+  background: var(--brand-soft);
+  border: 1px solid rgba(189, 41, 37, 0.22);
   border-radius: 14px;
-  color: #6B4A1A;
+  color: var(--brand-deep);
   font-family: 'Instrument Sans', sans-serif;
 }
 .noticeTitle { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
@@ -201,11 +201,25 @@ details[open] .tierSummary::before { content: '–  '; }
 .campaignCard {
   padding: 18px 18px 16px;
   border-radius: 20px;
-  background: linear-gradient(140deg, #FFF4E0 0%, #FFE0A8 60%, #FFCE80 100%);
-  border: 1px solid rgba(193, 75, 0, 0.16);
-  box-shadow: var(--shadow-hero);
+  // Matches EarningsHero — brand-red tint, not saffron
+  background: linear-gradient(135deg, var(--brand-tint, #FBEBEA) 0%, #FFFFFF 70%, #FFFFFF 100%);
+  border: 1px solid var(--brand-soft);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -12px rgba(189, 41, 37, 0.16);
   position: relative;
   overflow: hidden;
+
+  // Matches EarningsHero's corner radial flourish
+  &::after {
+    content: '';
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(189, 41, 37, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
 }
 
 .campEyebrowRow {
@@ -232,7 +246,7 @@ details[open] .tierSummary::before { content: '–  '; }
     height: 6px;
     border-radius: 50%;
     background: var(--accent);
-    box-shadow: 0 0 8px rgba(255, 107, 0, 0.6);
+    box-shadow: 0 0 8px rgba(189, 41, 37, 0.6);
   }
 }
 .campBadge {
@@ -241,10 +255,10 @@ details[open] .tierSummary::before { content: '–  '; }
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 3px 8px;
-  background: rgba(160, 62, 0, 0.1);
+  background: var(--brand-soft);
   color: var(--accent-deep);
   border-radius: 999px;
-  border: 1px solid rgba(160, 62, 0, 0.2);
+  border: 1px solid rgba(189, 41, 37, 0.22);
   font-weight: 600;
 }
 
@@ -516,11 +530,24 @@ details[open] .tierSummary::before { content: '–  '; }
 .weekHero {
   padding: 18px 18px 16px;
   border-radius: 20px;
-  background: linear-gradient(155deg, #FFF6E1 0%, #FFE3B5 100%);
-  border: 1px solid rgba(193, 75, 0, 0.14);
+  // Matches EarningsHero & campaignCard — unified brand-red tint across all SA/DM heroes
+  background: linear-gradient(135deg, var(--brand-tint, #FBEBEA) 0%, #FFFFFF 70%, #FFFFFF 100%);
+  border: 1px solid var(--brand-soft);
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-hero);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -12px rgba(189, 41, 37, 0.16);
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(189, 41, 37, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
 }
 .weekEyebrow {
   display: inline-flex;
@@ -695,8 +722,8 @@ details[open] .tierSummary::before { content: '–  '; }
   letter-spacing: -0.01em;
 }
 .splitCurrent {
-  background: rgba(255, 107, 0, 0.12);
-  border-color: rgba(255, 153, 51, 0.4);
+  background: rgba(189, 41, 37, 0.12);
+  border-color: rgba(189, 41, 37, 0.4);
   color: var(--brand-contrast);
 
   .splitConfig, .splitSA, .splitSM, .splitDM { color: var(--brand-contrast); }
