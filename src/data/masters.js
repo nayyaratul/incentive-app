@@ -144,11 +144,11 @@ export const stores = [
 // ---------- EMPLOYEE MASTER ----------
 export const employees = [
   // Reliance Digital Andheri (Electronics) team
-  { employeeId: 'EMP-0041', employeeName: 'Rohit Sharma',  role: ROLES.SA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2023-06-15', dateOfExit: null },
-  { employeeId: 'EMP-0042', employeeName: 'Priya Desai',   role: ROLES.SA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2022-11-02', dateOfExit: null },
-  { employeeId: 'EMP-0043', employeeName: 'Vikram Patil',  role: ROLES.SA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2024-01-22', dateOfExit: null },
-  { employeeId: 'EMP-0044', employeeName: 'Anita Reddy',   role: ROLES.SA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.NOTICE_PERIOD,  dateOfJoining: '2020-08-14', dateOfExit: '2026-05-10' },
-  { employeeId: 'EMP-0045', employeeName: 'Kiran Pawar',   role: ROLES.SA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2024-07-11', dateOfExit: null },
+  { employeeId: 'EMP-0041', employeeName: 'Rohit Sharma',  role: ROLES.SA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2023-06-15', dateOfExit: null, primaryDepartment: 'Telecom' },
+  { employeeId: 'EMP-0042', employeeName: 'Priya Desai',   role: ROLES.SA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2022-11-02', dateOfExit: null, primaryDepartment: 'ENT' },
+  { employeeId: 'EMP-0043', employeeName: 'Vikram Patil',  role: ROLES.SA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2024-01-22', dateOfExit: null, primaryDepartment: 'Large Appliances' },
+  { employeeId: 'EMP-0044', employeeName: 'Anita Reddy',   role: ROLES.SA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.NOTICE_PERIOD,  dateOfJoining: '2020-08-14', dateOfExit: '2026-05-10', primaryDepartment: 'IT' },
+  { employeeId: 'EMP-0045', employeeName: 'Kiran Pawar',   role: ROLES.SA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2024-07-11', dateOfExit: null, primaryDepartment: 'Small Appliances' },
   { employeeId: 'EMP-0046', employeeName: 'Sunil Kumar',   role: ROLES.SM, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2017-02-20', dateOfExit: null },
   { employeeId: 'EMP-0047', employeeName: 'Manoj Iyer',    role: ROLES.BA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2024-03-04', dateOfExit: null, brandRep: 'Samsung' },
   { employeeId: 'EMP-0048', employeeName: 'Deepa Menon',   role: ROLES.BA, storeCode: 'RD3675', payrollStatus: PAYROLL_STATUS.ACTIVE,         dateOfJoining: '2024-02-15', dateOfExit: null, brandRep: 'Vivo' },

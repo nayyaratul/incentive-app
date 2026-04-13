@@ -1,10 +1,11 @@
 // ============================================================================
-// Gamification layer — badges, levels (tiers), quests.
-// Layered on top of the brief; not part of the formal incentive calculation.
+// Gamification layer — badges + quests.
+// IMPORTANT: quests reference ONLY the incentive gates defined in the brief.
+// No invented bonuses. Each quest's "reward" is the exact payout treatment
+// described in the brief when the corresponding gate is crossed.
 // ============================================================================
 
-// -------- Levels / Tiers --------
-// Based on MTD final payout. Purely visual progression.
+// -------- Levels / Tiers (currently unused on home — kept for future) --------
 export const LEVEL_TIERS = [
   { id: 'starter',  label: 'Starter',  floor: 0,    ceiling: 1000,    color: '#6B7280', gradient: 'linear-gradient(135deg, #D1D5DB 0%, #9CA3AF 100%)' },
   { id: 'bronze',   label: 'Bronze',   floor: 1000, ceiling: 3000,    color: '#9C6A2F', gradient: 'linear-gradient(135deg, #E7BE8A 0%, #B57832 100%)' },
@@ -18,83 +19,123 @@ export function tierFor(mtdPayout) {
   return LEVEL_TIERS.find((t) => mtdPayout >= t.floor && mtdPayout < t.ceiling) || LEVEL_TIERS[0];
 }
 
-// -------- Badges --------
-// One-off achievements earned when a condition is first met for this month.
-// `unlockedAt` null = locked; set to a datetime when earned.
+// -------- Badges — progress markers, no extra ₹ reward --------
+// These celebrate reaching brief-defined gates (multiplier unlocked, streak,
+// campaign qualification). No invented rupee value.
 export const badgesByEmployee = {
   'EMP-0041': [
-    { id: 'first-sale',   icon: '🎯', label: 'First sale',     note: 'Made your first qualifying sale this month',       unlockedAt: '2026-04-01T10:32:00' },
-    { id: 'streak-7',     icon: '🔥', label: '7-day streak',   note: 'Qualifying sale every day for 7 consecutive days', unlockedAt: '2026-04-13T12:01:00' },
-    { id: 'crore-club',   icon: '💎', label: 'Crore club',     note: 'Sold ₹1 lakh+ gross in a single day',              unlockedAt: null },
-    { id: 'push-master',  icon: '🚀', label: 'Push master',    note: 'Cleared 3 priority SKUs in one shift',             unlockedAt: '2026-04-08T16:45:00' },
-    { id: 'qled-pro',     icon: '📺', label: 'QLED pro',       note: 'Sold 2+ premium TVs this month',                   unlockedAt: '2026-04-12T18:20:00' },
-    { id: 'top-5',        icon: '🏆', label: 'Top-5 in store', note: 'Finished top 5 on the store leaderboard this week', unlockedAt: null },
+    { id: 'first-sale',     icon: '🎯', label: 'First sale',          note: 'Made your first qualifying sale this month',       unlockedAt: '2026-04-01T10:32:00' },
+    { id: 'streak-7',       icon: '🔥', label: '7-day streak',        note: 'Qualifying sale every day for 7 days',             unlockedAt: '2026-04-13T12:01:00' },
+    { id: 'multiplier-120', icon: '🎉', label: 'Dept at 120%',        note: 'Large Appliances crossed 120% — paying 1.20× rate', unlockedAt: '2026-04-11T17:22:00' },
+    { id: 'tv-premium',     icon: '📺', label: 'Premium TV',          note: 'Sold a TV in the ₹60k+ top-incentive band',         unlockedAt: null },
+    { id: 'all-depts',      icon: '🧭', label: 'All depts',           note: 'Made at least one qualifying sale in every dept',  unlockedAt: null },
   ],
   'GRC-2203': [
-    { id: 'campaign-starter', icon: '🎂', label: 'Campaign starter', note: 'Sold your first campaign article',    unlockedAt: '2026-04-15T11:20:00' },
-    { id: 'cake-crusher',     icon: '🍰', label: 'Cake crusher',     note: 'Sold 10+ cakes in a single day',        unlockedAt: null },
-    { id: 'all-brands',       icon: '✨', label: 'All brands',       note: 'Sold from every brand in the campaign', unlockedAt: '2026-04-18T14:15:00' },
+    { id: 'first-campaign', icon: '🎂', label: 'Campaign opener',     note: 'Sold your first eligible article in the campaign', unlockedAt: '2026-04-15T11:20:00' },
+    { id: 'store-100',      icon: '🎯', label: 'Store at 100%',       note: 'Store crosses target — unlocks ₹2/pc per brief',   unlockedAt: null },
+    { id: 'all-brands',     icon: '✨', label: 'Every brand',         note: 'Sold at least one piece from every campaign brand', unlockedAt: '2026-04-18T14:15:00' },
   ],
   'FNL-3103': [
-    { id: 'full-week',    icon: '📅', label: 'Full week',     note: 'Present all 7 days of the incentive week',   unlockedAt: '2026-04-18T19:00:00' },
-    { id: 'first-qualify',icon: '✅', label: 'First qualifier', note: 'Store beat weekly target for the first time', unlockedAt: '2026-04-11T20:00:00' },
-    { id: 'consistency',  icon: '🎯', label: 'Consistency',   note: 'Store qualified 3 weeks in a row',           unlockedAt: null },
+    { id: 'full-week',      icon: '📅', label: 'Full week present',   note: '7 PRESENT days — exceeds the §8.5 minimum',        unlockedAt: '2026-04-18T19:00:00' },
+    { id: 'first-qualify',  icon: '✅', label: 'Store qualified',     note: 'Store beat the weekly target — pool unlocked',     unlockedAt: '2026-04-11T20:00:00' },
+    { id: 'consistency',    icon: '🏆', label: '3 weeks in a row',    note: 'Store qualified three consecutive weeks',          unlockedAt: null },
   ],
 };
 
-// -------- Quests --------
-// Short-duration tasks that admin portal can push; act as mini-contests.
-// Statuses: active / completed / locked.
+// -------- Quests — brief-aligned only --------
+// Each quest tracks progress toward a gate/mechanic already defined in the
+// vendor brief. Rewards quote the brief's own payout — no added incentives.
 export const questsByEmployee = {
+  // Rohit (SA, Electronics — primary dept Telecom, currently at 75%)
   'EMP-0041': [
     {
-      id: 'q-today-3-samsung',
-      type: 'daily',
-      title: 'Sell 3 Samsung / Oppo / Vivo phones today',
-      progress: { current: 2, target: 3 },
-      reward: { kind: 'bonus', amount: 100 },
+      id: 'q-telecom-85',
+      type: 'Dept multiplier',
+      title: 'Help Telecom reach 85% of target',
+      progress: { current: 75, target: 85, unit: '%' },
+      reward: 'Unlocks 50% payout on your Telecom base incentive',
+      reference: 'Brief §6.4 Step 2',
       status: 'active',
-      expiresAt: '2026-04-13T22:00:00',
     },
     {
-      id: 'q-week-premium-tv',
-      type: 'weekly',
-      title: 'Move one premium TV (₹60k+) this week',
-      progress: { current: 0, target: 1 },
-      reward: { kind: 'bonus', amount: 250 },
+      id: 'q-telecom-100',
+      type: 'Dept multiplier',
+      title: 'Stretch — Telecom at 100%',
+      progress: { current: 75, target: 100, unit: '%' },
+      reward: 'Unlocks full 100% payout on Telecom base',
+      reference: 'Brief §6.4 Step 2',
       status: 'active',
-      expiresAt: '2026-04-19T22:00:00',
     },
     {
-      id: 'q-5-airdopes',
-      type: 'daily',
-      title: 'Clear 5 boAt Airdopes as add-ons',
-      progress: { current: 5, target: 5 },
-      reward: { kind: 'bonus', amount: 75 },
+      id: 'q-tv-premium',
+      type: 'Top slab',
+      title: 'Sell one TV in the ₹60k+ band',
+      progress: { current: 0, target: 1, unit: 'sold' },
+      reward: '₹225 per unit — highest TV base incentive slab',
+      reference: 'Brief §6.4 Step 1',
+      status: 'active',
+    },
+    {
+      id: 'q-large-appl-120',
+      type: 'Dept multiplier',
+      title: 'Large Appliances at 120%',
+      progress: { current: 127, target: 120, unit: '%' },
+      reward: '1.20× on your Large Appliance base — active now',
+      reference: 'Brief §6.4 Step 2',
       status: 'completed',
-      completedAt: '2026-04-12T19:40:00',
     },
   ],
+
+  // Meena (SA, Grocery — Cake Rush at 92%)
   'GRC-2203': [
     {
-      id: 'q-unibic-push',
-      type: 'weekly',
-      title: 'Sell 20 pieces of Unibic plum cake this week',
-      progress: { current: 12, target: 20 },
-      reward: { kind: 'bonus', amount: 80 },
+      id: 'q-store-100',
+      type: 'Store gate',
+      title: 'Get store to 100% of ₹1.67L target',
+      progress: { current: 92, target: 100, unit: '%' },
+      reward: '₹2 per piece across all eligible articles sold',
+      reference: 'Brief §7.2',
       status: 'active',
-      expiresAt: '2026-04-25T23:00:00',
+    },
+    {
+      id: 'q-store-120',
+      type: 'Store gate',
+      title: 'Stretch — Store at 120%',
+      progress: { current: 92, target: 120, unit: '%' },
+      reward: '₹3 per piece — applies to every piece, not just above 120%',
+      reference: 'Brief §7.2',
+      status: 'active',
+    },
+    {
+      id: 'q-store-130',
+      type: 'Store gate',
+      title: 'Stretch — Store at 130%',
+      progress: { current: 92, target: 130, unit: '%' },
+      reward: '₹4 per piece — top slab; applies to all pieces',
+      reference: 'Brief §7.2',
+      status: 'active',
     },
   ],
+
+  // Sara (SA, F&L — week qualified, 7/7 present)
   'FNL-3103': [
     {
-      id: 'q-upsell',
-      type: 'daily',
-      title: 'Add 2 accessories to denim orders today',
-      progress: { current: 1, target: 2 },
-      reward: { kind: 'bonus', amount: 60 },
-      status: 'active',
-      expiresAt: '2026-04-13T22:00:00',
+      id: 'q-store-beat',
+      type: 'Store gate',
+      title: 'Store beats ₹12L weekly target',
+      progress: { current: 1260000, target: 1200000, unit: '₹' },
+      reward: 'Unlocks 1% of weekly gross as store pool',
+      reference: 'Brief §8.6 Step 1',
+      status: 'completed',
+    },
+    {
+      id: 'q-5-days',
+      type: 'Eligibility',
+      title: 'Be present 5+ days this week',
+      progress: { current: 7, target: 5, unit: 'days' },
+      reward: 'Keeps you eligible for this week\'s payout',
+      reference: 'Brief §8.5',
+      status: 'completed',
     },
   ],
 };
