@@ -37,8 +37,7 @@
 }
 
 .greeting {
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 380;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 36px;
   line-height: 1;
   color: var(--text-primary);
@@ -51,12 +50,10 @@
 
 .namaste {
   font-style: italic;
-  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 360;
   color: var(--text-secondary);
 }
 
 .name {
-  font-variation-settings: 'opsz' 144, 'SOFT' 20, 'wght' 620;
   color: var(--text-primary);
 }
 

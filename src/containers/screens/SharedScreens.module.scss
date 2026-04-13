@@ -9,8 +9,7 @@
 }
 .title {
   margin: 0 0 4px;
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 40, 'wght' 620;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 30px;
   line-height: 1;
   letter-spacing: -0.025em;
@@ -18,7 +17,7 @@
 }
 .sub {
   margin: 0;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -42,7 +41,7 @@
   background: var(--surface-card);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.005em;
@@ -80,8 +79,7 @@
 .section { display: flex; flex-direction: column; gap: 10px; }
 .sectionTitle {
   margin: 0;
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 580;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 18px;
   line-height: 1.15;
   color: var(--text-primary);
@@ -89,7 +87,7 @@
 }
 .lede {
   margin: 0;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.5;
@@ -116,14 +114,14 @@
   margin-bottom: 10px;
 }
 .ruleFamily {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 .ruleBrands {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   color: var(--text-muted);
   letter-spacing: 0.02em;
@@ -138,7 +136,7 @@
   padding: 8px 0;
 }
 .slabTableHead {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -148,15 +146,14 @@
 }
 .slabTableRow {
   border-bottom: 1px solid var(--divider);
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   color: var(--text-secondary);
 
   &:last-child { border-bottom: none; }
 }
 .slabAmount {
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 16px;
   color: var(--brand-deep);
   letter-spacing: -0.02em;
@@ -178,22 +175,21 @@
   &:last-child { margin-bottom: 0; }
 }
 .multBand {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12.5px;
   color: var(--text-primary);
   letter-spacing: -0.01em;
   font-weight: 600;
 }
 .multValue {
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 16px;
   color: var(--brand);
   letter-spacing: -0.02em;
 }
 .multZero {
   color: var(--error);
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -209,7 +205,7 @@
   padding: 10px 12px;
   background: var(--surface-sunken);
   border-radius: 10px;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.45;
@@ -263,7 +259,7 @@
   background: var(--surface-card);
   border: 1px solid var(--border);
   border-radius: 10px;
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   color: var(--text-secondary);
   letter-spacing: -0.01em;
@@ -301,8 +297,7 @@
 }
 .summaryDiv { height: 40px; width: 1px; background: var(--divider); }
 .summaryVal {
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 20px;
   line-height: 1;
   color: var(--text-primary);
@@ -310,7 +305,7 @@
   font-variant-numeric: tabular-nums;
 }
 .summaryCap {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -346,14 +341,13 @@
   border-bottom: 1px solid var(--divider);
 }
 .txDate {
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 580;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 14px;
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 .txId {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   color: var(--text-muted);
   letter-spacing: 0.04em;
@@ -366,13 +360,13 @@
   margin-bottom: 4px;
 }
 .txBrand {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 14.5px;
   font-weight: 700;
   color: var(--text-primary);
 }
 .txArticleCode {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   color: var(--text-secondary);
   letter-spacing: -0.01em;
@@ -381,7 +375,7 @@
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   color: var(--text-muted);
   letter-spacing: 0.02em;
@@ -416,14 +410,14 @@
 .txAmounts > div:last-child { text-align: right; }
 
 .txLabel {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 .txVal {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: var(--text-primary);

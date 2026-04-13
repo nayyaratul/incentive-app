@@ -15,7 +15,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -25,7 +25,7 @@
   > svg { color: var(--brand); }
 }
 .counter {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   color: var(--brand);
   font-weight: 700;
@@ -71,7 +71,7 @@
   margin-bottom: 6px;
 }
 .qType {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -82,7 +82,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   color: var(--success);
   font-weight: 700;
@@ -90,7 +90,7 @@
 }
 
 .qTitle {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
@@ -120,7 +120,7 @@
 }
 .questDone .qFill { background: var(--success); }
 .qCount {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   color: var(--text-primary);
   font-weight: 700;
@@ -129,7 +129,7 @@
 }
 
 .qReward {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12.5px;
   color: var(--text-secondary);
   line-height: 1.4;

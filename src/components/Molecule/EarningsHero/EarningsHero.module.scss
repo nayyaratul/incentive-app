@@ -52,7 +52,7 @@
 }
 
 .label {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -79,7 +79,7 @@
   background: rgba(15, 122, 58, 0.08);
   color: var(--success);
   border-radius: 999px;
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -96,8 +96,7 @@
 }
 
 .rupee {
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 360;
+  font-family: 'Inter', system-ui, sans-serif;
   font-style: italic;
   font-size: 54px;
   line-height: 0.9;
@@ -107,8 +106,7 @@
 }
 
 .amount {
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 680;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 80px;
   line-height: 0.85;
   color: var(--text-primary);
@@ -120,7 +118,7 @@
   position: relative;
   z-index: 1;
   margin: 0 0 18px;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   color: var(--text-secondary);
   display: flex;
@@ -130,7 +128,7 @@
 }
 
 .captionNum {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-weight: 700;
   color: var(--text-primary);
   font-size: 13px;
@@ -143,7 +141,7 @@
 }
 
 .remaining {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   color: var(--brand-deep);
   font-weight: 600;
   font-size: 12.5px;
@@ -200,7 +198,7 @@
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   letter-spacing: 0.04em;
   color: var(--text-muted);

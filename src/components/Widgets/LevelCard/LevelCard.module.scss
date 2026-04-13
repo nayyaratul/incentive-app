@@ -15,7 +15,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -25,7 +25,7 @@
   > svg { color: var(--brand); }
 }
 .clamp {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   font-weight: 700;
   color: var(--text-primary);
@@ -46,16 +46,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 72, 'SOFT' 20, 'wght' 720;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 26px;
   color: #FFFFFF;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 .tierName {
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 22px;
   line-height: 1;
   color: var(--text-primary);
@@ -67,7 +65,7 @@
   color: var(--text-secondary);
   line-height: 1.35;
 
-  strong { color: var(--text-primary); font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 12.5px; }
+  strong { color: var(--text-primary); font-family: 'Inter', system-ui, sans-serif; font-weight: 700; font-size: 12.5px; }
 }
 .nextTier {
   color: var(--brand);
@@ -113,11 +111,11 @@
   opacity: 1;
 }
 .ladderName {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-weight: 600;
 }
 .ladderRange {
-  font-family: 'Geist Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   letter-spacing: -0.01em;
 }
