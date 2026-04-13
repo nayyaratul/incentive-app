@@ -30,10 +30,10 @@ export default function FnlView({ payout, employee, store, role }) {
           <HeroCard.EyebrowRow>
             <HeroCard.Eyebrow withDot>
               <Calendar size={11} strokeWidth={2.2} />
-              Week · {payout.weekStart} → {payout.weekEnd}
+              Week of {payout.weekStart}
             </HeroCard.Eyebrow>
             <HeroCard.QualifyPill qualifies={qualifies}>
-              Store {qualifies ? 'qualifies' : 'missed target'}
+              {qualifies ? 'Qualifies' : 'Missed target'}
             </HeroCard.QualifyPill>
           </HeroCard.EyebrowRow>
 
@@ -44,7 +44,7 @@ export default function FnlView({ payout, employee, store, role }) {
           </HeroCard.Amount>
           <HeroCard.AmountCap>Your share this week</HeroCard.AmountCap>
 
-          <HeroCard.Figures>
+          <HeroCard.Figures dense>
             <HeroCard.Figure value={formatINR(payout.actualWeeklyGrossSales)} cap="actual" />
             <HeroCard.FigureDivider />
             <HeroCard.Figure value={formatINR(payout.weeklySalesTarget)} cap="target" />

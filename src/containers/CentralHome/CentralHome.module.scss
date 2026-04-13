@@ -1,6 +1,6 @@
 .shell { min-height: 100vh; position: relative; overflow-x: hidden; }
 .layout { max-width: 480px; margin: 0 auto; }
-.main { display: flex; flex-direction: column; gap: 22px; padding: 4px 0 112px; }
+.main { display: flex; flex-direction: column; gap: 28px; padding: 12px 0 112px; }
 
 .datemark {
   display: flex;
@@ -18,9 +18,9 @@
 
 
 /* Cards */
-.cardLight { padding: 14px 16px; border-radius: 16px; background: var(--surface-card); border: 1px solid var(--border); }
+.cardLight { padding: 16px 18px; border-radius: 16px; background: var(--surface-card); border: 1px solid var(--border); }
 .cardDark {
-  padding: 14px 16px;
+  padding: 16px 18px;
   border-radius: 16px;
   background: var(--surface-card);
   color: var(--text-primary);
@@ -31,7 +31,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
   gap: 8px;
 }
 .eyebrow {

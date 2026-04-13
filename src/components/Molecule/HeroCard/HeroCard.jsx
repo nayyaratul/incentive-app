@@ -134,8 +134,12 @@ function Progress({ pct, scale }) {
   );
 }
 
-function Figures({ children }) {
-  return <div className={styles.figures}>{children}</div>;
+function Figures({ children, dense = false }) {
+  return (
+    <div className={`${styles.figures} ${dense ? styles.dense : ''}`}>
+      {children}
+    </div>
+  );
 }
 
 function Figure({ value, cap, sub }) {
