@@ -7,6 +7,7 @@ import RootRouter from './containers/RootRouter';
 import Login from './containers/Login/Login';
 
 const useMock = process.env.REACT_APP_USE_MOCK_DATA === 'true';
+const enableSwitcher = process.env.REACT_APP_ENABLE_PERSONA_SWITCHER === 'true';
 
 function AuthGate() {
   const { isAuthenticated, loading } = useAuth();
@@ -23,8 +24,8 @@ function AuthGate() {
     <PersonaProvider>
       <OfflineBanner />
       <RootRouter />
-      <PersonaPill />
-      <PersonaModal />
+      {enableSwitcher && <PersonaPill />}
+      {enableSwitcher && <PersonaModal />}
     </PersonaProvider>
   );
 }
