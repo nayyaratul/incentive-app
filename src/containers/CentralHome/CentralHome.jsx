@@ -2,8 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Flag, CheckCircle2, XCircle, Search, X } from 'lucide-react';
 import styles from './CentralHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
-import { centralReporting } from '../../data/payouts';
-import { electronicsRuleMeta, groceryCampaign, fnlWeeklyRules } from '../../data/configs';
+import useCentralData from '../../hooks/useCentralData';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import StoreDetailDrawer from '../../components/Organism/StoreDetailDrawer/StoreDetailDrawer';
@@ -30,11 +29,19 @@ export default function CentralHome() {
   const [verticalFilter, setVerticalFilter] = useState('ALL');
   const [selectedStore, setSelectedStore] = useState(null);
   const { employee } = usePersona();
-  const firstName = employee.employeeName.split(' ')[0];
-  const cr = centralReporting;
+  const { reporting, rules, loading: dataLoading, error } = useCentralData();
+  const firstName = employee?.employeeName?.split(' ')[0] ?? '';
+
+  const ruleCatalog = (rules || []).map((plan) => ({
+    ruleId: `PLAN-${plan.id}`,
+    name: plan.planName,
+    version: plan.version,
+    workflowState: plan.status,
+    vertical: plan.vertical,
+  }));
 
   const filteredStores = useMemo(() => {
-    let list = cr.allStores || [];
+    let list = reporting?.allStores || [];
     if (verticalFilter !== 'ALL') list = list.filter((s) => s.vertical === verticalFilter);
     if (storeQuery.trim()) {
       const q = storeQuery.trim().toLowerCase();
@@ -46,7 +53,11 @@ export default function CentralHome() {
     }
     // Sort by payout desc
     return [...list].sort((a, b) => b.payoutMTD - a.payoutMTD);
-  }, [cr.allStores, verticalFilter, storeQuery]);
+  }, [reporting?.allStores, verticalFilter, storeQuery]);
+
+  if (dataLoading || !reporting) {
+    return <div className={styles.shell}><div className={styles.loading}>Loading...</div></div>;
+  }
 
   return (
     <div className={styles.shell}>
@@ -71,7 +82,7 @@ export default function CentralHome() {
               <div className={`${styles.datemark} rise rise-1`}>
                 <span>Stores · directory</span>
                 <span className={styles.line} />
-                <span>{filteredStores.length} of {cr.allStores.length}</span>
+                <span>{filteredStores.length} of {reporting?.allStores.length}</span>
               </div>
 
               <section className={`${styles.pad} rise rise-2`}>
@@ -161,7 +172,7 @@ export default function CentralHome() {
                     <span className={styles.eyebrow}>By state · payout MTD</span>
                   </div>
                   <div className={styles.stateGrid}>
-                    {cr.byState.map((s) => (
+                    {reporting?.byState.map((s) => (
                       <div key={s.state} className={styles.stateCard}>
                         <div className={styles.stateName}>{s.state}</div>
                         <div className={styles.statePay}>{formatINR(s.payoutMTD)}</div>
@@ -179,7 +190,7 @@ export default function CentralHome() {
               <div className={`${styles.datemark} rise rise-1`}>
                 <span>Alerts · anomalies</span>
                 <span className={styles.line} />
-                <span>{cr.flags.length} active</span>
+                <span>{reporting?.flags.length} active</span>
               </div>
               <section className={`${styles.pad} rise rise-2`}>
                 <div className={styles.cardDark}>
@@ -187,7 +198,7 @@ export default function CentralHome() {
                     <span className={styles.eyebrowLight}>Anomalies</span>
                   </div>
                   <div className={styles.flagList}>
-                    {cr.flags.map((f) => {
+                    {reporting?.flags.map((f) => {
                       const Icon = SEVERITY_ICONS[f.severity] || Flag;
                       return (
                         <div key={f.id} className={`${styles.flagRow} ${styles[`sev-${f.severity}`]}`}>
@@ -215,23 +226,23 @@ export default function CentralHome() {
               </HeroCard.EyebrowRow>
 
               <HeroCard.Amount prefix="₹">
-                {new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(cr.totals.organisationPayoutMTD)}
+                {new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(reporting?.totals.organisationPayoutMTD)}
               </HeroCard.Amount>
               <HeroCard.AmountCap>total incentive payout across all verticals</HeroCard.AmountCap>
 
               <HeroCard.Figures>
                 <HeroCard.Figure
-                  value={cr.totals.employeesEligible.toLocaleString('en-IN')}
+                  value={reporting?.totals.employeesEligible.toLocaleString('en-IN')}
                   cap="eligible employees"
                 />
                 <HeroCard.FigureDivider />
                 <HeroCard.Figure
-                  value={cr.totals.storesWithPayout}
+                  value={reporting?.totals.storesWithPayout}
                   cap="stores with payout"
                 />
                 <HeroCard.FigureDivider />
                 <HeroCard.Figure
-                  value={cr.totals.storesBelowGate}
+                  value={reporting?.totals.storesBelowGate}
                   cap="below gate"
                 />
               </HeroCard.Figures>
@@ -244,7 +255,7 @@ export default function CentralHome() {
               <div className={styles.cardHead}>
                 <span className={styles.eyebrow}>By vertical</span>
               </div>
-              {cr.byVertical.map((v) => (
+              {reporting?.byVertical.map((v) => (
                 <div key={v.vertical} className={styles.vRow}>
                   <div className={styles.vLeft}>
                     <span className={styles.vBadge}>{v.vertical}</span>
@@ -268,7 +279,7 @@ export default function CentralHome() {
               <div className={styles.cardHead}>
                 <span className={styles.eyebrow}>Top stores · drill down</span>
               </div>
-              {cr.topStores.map((s, i) => (
+              {reporting?.topStores.map((s, i) => (
                 <div key={s.storeCode} className={styles.storeRow}>
                   <div className={styles.storeRank}>#{i + 1}</div>
                   <div className={styles.storeMid}>
@@ -288,7 +299,7 @@ export default function CentralHome() {
                 <span className={styles.eyebrow}>By state</span>
               </div>
               <div className={styles.stateGrid}>
-                {cr.byState.map((s) => (
+                {reporting?.byState.map((s) => (
                   <div key={s.state} className={styles.stateCard}>
                     <div className={styles.stateName}>{s.state}</div>
                     <div className={styles.statePay}>{formatINR(s.payoutMTD)}</div>
@@ -303,10 +314,10 @@ export default function CentralHome() {
           <section className={`${styles.pad} rise rise-5`}>
             <div className={styles.cardDark}>
               <div className={styles.cardHead}>
-                <span className={styles.eyebrowLight}>Anomalies · {cr.flags.length}</span>
+                <span className={styles.eyebrowLight}>Anomalies · {reporting?.flags.length}</span>
               </div>
               <div className={styles.flagList}>
-                {cr.flags.map((f) => {
+                {reporting?.flags.map((f) => {
                   const Icon = SEVERITY_ICONS[f.severity] || Flag;
                   return (
                     <div key={f.id} className={`${styles.flagRow} ${styles[`sev-${f.severity}`]}`}>
@@ -330,24 +341,15 @@ export default function CentralHome() {
                 <span className={styles.readOnlyBadge}>Read-only</span>
               </div>
               <div className={styles.ruleList}>
-                <RuleRow
-                  ruleId={electronicsRuleMeta.ruleId}
-                  name={electronicsRuleMeta.name}
-                  version={electronicsRuleMeta.version}
-                  state={electronicsRuleMeta.workflowState}
-                />
-                <RuleRow
-                  ruleId={groceryCampaign.ruleMeta.ruleId}
-                  name={groceryCampaign.campaignName}
-                  version={groceryCampaign.ruleMeta.version}
-                  state={groceryCampaign.workflowState}
-                />
-                <RuleRow
-                  ruleId={fnlWeeklyRules.ruleMeta.ruleId}
-                  name="F&L Trends Weekly Incentive"
-                  version={fnlWeeklyRules.ruleMeta.version}
-                  state={fnlWeeklyRules.workflowState}
-                />
+                {ruleCatalog.map((r) => (
+                  <RuleRow
+                    key={r.ruleId}
+                    ruleId={r.ruleId}
+                    name={r.name}
+                    version={r.version}
+                    state={r.workflowState}
+                  />
+                ))}
               </div>
             </div>
           </section>

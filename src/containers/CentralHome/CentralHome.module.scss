@@ -1,4 +1,14 @@
 .shell { min-height: 100vh; position: relative; overflow-x: hidden; }
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
 .layout { max-width: 480px; margin: 0 auto; }
 .main { display: flex; flex-direction: column; gap: 28px; padding: 12px 0 112px; }
 
