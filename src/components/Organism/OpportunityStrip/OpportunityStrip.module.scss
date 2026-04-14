@@ -2,12 +2,19 @@
   padding: 0;
 }
 
+/* Accordion trigger — full-width tappable header */
 .header {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  padding: 0 20px 16px;
+  width: 100%;
+  padding: 0 20px 14px;
   gap: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  background: none;
+  border: none;
+  text-align: left;
 }
 
 .titleWrap {
@@ -41,6 +48,40 @@
   color: var(--accent-deep);
 }
 
+/* Chevron rotates on open */
+.chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: transform var(--dur-med, 200ms) var(--ease-out, ease-out),
+              background var(--dur-med, 200ms) var(--ease-out, ease-out);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  background: var(--surface-card);
+}
+
+/* Collapsible body — overflow hidden + max-height transition */
+.body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-med, 200ms) var(--ease-out, ease-out);
+  overflow: hidden;
+}
+
+.bodyOpen {
+  grid-template-rows: 1fr;
+}
+
+/* Inner wrapper needed for the grid-row trick */
 .scroll {
   display: flex;
   gap: 12px;
@@ -48,6 +89,7 @@
   padding: 4px 20px 10px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  min-height: 0; /* required for grid-template-rows 0fr collapse */
 
   &::-webkit-scrollbar {
     display: none;
