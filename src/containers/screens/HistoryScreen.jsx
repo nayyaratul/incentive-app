@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { Info, Search, X } from 'lucide-react';
 import styles from './SharedScreens.module.scss';
-import { transactionsByEmployee } from '../../data/transactions';
+import useAsync from '../../hooks/useAsync';
+import { fetchSales } from '../../api/sales';
+import { transformTransactions } from '../../api/transformers/transactions';
 import { formatINR } from '../../utils/format';
 import TransactionDetailSheet from '../../components/Organism/TransactionDetailSheet/TransactionDetailSheet';
 
@@ -45,8 +47,15 @@ export default function HistoryScreen({ employeeId }) {
   const [earningOnly, setEarningOnly] = useState(false);
   const [selectedTx, setSelectedTx] = useState(null);
 
-  const today = '2026-04-13';
-  const allTx = transactionsByEmployee[employeeId] || [];
+  const today = new Date().toISOString().slice(0, 10);
+
+  const salesResult = useAsync(
+    () => employeeId
+      ? fetchSales({ employeeId }).then(transformTransactions)
+      : Promise.resolve([]),
+    [employeeId]
+  );
+  const allTx = salesResult.data || [];
 
   const filtered = useMemo(() => {
     let list = allTx;
@@ -166,6 +175,10 @@ export default function HistoryScreen({ employeeId }) {
           <div className={styles.summaryCap}>final incentive</div>
         </div>
       </section>
+
+      {salesResult.loading && (
+        <div className={styles.loadingBar}>Loading transactions...</div>
+      )}
 
       {filtered.length === 0 ? (
         <div className={styles.empty}>
