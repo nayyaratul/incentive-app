@@ -40,7 +40,14 @@
   letter-spacing: 0.02em;
 }
 
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .input {
+  width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--surface-sunken, #e0e0e0);
   border-radius: var(--radius-button, 12px);
@@ -52,6 +59,29 @@
 
   &:focus {
     border-color: var(--brand, #bd2925);
+  }
+}
+
+.inputWrap .input {
+  padding-right: 40px;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted, #595959);
+  cursor: pointer;
+
+  &:active {
+    background: var(--surface-sunken, #f2f2f2);
   }
 }
 

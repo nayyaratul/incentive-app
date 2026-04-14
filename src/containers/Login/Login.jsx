@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import styles from './Login.module.scss';
 import { useAuth } from '../../context/AuthContext';
 import logo from '../../assets/brand/reliance-retail/Reliance_Retail.svg';
@@ -7,6 +8,7 @@ export default function Login() {
   const { login, error, loading } = useAuth();
   const [employerId, setEmployerId] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
 
@@ -43,14 +45,25 @@ export default function Login() {
 
         <div className={styles.field}>
           <label className={styles.label} htmlFor="login-pw">Password</label>
-          <input
-            id="login-pw"
-            className={styles.input}
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={submitting}
-          />
+          <div className={styles.inputWrap}>
+            <input
+              id="login-pw"
+              className={styles.input}
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={submitting}
+            />
+            <button
+              type="button"
+              className={styles.eyeBtn}
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff size={16} strokeWidth={2} /> : <Eye size={16} strokeWidth={2} />}
+            </button>
+          </div>
         </div>
 
         <button type="submit" className={styles.submit} disabled={submitting || loading}>
