@@ -48,7 +48,7 @@ export function PersonaPill() {
       type="button"
       className={`${styles.pill} ${hidden ? styles.pillHidden : ''}`}
       onClick={openSwitcher}
-      aria-label={`Switch persona (current: ${active.badge})`}
+      aria-label={`Switch persona (current: ${active?.badge || ''})`}
     >
       <UserCircle2 size={14} strokeWidth={2.4} />
       <span className={styles.pillLabel}>Switch</span>

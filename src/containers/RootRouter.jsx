@@ -14,6 +14,7 @@ import BrandAssociateHome from './BrandAssociateHome/BrandAssociateHome';
  */
 export default function RootRouter() {
   const { active } = usePersona();
+  if (!active) return null;
   const role = active.role;
 
   if (role === 'SM' || role === 'DM') return <StoreManagerHome />;

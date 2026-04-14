@@ -193,7 +193,15 @@ export function PersonaProvider({ children }) {
     [personas, active, employee, store, loading, error, isSwitcherOpen, switchTo],
   );
 
-  return <PersonaContext.Provider value={value}>{children}</PersonaContext.Provider>;
+  return (
+    <PersonaContext.Provider value={value}>
+      {loading ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', fontFamily: "'Instrument Sans', sans-serif", color: 'var(--text-muted, #595959)' }}>
+          Loading…
+        </div>
+      ) : children}
+    </PersonaContext.Provider>
+  );
 }
 
 export function usePersona() {
