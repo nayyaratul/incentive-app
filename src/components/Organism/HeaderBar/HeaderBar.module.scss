@@ -36,6 +36,31 @@
   padding-top: 8px;
 }
 
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-button, 12px);
+  background: var(--surface-sunken, #f2f2f2);
+  color: var(--text-muted, #595959);
+  cursor: pointer;
+  transition: background var(--dur-fast, 120ms) ease, color var(--dur-fast, 120ms) ease;
+
+  &:active {
+    background: var(--brand-soft, #f5d4d1);
+    color: var(--brand, #bd2925);
+  }
+}
+
 .greeting {
   font-family: 'Fraunces', Georgia, serif;
   font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 380;
