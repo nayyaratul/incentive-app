@@ -57,7 +57,7 @@ module.exports = (env, argv) => {
       new Dotenv({ path: `.env.${process.env.APP_ENV || 'dev'}`, systemvars: true, safe: false })
     ],
     devServer: {
-      port: 3000,
+      port: 3001,
       historyApiFallback: true,
       hot: true,
       open: false
