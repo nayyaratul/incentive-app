@@ -17,7 +17,6 @@ import {
 } from '../../data/configs';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
-import RulesScreen from '../screens/RulesScreen';
 import StoreTransactions from '../screens/StoreTransactions';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
@@ -150,8 +149,6 @@ export default function StoreManagerHome() {
         />
 
         <main className={styles.main}>
-          {tab === 'rules' && <RulesScreen defaultVertical={active.vertical} />}
-
           {tab === 'team' && (
             <>
               <div className={`${styles.datemark} rise rise-1`}>

@@ -1,28 +1,24 @@
 import React from 'react';
-import { Home, Users, ClipboardList, BarChart3, Flag, Store, Receipt } from 'lucide-react';
+import { Home, Users, BarChart3, Flag, Store, Receipt } from 'lucide-react';
 import styles from './BottomNav.module.scss';
 
 // Persona-specific nav sets. Kept ≤ 4 items for clarity on mobile.
 const NAV_SETS = {
   EMPLOYEE: [
     { id: 'home',    label: 'Home',    Icon: Home },
-    { id: 'rules',   label: 'Rules',   Icon: ClipboardList },
     { id: 'history', label: 'History', Icon: BarChart3 },
   ],
   BA: [
     { id: 'home',    label: 'Home',    Icon: Home },
-    { id: 'rules',   label: 'Rules',   Icon: ClipboardList },
   ],
   SM: [
     { id: 'home',  label: 'Home',  Icon: Home },
     { id: 'team',  label: 'Team',  Icon: Users },
-    { id: 'rules', label: 'Rules', Icon: ClipboardList },
     { id: 'tx',    label: 'Transactions', Icon: Receipt },
   ],
   CENTRAL: [
     { id: 'home',   label: 'Overview', Icon: Home },
     { id: 'stores', label: 'Stores',   Icon: Store },
-    { id: 'rules',  label: 'Rules',    Icon: ClipboardList },
     { id: 'alerts', label: 'Alerts',   Icon: Flag },
   ],
 };

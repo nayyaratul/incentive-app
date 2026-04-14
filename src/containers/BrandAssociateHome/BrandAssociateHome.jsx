@@ -7,7 +7,6 @@ import { baContributionsRD3675 } from '../../data/payouts';
 import { electronicsActualsRD3675 } from '../../data/configs';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
-import RulesScreen from '../screens/RulesScreen';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import { formatINR } from '../../utils/format';
 
@@ -35,7 +34,6 @@ export default function BrandAssociateHome() {
         />
 
         <main className={styles.main}>
-          {tab === 'rules' && <RulesScreen defaultVertical={active.vertical} />}
           {tab === 'home' && (<>
           {/* Eligibility notice */}
           <section className={`${styles.pad} rise rise-2`}>

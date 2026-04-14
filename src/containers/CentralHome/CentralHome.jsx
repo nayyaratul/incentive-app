@@ -8,7 +8,6 @@ import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import StoreDetailDrawer from '../../components/Organism/StoreDetailDrawer/StoreDetailDrawer';
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
-import RulesScreen from '../screens/RulesScreen';
 import { formatINR } from '../../utils/format';
 
 const SEVERITY_ICONS = {
@@ -67,8 +66,6 @@ export default function CentralHome() {
         />
 
         <main className={styles.main}>
-          {tab === 'rules' && <RulesScreen defaultVertical="ELECTRONICS" />}
-
           {tab === 'stores' && (
             <>
               <div className={`${styles.datemark} rise rise-1`}>

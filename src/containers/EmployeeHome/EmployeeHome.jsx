@@ -9,7 +9,6 @@ import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/Leade
 import ElectronicsView from './views/ElectronicsView';
 import GroceryView from './views/GroceryView';
 import FnlView from './views/FnlView';
-import RulesScreen from '../screens/RulesScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 
 export default function EmployeeHome() {
@@ -62,7 +61,6 @@ export default function EmployeeHome() {
             </>
           )}
 
-          {tab === 'rules' && <RulesScreen defaultVertical={active.vertical} />}
           {tab === 'history' && <HistoryScreen employeeId={employee.employeeId} vertical={active.vertical} />}
         </main>
       </div>
