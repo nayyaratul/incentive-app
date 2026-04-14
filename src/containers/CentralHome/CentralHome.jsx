@@ -29,7 +29,7 @@ export default function CentralHome() {
   const [verticalFilter, setVerticalFilter] = useState('ALL');
   const [selectedStore, setSelectedStore] = useState(null);
   const { employee } = usePersona();
-  const { reporting, rules, loading: dataLoading, error } = useCentralData();
+  const { reporting, rules, loading: dataLoading } = useCentralData();
   const firstName = employee?.employeeName?.split(' ')[0] ?? '';
 
   const ruleCatalog = (rules || []).map((plan) => ({

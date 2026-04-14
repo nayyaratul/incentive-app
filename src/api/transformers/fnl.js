@@ -34,7 +34,7 @@ function buildStreakShape(weeks) {
  * Maps the API employeeDetail (FNL) response to the payout shape
  * that FnlView expects.
  */
-export function transformFnlPayout(detail, ruleSplits, storeEmployees) {
+export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
   const cs = detail?.currentStanding ?? {};
   const weeks = detail?.weeks ?? [];
   const roleSplit = cs.roleSplit ?? {};

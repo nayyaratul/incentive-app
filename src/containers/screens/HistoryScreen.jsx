@@ -55,7 +55,7 @@ export default function HistoryScreen({ employeeId }) {
       : Promise.resolve([]),
     [employeeId]
   );
-  const allTx = salesResult.data || [];
+  const allTx = useMemo(() => salesResult.data || [], [salesResult.data]);
 
   const filtered = useMemo(() => {
     let list = allTx;
@@ -77,7 +77,7 @@ export default function HistoryScreen({ employeeId }) {
       );
     }
     return list;
-  }, [allTx, period, txType, earningOnly, query]);
+  }, [allTx, period, txType, earningOnly, query, today]);
 
   const mtdEarned = filtered.reduce((s, tx) => s + (tx.finalIncentive || 0), 0);
   const mtdGross  = filtered.reduce((s, tx) => s + tx.grossAmount, 0);

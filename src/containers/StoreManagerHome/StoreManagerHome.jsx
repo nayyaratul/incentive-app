@@ -49,7 +49,7 @@ export default function StoreManagerHome() {
     [active?.vertical],
   );
 
-  const storeTeam = employeesResult.data || [];
+  const storeTeam = useMemo(() => employeesResult.data || [], [employeesResult.data]);
 
   const summary = useMemo(() => {
     const storeDetail = storeDetailResult.data;

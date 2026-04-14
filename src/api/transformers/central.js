@@ -34,7 +34,7 @@ function avg(arr, key) {
  * Maps the API dashboard + city/store rows + rules into the shape the
  * central reporting UI expects.
  */
-export function transformCentralReporting(dashboardData, cityRows, storeRows, rulesData) {
+export function transformCentralReporting(dashboardData, cityRows, storeRows, _rulesData) {
   const stores = storeRows ?? [];
   const cities = cityRows ?? [];
   const dash = dashboardData ?? {};

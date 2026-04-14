@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { computeStreak } from '../services/GamificationEngine/computeStreak';
-import { LEVEL_TIERS, tierFor, badgesByEmployee, questsByEmployee } from '../data/gamification';
+import { tierFor, badgesByEmployee, questsByEmployee } from '../data/gamification';
 
 /**
  * Computes gamification state from live API data.
