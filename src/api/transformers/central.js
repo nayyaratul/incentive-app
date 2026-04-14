@@ -105,13 +105,14 @@ export function transformCentralReporting(dashboardData, cityRows, storeRows, ru
     staffCount: Number(s.employeeCount) || 0,
   }));
 
-  // -- flags: derive from alerts or from data anomalies --
-  const alertFlags = (dash.alerts ?? []).map((a, i) => ({
-    id: a.id ?? `flag-${i}`,
-    storeCode: a.storeCode ?? null,
-    vertical: a.vertical ?? null,
-    severity: a.severity ?? 'info',
-    message: a.message ?? '',
+  // -- flags: derive from dashboard alerts.belowThresholdList --
+  const belowList = dash.alerts?.belowThresholdList ?? [];
+  const alertFlags = belowList.map((s, i) => ({
+    id: `flag-${i}`,
+    storeCode: s.storeCode ?? null,
+    vertical: '',
+    severity: (Number(s.achievementPct) || 0) < 70 ? 'alert' : 'warn',
+    message: `${s.storeName ?? s.storeCode} at ${s.achievementPct}% achievement`,
   }));
 
   return {
