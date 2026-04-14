@@ -36,15 +36,19 @@ export default function MomentumPills({
   return (
     <div className={styles.row}>
       {showCountdown && (
-        <span className={styles.pill}>
+        <span className={styles.segment}>
           <CalendarDays size={12} strokeWidth={2.4} className={styles.iconMuted} />
           <span className={styles.label}>Payout in</span>
           <span className={styles.value}>{days === 0 ? 'today' : `${days}d`}</span>
         </span>
       )}
 
+      {showCountdown && showMomentum && (
+        <span className={styles.divider} aria-hidden="true">·</span>
+      )}
+
       {showMomentum && (
-        <span className={`${styles.pill} ${styles[`mom-${momentumKind}`]}`}>
+        <span className={`${styles.segment} ${styles[`mom-${momentumKind}`]}`}>
           {momentumKind === 'up'   && <TrendingUp size={12} strokeWidth={2.4} />}
           {momentumKind === 'down' && <TrendingDown size={12} strokeWidth={2.4} />}
           {momentumKind === 'flat' && <TrendingUp size={12} strokeWidth={2.4} className={styles.iconMuted} />}
