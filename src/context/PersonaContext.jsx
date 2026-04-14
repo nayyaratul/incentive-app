@@ -9,12 +9,14 @@ import React, {
 
 import { fetchEmployees } from '../api/employees';
 import { fetchStores } from '../api/stores';
+import { useAuth } from './AuthContext';
 
 // Static imports for mock-data fallback
 import { personas as staticPersonas, DEFAULT_PERSONA_ID } from '../data/personas';
 import { employees as staticEmployees, stores as staticStores } from '../data/masters';
 
 const useMock = process.env.REACT_APP_USE_MOCK_DATA === 'true';
+const enableSwitcher = process.env.REACT_APP_ENABLE_PERSONA_SWITCHER === 'true';
 
 // ---------------------------------------------------------------------------
 // Helper: derive a color token from the employee role
@@ -80,9 +82,11 @@ export function PersonaProvider({ children }) {
   const [activeId, setActiveId] = useState(useMock ? DEFAULT_PERSONA_ID : null);
   const [isSwitcherOpen, setSwitcherOpen] = useState(false);
 
+  const auth = useMock ? { user: null } : useAuth();
+
   // Fetch employees + stores from the API on mount (skip when using mock data)
   useEffect(() => {
-    if (useMock) return;
+    if (useMock || !enableSwitcher) return;
 
     let cancelled = false;
 
@@ -109,6 +113,42 @@ export function PersonaProvider({ children }) {
       cancelled = true;
     };
   }, []);
+
+  // Auth-only mode: single persona from authenticated user
+  useEffect(() => {
+    if (useMock || enableSwitcher || !auth.user) return;
+
+    const u = auth.user;
+    const persona = {
+      id: `p-${u.employeeId}`,
+      employeeId: u.employeeId,
+      employeeName: u.employeeName,
+      role: u.role,
+      vertical: u.vertical || null,
+      storeCode: u.storeCode || null,
+      badge: u.vertical ? `${u.role} \u00b7 ${u.vertical}` : u.role,
+      tagline: u.storeName ? `${u.role} \u00b7 ${u.storeName}` : u.role,
+      color: u.role === 'SA' ? 'crimson' : u.role === 'BA' ? 'saffron' : 'navy',
+    };
+
+    setPersonas([persona]);
+    setEmployeeList([{
+      employeeId: u.employeeId,
+      employeeName: u.employeeName,
+      role: u.role,
+      storeCode: u.storeCode,
+      storeName: u.storeName,
+      vertical: u.vertical,
+      payrollStatus: u.payrollStatus || 'ACTIVE',
+    }]);
+    setStoreList(u.storeCode ? [{
+      storeCode: u.storeCode,
+      storeName: u.storeName || '',
+      vertical: u.vertical || '',
+    }] : []);
+    setActiveId(persona.id);
+    setLoading(false);
+  }, [auth.user]);
 
   // --- derived lookups ---
   const active = useMemo(
