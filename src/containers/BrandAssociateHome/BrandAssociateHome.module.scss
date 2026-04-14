@@ -1,4 +1,13 @@
 .shell { min-height: 100vh; position: relative; overflow-x: hidden; }
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+}
 .layout { max-width: 480px; margin: 0 auto; }
 .main {
   display: flex;

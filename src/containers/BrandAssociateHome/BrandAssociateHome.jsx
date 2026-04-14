@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Info, Store, ArrowUpRight, Package } from 'lucide-react';
 import styles from './BrandAssociateHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
-import { employees } from '../../data/masters';
-import { baContributionsRD3675 } from '../../data/payouts';
-import { electronicsActualsRD3675 } from '../../data/configs';
+import useAsync from '../../hooks/useAsync';
+import { fetchSales } from '../../api/sales';
+import { fetchEmployees } from '../../api/employees';
+import { fetchStoreIncentive } from '../../api/incentives';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
@@ -13,14 +14,54 @@ import { formatINR } from '../../utils/format';
 export default function BrandAssociateHome() {
   const [tab, setTab] = useState('home');
   const { active, employee, store } = usePersona();
-  const firstName = employee.employeeName.split(' ')[0];
-  const sm = employees.find((e) => e.storeCode === store.storeCode && e.role === 'SM');
+
+  // Fetch BA's own sales for contribution stats
+  const salesResult = useAsync(
+    () => employee?.employeeId ? fetchSales({ employeeId: employee.employeeId, vertical: 'ELECTRONICS' }) : Promise.resolve([]),
+    [employee?.employeeId]
+  );
+
+  // Fetch store team to find the SM
+  const teamResult = useAsync(
+    () => store?.storeCode ? fetchEmployees(store.storeCode) : Promise.resolve([]),
+    [store?.storeCode]
+  );
+
+  // Fetch store detail for storeActual
+  const storeDetailResult = useAsync(
+    () => store?.storeCode ? fetchStoreIncentive(store.storeCode, 'ELECTRONICS') : Promise.resolve(null),
+    [store?.storeCode]
+  );
+
+  const sm = (teamResult.data || []).find((e) => e.role === 'SM') || null;
 
   // BA's OWN contribution stats (not the SM's credited base)
-  const myContribution = baContributionsRD3675[employee.employeeId] || null;
+  const myContribution = useMemo(() => {
+    const rows = salesResult.data;
+    if (!rows || rows.length === 0) return null;
+    const unitsSold = rows.reduce((sum, r) => sum + (r.quantity || 0), 0);
+    const grossValue = rows.reduce((sum, r) => sum + (r.grossAmount || 0), 0);
+    const skuMap = {};
+    rows.forEach((r) => {
+      if (!skuMap[r.articleCode]) skuMap[r.articleCode] = { sku: r.articleCode, family: '', units: 0 };
+      skuMap[r.articleCode].units += r.quantity || 0;
+    });
+    const topSkus = Object.values(skuMap).sort((a, b) => b.units - a.units).slice(0, 5);
+    return { brand: employee?.brandRep || active?.brandRep || 'N/A', unitsSold, grossValue, topSkus };
+  }, [salesResult.data, employee, active]);
 
   // Store-level actuals
-  const storeActual = electronicsActualsRD3675.reduce((s, d) => s + d.actualSales, 0);
+  const storeActual = useMemo(() => {
+    const depts = storeDetailResult.data?.departments || [];
+    return depts.reduce((s, d) => s + (Number(d.actual) || 0), 0);
+  }, [storeDetailResult.data]);
+
+  const firstName = employee?.employeeName?.split(' ')[0] ?? '';
+
+  const dataLoading = salesResult.loading || teamResult.loading || storeDetailResult.loading;
+  if (!active || !employee || !store || dataLoading) {
+    return <div className={styles.shell}><div className={styles.loading}>Loading...</div></div>;
+  }
 
   return (
     <div className={styles.shell}>
@@ -127,7 +168,7 @@ export default function BrandAssociateHome() {
                 </div>
                 <div className={styles.pulseDiv} />
                 <div>
-                  <div className={styles.pulseVal}>{store.operationalDaysInMonth}</div>
+                  <div className={styles.pulseVal}>{store.operationalDaysInMonth ?? '—'}</div>
                   <div className={styles.pulseCap}>operational days this month</div>
                 </div>
               </div>
