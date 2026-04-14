@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import styles from './EmployeeHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
-import { electronicsPayoutsRD3675, groceryPayoutT28V, fnlPayoutTRN0241 } from '../../data/payouts';
+import useElectronicsData from '../../hooks/useElectronicsData';
+import useGroceryData from '../../hooks/useGroceryData';
+import useFnlData from '../../hooks/useFnlData';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
@@ -16,18 +18,24 @@ export default function EmployeeHome() {
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const { active, employee, store } = usePersona();
 
-  const firstName = employee.employeeName.split(' ')[0];
+  const firstName = employee?.employeeName?.split(' ')[0] ?? '';
 
-  let myPayout = null;
-  if (active.vertical === VERTICALS.ELECTRONICS) {
-    myPayout = electronicsPayoutsRD3675.find((p) => p.employeeId === employee.employeeId);
-  } else if (active.vertical === VERTICALS.GROCERY) {
-    myPayout = groceryPayoutT28V;
-  } else if (active.vertical === VERTICALS.FNL) {
-    myPayout = fnlPayoutTRN0241;
-  }
+  const isElec = active?.vertical === VERTICALS.ELECTRONICS;
+  const isGroc = active?.vertical === VERTICALS.GROCERY;
+  const isFnl = active?.vertical === VERTICALS.FNL;
+
+  const elec = useElectronicsData(isElec ? employee?.employeeId : null, isElec ? store?.storeCode : null);
+  const groc = useGroceryData(isGroc ? employee?.employeeId : null);
+  const fnl = useFnlData(isFnl ? employee?.employeeId : null);
+
+  const dataLoading = elec.loading || groc.loading || fnl.loading;
+  const myPayout = isElec ? elec.payout : isGroc ? groc.payout : isFnl ? fnl.payout : null;
 
   const myRank = myPayout?.myRank;
+
+  if (!active || !employee || dataLoading) {
+    return <div className={styles.loading}>Loading...</div>;
+  }
 
   return (
     <div className={styles.shell}>
