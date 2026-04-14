@@ -14,23 +14,23 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
 
       <div className={styles.top}>
         <BrandLogo variant="full" height={28} />
-        <div className={styles.topRight}>
-          {typeof rank === 'number' && (
-            <HeaderRankChip rank={rank} onOpen={onOpenLeaderboard} />
-          )}
-          {isAuthenticated && (
-            <button type="button" className={styles.logout} onClick={logout} aria-label="Log out">
-              <LogOut size={16} strokeWidth={2.2} />
-            </button>
-          )}
-        </div>
+        {typeof rank === 'number' && (
+          <HeaderRankChip rank={rank} onOpen={onOpenLeaderboard} />
+        )}
       </div>
 
       {employeeName && (
-        <div className={styles.greeting}>
-          <span className={styles.namaste}>Namaste,</span>
-          <span className={styles.name}>{employeeName}</span>
-          <span className={styles.period}>.</span>
+        <div className={styles.greetingRow}>
+          <div className={styles.greeting}>
+            <span className={styles.namaste}>Namaste,</span>
+            <span className={styles.name}>{employeeName}</span>
+            <span className={styles.period}>.</span>
+          </div>
+          {isAuthenticated && (
+            <button type="button" className={styles.logout} onClick={logout} aria-label="Log out">
+              <LogOut size={14} strokeWidth={2.2} />
+            </button>
+          )}
         </div>
       )}
     </header>
