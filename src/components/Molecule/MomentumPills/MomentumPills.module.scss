@@ -1,62 +1,73 @@
-/* Full-width bar matching StreakNote — sits directly under the hero.
-   Two data points flow left-to-right: countdown + momentum delta. */
+/* Two compact data-tag pills — countdown + momentum delta.
+   Each hugs its own content; no full-width stretch. */
 
 .row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px 14px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  font-family: 'Instrument Sans', sans-serif;
-  line-height: 1;
-  white-space: nowrap;
-  overflow: hidden;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.segment {
+.pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: var(--text-secondary);
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  line-height: 1;
   white-space: nowrap;
-  line-height: 1;
 }
 
-.divider {
-  color: var(--border);
-  line-height: 1;
-  font-weight: 700;
-  padding: 0 2px;
-  flex-shrink: 0;
-}
-
-.iconMuted {
-  color: var(--text-muted);
-}
+.iconMuted { color: var(--text-muted); }
 
 .label {
-  color: var(--text-muted);
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px;
   font-weight: 500;
+  color: var(--text-muted);
 }
 
 .value {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12.5px;
   font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
-/* Vs-last momentum color variants — only text, no background per segment */
-.mom-up > svg,
-.mom-up .value,
-.mom-up .label { color: var(--success); }
+/* ---- Momentum sentiment variants ---- */
 
-.mom-down > svg,
-.mom-down .value,
-.mom-down .label { color: var(--warn); }
+/* Up — green tint */
+.mom-up {
+  background: rgba(15, 122, 58, 0.06);
+  border-color: rgba(15, 122, 58, 0.22);
 
-.mom-first .value,
-.mom-first .label { color: var(--brand-deep); }
+  > svg       { color: var(--success); }
+  .value      { color: var(--success); }
+  .label      { color: var(--success); opacity: 0.78; }
+}
+
+/* Down — amber tint */
+.mom-down {
+  background: rgba(193, 75, 0, 0.06);
+  border-color: rgba(193, 75, 0, 0.22);
+
+  > svg       { color: var(--warn); }
+  .value      { color: var(--warn); }
+  .label      { color: var(--warn); opacity: 0.78; }
+}
+
+/* Flat — stays neutral */
+.mom-flat {}
+
+/* First period — brand tint */
+.mom-first {
+  background: var(--brand-soft);
+  border-color: rgba(189, 41, 37, 0.2);
+
+  .value { color: var(--brand-deep); }
+  .label { color: var(--brand-deep); opacity: 0.78; }
+}
