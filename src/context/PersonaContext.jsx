@@ -82,7 +82,8 @@ export function PersonaProvider({ children }) {
   const [activeId, setActiveId] = useState(useMock ? DEFAULT_PERSONA_ID : null);
   const [isSwitcherOpen, setSwitcherOpen] = useState(false);
 
-  const auth = useMock ? { user: null } : useAuth();
+  // Always call useAuth (rules of hooks); in mock mode auth.user is null anyway
+  const auth = useAuth();
 
   // Fetch employees + stores from the API on mount (skip when using mock data)
   useEffect(() => {
