@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import styles from './OpportunityStrip.module.scss';
+import OpportunityCard from '../../Molecule/OpportunityCard/OpportunityCard';
 
 export default function OpportunityStrip({ opportunities, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -25,22 +26,13 @@ export default function OpportunityStrip({ opportunities, defaultOpen = true }) 
       </button>
 
       <div className={`${styles.body} ${open ? styles.bodyOpen : ''}`}>
-        <div className={styles.list}>
-          {opportunities.map((opp, i) => (
-            <div key={opp.sku} className={styles.row}>
-              <span className={styles.rank}>{String(i + 1).padStart(2, '0')}</span>
-              <div className={styles.info}>
-                <div className={styles.sku}>{opp.sku}</div>
-                <div className={styles.band}>{opp.band}</div>
-              </div>
-              <div className={styles.earn}>
-                <span className={styles.earnAmount}>
-                  <span className={styles.earnRupee}>₹</span>{opp.earn}
-                </span>
-                <span className={styles.earnUnit}>per sale</span>
-              </div>
-            </div>
+        <div className={styles.scroll}>
+          {opportunities.map((opp) => (
+            <OpportunityCard key={opp.sku} {...opp} />
           ))}
+          <div className={styles.endCap} aria-hidden="true">
+            <span className={styles.endMark}>END</span>
+          </div>
         </div>
       </div>
     </section>
