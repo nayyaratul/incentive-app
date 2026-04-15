@@ -44,30 +44,31 @@ export default function TransactionDetailSheet({ tx, open, onClose }) {
       icon={<Receipt size={16} strokeWidth={2.2} />}
     >
       <div className={styles.body}>
-        {/* Incentive trace -- the value-conveying summary */}
+        {/* Incentive trace -- the value-conveying summary.
+            Laid out as a 5-column x 2-row grid: labels on row 1, values
+            and operators on row 2 with baseline alignment so the `x` and
+            `=` line up with the value baselines even though Final is
+            larger than Base/Multiplier. */}
         <section className={`${styles.trace} ${excluded ? styles.traceZero : ''} ${includes ? styles.traceEarned : ''}`}>
-          <div className={styles.traceRow}>
-            <span className={styles.traceLabel}>Base incentive</span>
-            <span className={styles.traceValue}>
-              {typeof tx.baseIncentive === 'number' ? `\u20B9${tx.baseIncentive}` : '\u2014'}
-            </span>
-          </div>
-          <div className={styles.traceOp}>&times;</div>
-          <div className={styles.traceRow}>
-            <span className={styles.traceLabel}>Multiplier</span>
-            <span className={styles.traceValue}>
-              {typeof tx.multiplierApplied === 'number'
-                ? `${(tx.multiplierApplied * 100).toFixed(0)}%`
-                : '\u2014'}
-            </span>
-          </div>
-          <div className={styles.traceOp}>=</div>
-          <div className={styles.traceRow}>
-            <span className={styles.traceLabel}>Final</span>
-            <span className={`${styles.traceValue} ${styles.traceFinal}`}>
-              {typeof tx.finalIncentive === 'number' ? `\u20B9${tx.finalIncentive}` : '\u2014'}
-            </span>
-          </div>
+          <span className={styles.traceLabel}>Base incentive</span>
+          <span className={styles.traceSpacer} aria-hidden="true" />
+          <span className={styles.traceLabel}>Multiplier</span>
+          <span className={styles.traceSpacer} aria-hidden="true" />
+          <span className={styles.traceLabel}>Final</span>
+
+          <span className={styles.traceValue}>
+            {typeof tx.baseIncentive === 'number' ? `\u20B9${tx.baseIncentive}` : '\u2014'}
+          </span>
+          <span className={styles.traceOp} aria-hidden="true">&times;</span>
+          <span className={styles.traceValue}>
+            {typeof tx.multiplierApplied === 'number'
+              ? `${(tx.multiplierApplied * 100).toFixed(0)}%`
+              : '\u2014'}
+          </span>
+          <span className={styles.traceOp} aria-hidden="true">=</span>
+          <span className={`${styles.traceValue} ${styles.traceFinal}`}>
+            {typeof tx.finalIncentive === 'number' ? `\u20B9${tx.finalIncentive}` : '\u2014'}
+          </span>
         </section>
 
         {tx.note && (
@@ -119,7 +120,7 @@ function Row({ label, value, strong, tail, tag }) {
     <div className={styles.row}>
       <span className={styles.rowLabel}>{label}</span>
       <span className={`${styles.rowValue} ${strong ? styles.rowValueStrong : ''}`}>
-        {value}
+        <span className={styles.rowValueText}>{value}</span>
         {tag && <span className={`${styles.rowTag} ${styles[`tag-${tag}`]}`}>{tag}</span>}
         {tail}
       </span>

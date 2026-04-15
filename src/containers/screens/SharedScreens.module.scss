@@ -30,7 +30,9 @@
   gap: 6px;
   margin-bottom: 14px;
   overflow-x: auto;
-  padding: 2px;
+  /* Vertical padding only — horizontal must stay 0 so the first tab's
+     left edge aligns flush with search, chips, cards, and day headings. */
+  padding: 2px 0;
 
   &::-webkit-scrollbar { display: none; }
   scrollbar-width: none;
@@ -291,7 +293,7 @@
 .summaryRow {
   display: grid;
   grid-template-columns: 1fr 1px 1fr 1px 1fr;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   padding: 14px 16px;
   background: var(--color-bg-elevated);
@@ -454,7 +456,8 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding: 0 2px 4px;
+  /* Flush-left with the tx cards below — no horizontal inset. */
+  padding: 0 0 6px;
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   font-weight: 700;
@@ -522,6 +525,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  /* Needed for ellipsis to actually trigger inside the flex row. */
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .txMeta {
@@ -541,7 +547,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px;
+  /* Matches the 4px breathing between brand/meta on the left column
+     so both sides share the same vertical rhythm. */
+  gap: 4px;
   flex-shrink: 0;
 }
 
@@ -679,10 +687,12 @@
 }
 
 /* ---------- 4-col summary strip (Store Transactions view) ---------- */
+/* Slightly tighter than .summaryRow because four columns on a 375px
+   viewport would otherwise squeeze the numeric values. */
 .summaryRow4 {
   display: grid;
   grid-template-columns: 1fr 1px 1fr 1px 1fr 1px 1fr;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
   padding: 12px 14px;
   background: var(--color-bg-elevated);
