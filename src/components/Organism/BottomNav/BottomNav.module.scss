@@ -2,7 +2,13 @@
    Technique: translucent base + heavy backdrop-filter (blur + saturate),
    pseudo-element refraction highlight at the top edge, layered shadows
    for depth, hairline border tinted with light.
-   Mobile-only. The nav does not transform on desktop. */
+
+   IMPORTANT: uses the PRIMITIVE tokens --white and --black (not the
+   semantic --color-white / --color-black). The semantic tokens mirror
+   per theme (in dark mode --color-white resolves to #000000), which
+   would make all our white refractions/highlights black and break the
+   glass effect. We want literal white highlights and literal black
+   shadows in both themes. */
 
 .nav {
   position: fixed;
@@ -16,20 +22,20 @@
   gap: var(--space-050);
 
   /* ── Liquid glass substrate ─────────────────────────── */
-  background: color-mix(in srgb, var(--color-white) 55%, transparent);
+  background: color-mix(in srgb, var(--white) 55%, transparent);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: var(--border-width-100) solid
-    color-mix(in srgb, var(--color-white) 65%, transparent);
+    color-mix(in srgb, var(--white) 65%, transparent);
   border-radius: var(--radius-full);
   padding: var(--space-075);
   z-index: 10;
 
   /* Inner top highlight (refraction) + two-stage drop shadow for lift */
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--color-white) 85%, transparent),
-    0 2px 8px color-mix(in srgb, var(--grey-100) 8%, transparent),
-    0 12px 32px color-mix(in srgb, var(--grey-100) 14%, transparent);
+    inset 0 1px 0 color-mix(in srgb, var(--white) 85%, transparent),
+    0 2px 8px color-mix(in srgb, var(--black) 8%, transparent),
+    0 12px 32px color-mix(in srgb, var(--black) 14%, transparent);
 
   margin-bottom: env(safe-area-inset-bottom, 0px);
 
@@ -42,34 +48,30 @@
     border-radius: inherit;
     background: linear-gradient(
       180deg,
-      color-mix(in srgb, var(--color-white) 40%, transparent) 0%,
-      color-mix(in srgb, var(--color-white) 10%, transparent) 40%,
+      color-mix(in srgb, var(--white) 40%, transparent) 0%,
+      color-mix(in srgb, var(--white) 10%, transparent) 40%,
       transparent 100%
     );
     pointer-events: none;
     z-index: 0;
   }
 
-  /* Dark mode: the dark translucent substrate needs MORE opacity (so it
-     separates from the already-dark page behind), and every white
-     highlight gets brighter so the glass reads as a distinct surface
-     instead of disappearing. The drop shadow also shifts to a faint
-     white glow rather than pure black (black shadow on black page is
-     invisible). */
+  /* Dark mode: dark translucent substrate but highlights stay WHITE
+     (literal primitive), shadows stay BLACK (literal primitive). */
   [data-theme="dark"] & {
     background: color-mix(in srgb, var(--grey-90) 72%, transparent);
-    border-color: color-mix(in srgb, var(--color-white) 18%, transparent);
+    border-color: color-mix(in srgb, var(--white) 18%, transparent);
     box-shadow:
-      inset 0 1px 0 color-mix(in srgb, var(--color-white) 24%, transparent),
-      inset 0 -1px 0 color-mix(in srgb, var(--color-white) 6%, transparent),
-      0 2px 8px color-mix(in srgb, var(--color-black) 50%, transparent),
-      0 16px 40px color-mix(in srgb, var(--color-black) 60%, transparent);
+      inset 0 1px 0 color-mix(in srgb, var(--white) 24%, transparent),
+      inset 0 -1px 0 color-mix(in srgb, var(--white) 6%, transparent),
+      0 2px 8px color-mix(in srgb, var(--black) 50%, transparent),
+      0 16px 40px color-mix(in srgb, var(--black) 60%, transparent);
 
     &::before {
       background: linear-gradient(
         180deg,
-        color-mix(in srgb, var(--color-white) 18%, transparent) 0%,
-        color-mix(in srgb, var(--color-white) 6%, transparent) 40%,
+        color-mix(in srgb, var(--white) 18%, transparent) 0%,
+        color-mix(in srgb, var(--white) 6%, transparent) 40%,
         transparent 100%
       );
     }
@@ -108,21 +110,24 @@
     transform 120ms ease-out;
   min-height: var(--size-48);
 
+  /* Light mode hover: very faint dark tint */
   &:hover {
     color: var(--color-text-primary);
-    background: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+    background: color-mix(in srgb, var(--black) 4%, transparent);
   }
 
   &:active {
     transform: scale(0.96);
   }
 
+  /* Dark mode: white-tinted text + hover bg (literal white, not the
+     theme-mirrored --color-white which would flip to black). */
   [data-theme="dark"] & {
-    color: color-mix(in srgb, var(--color-white) 72%, transparent);
+    color: color-mix(in srgb, var(--white) 72%, transparent);
 
     &:hover {
-      color: var(--color-white);
-      background: color-mix(in srgb, var(--color-white) 10%, transparent);
+      color: var(--white);
+      background: color-mix(in srgb, var(--white) 10%, transparent);
     }
   }
 }
@@ -130,28 +135,28 @@
 /* Active: solid brand pill riding on the glass tray — the brightest
    contrast in the component so wayfinding stays obvious. */
 .active {
-  color: var(--color-white);
+  color: var(--white);
   background: var(--color-action-primary);
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--color-white) 22%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--white) 22%, transparent),
     0 2px 6px color-mix(in srgb, var(--brand-50) 30%, transparent),
     0 4px 12px color-mix(in srgb, var(--brand-50) 24%, transparent);
 
   &:hover {
-    color: var(--color-white);
+    color: var(--white);
     background: var(--color-action-primary);
   }
 
   .label {
-    color: var(--color-white);
+    color: var(--white);
     font-weight: var(--font-weight-semibold);
   }
 
   [data-theme="dark"] & {
-    color: var(--color-text-on-action);
+    color: var(--white);
 
     .label {
-      color: var(--color-text-on-action);
+      color: var(--white);
     }
   }
 }
