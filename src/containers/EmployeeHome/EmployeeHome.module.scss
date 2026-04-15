@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   font-size: 14px;
 }
 
@@ -30,15 +30,15 @@
   align-items: center;
   gap: 8px;
   padding: 0 24px;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
 
   .line {
     flex: 1;
     height: 1px;
-    background: var(--border);
+    background: var(--color-border-default);
   }
 }
