@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { Users, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Users, TrendingUp, AlertTriangle, Target, Zap, Clock } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
@@ -82,17 +82,41 @@ export default function StoreManagerHome() {
         return t ? Number(t.multiplierPct) / 100 : 0;
       };
 
+      // Sort tiers by achievementFrom ascending for "next tier" logic
+      const sortedTiers = [...tiers].sort((a, b) => Number(a.achievementFrom) - Number(b.achievementFrom));
+
+      const findNextTier = (pct) => {
+        for (const t of sortedTiers) {
+          if (pct < Number(t.achievementFrom)) return { pct: Number(t.achievementFrom), mult: Number(t.multiplierPct) };
+        }
+        return null;
+      };
+
+      const storeAchPct = totalTarget > 0 ? Math.round((totalActual / totalTarget) * 100) : 0;
+
       return {
         kind: 'ELECTRONICS',
         totalTarget, totalActual, totalPayout,
-        achievementPct: totalTarget > 0 ? Math.round((totalActual / totalTarget) * 100) : 0,
-        departments: depts.map((d) => ({
-          department: d.department,
-          actualSales: Number(d.actual) || 0,
-          achievementPct: Number(d.achievementPct) || 0,
-          target: Number(d.target) || 0,
-          multiplier: findMult(Number(d.achievementPct) || 0),
-        })),
+        achievementPct: storeAchPct,
+        daysLeft: dayjs().endOf('month').diff(dayjs(), 'day'),
+        gapToTarget: totalTarget > totalActual ? totalTarget - totalActual : 0,
+        departments: depts.map((d) => {
+          const ach = Number(d.achievementPct) || 0;
+          const target = Number(d.target) || 0;
+          const actual = Number(d.actual) || 0;
+          const next = findNextTier(ach);
+          const gapToNext = next && target > 0 ? Math.max(0, Math.round(target * next.pct / 100 - actual)) : null;
+
+          return {
+            department: d.department,
+            actualSales: actual,
+            achievementPct: ach,
+            target,
+            multiplier: findMult(ach),
+            nextTier: next,
+            gapToNext,
+          };
+        }),
         // Find minimum achievement % needed to unlock any multiplier
         unlockPct: tiers.length > 0
           ? Math.min(...tiers.map((t) => Number(t.achievementFrom)))
@@ -138,6 +162,8 @@ export default function StoreManagerHome() {
         totalActual: deptActual,
         totalPayout,
         achievementPct: achPct,
+        daysLeft: dayjs().endOf('month').diff(dayjs(), 'day'),
+        gapToTarget: deptTarget > deptActual ? deptTarget - deptActual : 0,
         unlockPct: 100, // Grocery requires 100% store achievement
         employees: emps.map((emp) => {
           const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
@@ -175,6 +201,8 @@ export default function StoreManagerHome() {
         totalPayout,
         achievementPct: totalTarget > 0 ? Math.round((totalActual / totalTarget) * 100) : 0,
         storeQualifies: totalActual >= totalTarget,
+        daysLeft: 7 - dayjs().day(), // days left in week
+        gapToTarget: totalTarget > totalActual ? totalTarget - totalActual : 0,
         unlockPct: 100,
         employees: emps.map((emp) => {
           const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
@@ -258,12 +286,25 @@ export default function StoreManagerHome() {
                       {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${formatDateRange(summary.campaign.campaignStart, summary.campaign.campaignEnd)}`}
                       {summary.kind === 'FNL' && `Week · ${summary.week.start} → ${summary.week.end}`}
                     </HeroCard.Eyebrow>
+                    {summary.achievementPct >= 100 && (
+                      <HeroCard.TrendPill>Target exceeded!</HeroCard.TrendPill>
+                    )}
                   </HeroCard.EyebrowRow>
 
-                  <HeroCard.Amount suffix="%">{summary.achievementPct}</HeroCard.Amount>
+                  <HeroCard.Amount suffix="%" tone={summary.achievementPct >= 100 ? 'success' : undefined}>
+                    {summary.achievementPct}
+                  </HeroCard.Amount>
                   <HeroCard.AmountCap>
                     of store {summary.kind === 'FNL' ? 'weekly' : 'period'} target
                   </HeroCard.AmountCap>
+
+                  {/* Gap to target or surplus */}
+                  {summary.achievementPct < 100 && summary.gapToTarget > 0 && (
+                    <HeroCard.Caption>
+                      <Target size={13} strokeWidth={2.2} />
+                      <strong>{formatINR(summary.gapToTarget)}</strong> more to hit target
+                    </HeroCard.Caption>
+                  )}
 
                   <HeroCard.Figures>
                     <HeroCard.Figure
@@ -277,10 +318,18 @@ export default function StoreManagerHome() {
                       <HeroCard.FooterLabel>Total store payout</HeroCard.FooterLabel>
                       <HeroCard.FooterValue>{formatINR(summary.totalPayout)}</HeroCard.FooterValue>
                     </div>
-                    <HeroCard.FooterMeta>
-                      <Users size={12} strokeWidth={2.2} />
-                      <span>{summary.employees.length} staff</span>
-                    </HeroCard.FooterMeta>
+                    <div style={{ textAlign: 'right' }}>
+                      <HeroCard.FooterMeta>
+                        <Users size={12} strokeWidth={2.2} />
+                        <span>{summary.employees.length} staff</span>
+                      </HeroCard.FooterMeta>
+                      {typeof summary.daysLeft === 'number' && (
+                        <HeroCard.FooterMeta>
+                          <Clock size={12} strokeWidth={2.2} />
+                          <span>{summary.daysLeft} days left</span>
+                        </HeroCard.FooterMeta>
+                      )}
+                    </div>
                   </HeroCard.FooterBlock>
                 </HeroCard>
               </section>
@@ -294,11 +343,19 @@ export default function StoreManagerHome() {
                     <div className={styles.deptList}>
                       {summary.departments.map((d) => {
                         const mPct = Math.round(d.multiplier * 100);
+                        const isClose = d.nextTier && d.gapToNext != null && d.gapToNext > 0 && (d.nextTier.pct - d.achievementPct) <= 15;
+
                         return (
                           <div key={d.department} className={styles.deptRow}>
-                            <div>
+                            <div className={styles.deptInfo}>
                               <div className={styles.deptName}>{d.department}</div>
                               <div className={styles.deptSub}>{formatINR(d.actualSales)} of {formatINR(d.target)}</div>
+                              {isClose && (
+                                <div className={styles.deptNudge}>
+                                  <Zap size={11} strokeWidth={2.4} />
+                                  {formatINR(d.gapToNext)} to unlock {d.nextTier.mult}%
+                                </div>
+                              )}
                             </div>
                             <div className={styles.deptAch}>{d.achievementPct}%</div>
                             <div className={`${styles.deptMult} ${d.multiplier === 0 ? styles.multZero : ''}`}>
