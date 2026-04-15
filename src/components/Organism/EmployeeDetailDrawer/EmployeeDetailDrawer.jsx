@@ -49,7 +49,9 @@ export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClo
   const totalTxCount = recentTx.length;
 
   const ineligible = summaryRow?.ineligible;
-  const total = summaryRow?.total ?? 0;
+  const earned = summaryRow?.earned ?? summaryRow?.total ?? 0;
+  const potential = summaryRow?.potential ?? summaryRow?.eligible ?? 0;
+  const achievementPct = summaryRow?.achievementPct ?? 0;
   const days = summaryRow?.daysPresent;
 
   // Department breakdown from the API employee detail (Electronics)
@@ -83,19 +85,21 @@ export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClo
         <section className={styles.stats}>
           <div>
             <div className={styles.statVal} style={{ color: ineligible ? 'var(--color-text-tertiary)' : 'var(--brand-70)' }}>
-              {ineligible ? '\u2014' : formatINR(total)}
+              {ineligible ? '\u2014' : formatINR(earned)}
             </div>
-            <div className={styles.statCap}>this period</div>
+            <div className={styles.statCap}>earned</div>
           </div>
           <div className={styles.statDiv} />
           <div>
-            <div className={styles.statVal}>{typeof days === 'number' ? `${days}/7` : '\u2014'}</div>
-            <div className={styles.statCap}>days present</div>
+            <div className={styles.statVal}>
+              {ineligible ? '\u2014' : formatINR(potential)}
+            </div>
+            <div className={styles.statCap}>potential</div>
           </div>
           <div className={styles.statDiv} />
           <div>
-            <div className={styles.statVal}>{loading ? '…' : recentTx.length}</div>
-            <div className={styles.statCap}>recent tx</div>
+            <div className={styles.statVal}>{achievementPct > 0 ? `${achievementPct}%` : '\u2014'}</div>
+            <div className={styles.statCap}>achievement</div>
           </div>
         </section>
 

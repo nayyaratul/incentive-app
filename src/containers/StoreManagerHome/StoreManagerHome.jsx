@@ -93,6 +93,10 @@ export default function StoreManagerHome() {
           target: Number(d.target) || 0,
           multiplier: findMult(Number(d.achievementPct) || 0),
         })),
+        // Find minimum achievement % needed to unlock any multiplier
+        unlockPct: tiers.length > 0
+          ? Math.min(...tiers.map((t) => Number(t.achievementFrom)))
+          : null,
         employees: emps.map((emp) => {
           const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
           return {
@@ -100,8 +104,9 @@ export default function StoreManagerHome() {
             employeeName: emp.employeeName || master?.employeeName || emp.employeeId,
             role: emp.role || master?.role || '—',
             payrollStatus: master?.payrollStatus || 'ACTIVE',
-            eligible: Number(emp.baseIncentive) || 0,
-            total: Number(emp.finalIncentive) || 0,
+            achievementPct: Number(emp.achievementPct) || 0,
+            potential: Number(emp.baseIncentive) || 0,
+            earned: Number(emp.finalIncentive) || 0,
             ineligible: master?.payrollStatus && master.payrollStatus !== 'ACTIVE',
           };
         }),
@@ -133,6 +138,7 @@ export default function StoreManagerHome() {
         totalActual: deptActual,
         totalPayout,
         achievementPct: achPct,
+        unlockPct: 100, // Grocery requires 100% store achievement
         employees: emps.map((emp) => {
           const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
           return {
@@ -140,8 +146,9 @@ export default function StoreManagerHome() {
             employeeName: emp.employeeName || master?.employeeName || emp.employeeId,
             role: emp.role || master?.role || '—',
             payrollStatus: master?.payrollStatus || 'ACTIVE',
-            eligible: Number(emp.baseIncentive) || perEmp,
-            total: perEmp,
+            achievementPct: achPct, // store-level for grocery
+            potential: Number(emp.baseIncentive) || perEmp,
+            earned: perEmp,
             ineligible: false,
           };
         }),
@@ -168,6 +175,7 @@ export default function StoreManagerHome() {
         totalPayout,
         achievementPct: totalTarget > 0 ? Math.round((totalActual / totalTarget) * 100) : 0,
         storeQualifies: totalActual >= totalTarget,
+        unlockPct: 100,
         employees: emps.map((emp) => {
           const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
           return {
@@ -176,8 +184,9 @@ export default function StoreManagerHome() {
             role: emp.role || master?.role || '—',
             payrollStatus: master?.payrollStatus || 'ACTIVE',
             daysPresent: undefined, // needs attendance endpoint data
-            eligible: Number(emp.baseIncentive) || 0,
-            total: Number(emp.finalIncentive) || 0,
+            achievementPct: Number(emp.achievementPct) || 0,
+            potential: Number(emp.baseIncentive) || 0,
+            earned: Number(emp.finalIncentive) || 0,
             ineligible: false,
           };
         }),
@@ -359,6 +368,8 @@ export default function StoreManagerHome() {
 }
 
 function TeamRoster({ summary, onSelectRow }) {
+  const unlockPct = summary.unlockPct;
+
   return (
     <div className={styles.cardLight}>
       <div className={styles.cardHead}>
@@ -372,36 +383,46 @@ function TeamRoster({ summary, onSelectRow }) {
       {/* Column headers */}
       <div className={styles.rosterHeader}>
         <span>Employee</span>
-        <span className={styles.rosterHeaderRight}>Eligible</span>
+        <span className={styles.rosterHeaderRight}>Potential</span>
         <span className={styles.rosterHeaderRight}>Earned</span>
       </div>
 
       <div className={styles.rosterList}>
-        {summary.employees.map((e) => (
-          <button
-            key={e.employeeId}
-            type="button"
-            className={`${styles.rosterRow3Col} ${styles.rosterRowBtn} ${e.ineligible ? styles.rosterInelig : ''}`}
-            onClick={() => onSelectRow && onSelectRow(e)}
-          >
-            <div className={styles.rosterLeft}>
-              <span className={styles.rosterRole}>{e.role}</span>
-              <span className={styles.rosterName}>{e.employeeName}</span>
-              {e.payrollStatus !== 'ACTIVE' && (
-                <span className={styles.rosterStatus}>{e.payrollStatus.replace(/_/g, ' ')}</span>
-              )}
-              {typeof e.daysPresent === 'number' && (
-                <span className={styles.rosterDays}>{e.daysPresent}/7 days</span>
-              )}
-            </div>
-            <span className={styles.rosterEligible}>
-              {e.ineligible ? '—' : formatINR(e.eligible)}
-            </span>
-            <span className={styles.rosterPayout}>
-              {e.ineligible ? '—' : formatINR(e.total)}
-            </span>
-          </button>
-        ))}
+        {summary.employees.map((e) => {
+          const ach = e.achievementPct;
+          const unlocked = unlockPct != null && ach >= unlockPct;
+
+          return (
+            <button
+              key={e.employeeId}
+              type="button"
+              className={`${styles.rosterRow3Col} ${styles.rosterRowBtn} ${e.ineligible ? styles.rosterInelig : ''}`}
+              onClick={() => onSelectRow && onSelectRow(e)}
+            >
+              <div className={styles.rosterLeft}>
+                <span className={styles.rosterRole}>{e.role}</span>
+                <span className={styles.rosterName}>{e.employeeName}</span>
+                {e.payrollStatus !== 'ACTIVE' && (
+                  <span className={styles.rosterStatus}>{e.payrollStatus.replace(/_/g, ' ')}</span>
+                )}
+                {typeof e.daysPresent === 'number' && (
+                  <span className={styles.rosterDays}>{e.daysPresent}/7 days</span>
+                )}
+                {!e.ineligible && ach > 0 && (
+                  <span className={`${styles.rosterAch} ${unlocked ? styles.rosterAchGreen : ''}`}>
+                    {ach}%{unlockPct != null && !unlocked ? ` · need ${unlockPct}%` : ''}
+                  </span>
+                )}
+              </div>
+              <span className={styles.rosterPotential}>
+                {e.ineligible ? '—' : formatINR(e.potential)}
+              </span>
+              <span className={styles.rosterEarned}>
+                {e.ineligible ? '—' : formatINR(e.earned)}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
