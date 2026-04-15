@@ -43,10 +43,10 @@ export default function BadgesStrip({ employeeId, vertical }) {
             >
               <div className={styles.icon} aria-hidden="true">{b.icon}</div>
               <div className={styles.body}>
-                <Text variant="caption" size="sm" weight="semibold" truncate className={styles.label}>
+                <Text as="div" variant="caption" size="sm" weight="semibold" truncate className={styles.label}>
                   {b.label}
                 </Text>
-                <Text variant="micro" as="span" color="var(--color-text-tertiary)" className={styles.note}>
+                <Text as="div" variant="micro" className={styles.note}>
                   {isLocked ? 'Not yet' : new Date(b.unlockedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
                 </Text>
               </div>
