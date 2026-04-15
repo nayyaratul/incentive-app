@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { WifiOff } from 'lucide-react';
+import { Text } from '@/nexus/atoms';
 import styles from './OfflineBanner.module.scss';
 
 /**
@@ -23,17 +24,21 @@ export default function OfflineBanner() {
 
   if (online) return null;
 
+  const syncTime = lastSync.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
   return (
     <div className={styles.banner} role="status" aria-live="polite">
       <div className={styles.inner}>
-        <span className={styles.iconWrap}>
+        <span className={styles.iconWrap} aria-hidden="true">
           <WifiOff size={14} strokeWidth={2.4} />
         </span>
         <div className={styles.text}>
-          <div className={styles.title}>You're offline</div>
-          <div className={styles.sub}>
-            Showing saved data · last sync {lastSync.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })} · will refresh when you're back online
-          </div>
+          <Text as="div" variant="body" weight="bold" className={styles.title}>
+            You&apos;re offline
+          </Text>
+          <Text as="div" variant="caption" className={styles.sub}>
+            Showing saved data · last sync {syncTime} · will refresh when you&apos;re back online
+          </Text>
         </div>
       </div>
     </div>

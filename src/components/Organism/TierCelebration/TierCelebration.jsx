@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Sparkles, AlertTriangle, Trophy } from 'lucide-react';
+import { Modal } from '@/nexus/molecules';
+import { Heading, Text } from '@/nexus/atoms';
 import styles from './TierCelebration.module.scss';
 
 /**
@@ -33,13 +35,29 @@ export default function TierCelebration({ open, tier, onDismiss }) {
   const kind = tier.kind || 'up';
   const Icon = kind === 'down' ? AlertTriangle : kind === 'top' ? Trophy : Sparkles;
 
+  const handleDismiss = () => {
+    setVisible(false);
+    onDismiss && onDismiss();
+  };
+
   return (
-    <div
-      className={`${styles.overlay} ${styles[`kind-${kind}`]} ${styles[`intensity-${intensity}`]}`}
-      onClick={() => { setVisible(false); onDismiss && onDismiss(); }}
+    <Modal
+      open={open || visible}
+      onOpenChange={(isOpen) => { if (!isOpen) handleDismiss(); }}
+      showCloseButton={false}
+      closeOnOverlayClick
+      closeOnEsc
+      className={`${styles[`kind-${kind}`]} ${styles[`intensity-${intensity}`]} ${cfg.cardSize ? styles[`card-${cfg.cardSize}`] : ''}`}
+      ariaLabel={`${tier.eyebrow} — ${tier.title}`}
     >
+      {/* Animation layers — position: fixed so they paint over the full viewport
+          without being clipped by the modal body. pointer-events: none keeps
+          clicks falling through to the Modal overlay (which handles dismiss). */}
+
       {/* Halo glow behind the card — scales with intensity */}
-      {cfg.halo && <div className={`${styles.halo} ${styles[`halo-${cfg.halo}`]}`} aria-hidden="true" />}
+      {cfg.halo && (
+        <div className={`${styles.halo} ${styles[`halo-${cfg.halo}`]}`} aria-hidden="true" />
+      )}
 
       {/* Ring burst — count varies by tier (1 ring at 80%, 3 at 100%+) */}
       {cfg.rings > 0 && (
@@ -100,17 +118,30 @@ export default function TierCelebration({ open, tier, onDismiss }) {
         </div>
       )}
 
-      <div className={`${styles.card} ${cfg.cardSize ? styles[`card-${cfg.cardSize}`] : ''}`} onClick={(e) => e.stopPropagation()}>
+      {/* Card content — rendered inside the Modal surface */}
+      <div className={styles.cardContent}>
         <div className={styles.iconWrap} aria-hidden="true">
           <Icon size={cfg.iconSize || 22} strokeWidth={2.4} />
         </div>
-        <div className={styles.eyebrow}>{tier.eyebrow}</div>
-        <div className={styles.title}>{tier.title}</div>
-        <div className={`${styles.bigPct} ${cfg.pulse ? styles.bigPctPulse : ''}`}>{tier.multiplier}</div>
-        <div className={styles.dept}>{tier.dept}</div>
-        {tier.note && <div className={styles.note}>{tier.note}</div>}
+        <Text as="div" variant="overline" className={styles.eyebrow}>
+          {tier.eyebrow}
+        </Text>
+        <Heading level={3} className={styles.title}>
+          {tier.title}
+        </Heading>
+        <div className={`${styles.bigPct} ${cfg.pulse ? styles.bigPctPulse : ''}`}>
+          {tier.multiplier}
+        </div>
+        <Text as="div" variant="body" weight="bold" className={styles.dept}>
+          {tier.dept}
+        </Text>
+        {tier.note && (
+          <Text as="div" variant="body" className={styles.note}>
+            {tier.note}
+          </Text>
+        )}
       </div>
-    </div>
+    </Modal>
   );
 }
 

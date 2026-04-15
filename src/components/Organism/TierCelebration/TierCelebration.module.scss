@@ -1,32 +1,19 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-milestone);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(10, 22, 40, 0.45);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  animation: overlayFade 220ms ease-out both;
-  overflow: hidden;
-}
-
-@keyframes overlayFade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+/* ─── Animation layers ──────────────────────────────────────────────────────
+   All particle/glow layers use position: fixed so they paint over the full
+   viewport from inside the Modal body. pointer-events: none keeps clicks
+   falling through to the Modal Overlay which handles dismiss.
+   ─────────────────────────────────────────────────────────────────────────── */
 
 /* ---------- Halo (radial glow behind the card) ---------- */
 .halo {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   border-radius: 50%;
   pointer-events: none;
   transform: translate(-50%, -50%) scale(0.4);
   opacity: 0;
-  z-index: 1;
+  z-index: -1; /* behind modal surface */
   animation: haloExpand 1500ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
 
@@ -69,10 +56,10 @@
 
 /* ---------- Ring burst (concentric expanding circles, 100%+) ---------- */
 .ringLayer {
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 2;
+  z-index: 0;
 }
 
 .ring {
@@ -82,20 +69,21 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 3px solid var(--brand);
+  border: 3px solid var(--color-action-primary);
   transform: translate(-50%, -50%) scale(0.3);
   opacity: 0;
   animation: ringPulse 1700ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
 
-.kind-top .ring { border-color: #FFC233; }
-.kind-up  .ring { border-color: var(--success); }
+/* Per-kind ring colour overrides */
+:global(.kind-top) .ring  { border-color: #FFC233; }
+:global(.kind-up)  .ring  { border-color: var(--color-text-success); }
 
 /* Per-intensity ring colours so 80% (amber) ≠ 100%+ (gold) */
-.intensity-2 .ring { border-color: #FFA833; }   /* amber */
-.intensity-3 .ring,
-.intensity-4 .ring,
-.intensity-5 .ring { border-color: #FFC233; }   /* gold */
+:global(.intensity-2) .ring { border-color: #FFA833; }   /* amber */
+:global(.intensity-3) .ring,
+:global(.intensity-4) .ring,
+:global(.intensity-5) .ring { border-color: #FFC233; }   /* gold */
 
 @keyframes ringPulse {
   0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0.3); border-width: 4px; }
@@ -103,114 +91,100 @@
   100% { opacity: 0;   transform: translate(-50%, -50%) scale(7);   border-width: 1px; }
 }
 
-/* ---------- Card ---------- */
-.card {
-  position: relative;
-  z-index: 4;
-  max-width: 320px;
-  padding: 24px 26px 26px;
-  background: var(--surface-card);
-  border-radius: 22px;
-  box-shadow:
-    0 4px 16px rgba(10, 22, 40, 0.18),
-    0 24px 60px rgba(10, 22, 40, 0.32);
+/* ---------- Card content (inside Modal surface) ---------- */
+.cardContent {
   text-align: center;
-  animation: cardPop 380ms cubic-bezier(0.4, 1.6, 0.5, 1) both;
+  padding: var(--space-100);
 }
 
-.card-big { max-width: 340px; padding: 28px 28px 28px; }
-.card-max { max-width: 360px; padding: 32px 30px 30px; }
-
-@keyframes cardPop {
-  from { opacity: 0; transform: translateY(20px) scale(0.92); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
+/* Icon circle */
 .iconWrap {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--brand-soft);
-  color: var(--brand);
+  width: var(--size-56);
+  height: var(--size-56);
+  border-radius: var(--radius-full);
+  background: var(--brand-a100);
+  color: var(--color-action-primary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 14px;
-  border: 1px solid rgba(189, 41, 37, 0.22);
+  margin: 0 auto var(--space-175, 14px);
+  border: var(--border-width-100) solid color-mix(in srgb, var(--color-action-primary) 22%, transparent);
 }
 
-.kind-up .iconWrap {
+:global(.kind-up) .iconWrap {
   background: rgba(15, 122, 58, 0.12);
-  color: var(--success);
+  color: var(--color-text-success);
   border-color: rgba(15, 122, 58, 0.28);
 }
-.kind-top .iconWrap {
+:global(.kind-top) .iconWrap {
   background: rgba(255, 195, 51, 0.18);
   color: #B58400;
   border-color: rgba(181, 132, 0, 0.36);
 }
-.kind-down .iconWrap {
+:global(.kind-down) .iconWrap {
   background: rgba(193, 75, 0, 0.12);
-  color: var(--warn);
+  color: var(--color-text-warning);
   border-color: rgba(193, 75, 0, 0.28);
 }
 
-.card-big .iconWrap { width: 64px; height: 64px; margin-bottom: 16px; }
-.card-max .iconWrap {
-  width: 72px; height: 72px; margin-bottom: 18px;
+:global(.card-big) .iconWrap { width: var(--size-64); height: var(--size-64); margin-bottom: var(--space-200); }
+:global(.card-max) .iconWrap {
+  width: var(--size-72); height: var(--size-72); margin-bottom: var(--space-250);
   box-shadow: 0 0 0 6px rgba(255, 195, 51, 0.2), 0 0 0 12px rgba(255, 195, 51, 0.1);
 }
 
+/* Eyebrow label */
 .eyebrow {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 11px;
+  font-family: var(--sans);
+  font-size: var(--font-size-100);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-100);
+  display: block;
 }
-.kind-up .eyebrow { color: var(--success); }
-.kind-top .eyebrow { color: #B58400; }
-.kind-down .eyebrow { color: var(--warn); }
+:global(.kind-up)   .eyebrow { color: var(--color-text-success); }
+:global(.kind-top)  .eyebrow { color: #B58400; }
+:global(.kind-down) .eyebrow { color: var(--color-text-warning); }
 
+/* Title */
 .title {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--serif);
   font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 660;
-  font-size: 22px;
+  font-size: var(--font-size-600);
   line-height: 1.2;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.025em;
-  margin-bottom: 8px;
+  margin: 0 0 var(--space-100);
 }
+:global(.card-big) .title { font-size: calc(var(--font-size-600) + 0.125rem); margin-bottom: var(--space-125); }
+:global(.card-max) .title { font-size: var(--font-size-700); margin-bottom: var(--space-150); }
 
-.card-big .title { font-size: 24px; margin-bottom: 10px; }
-.card-max .title { font-size: 26px; margin-bottom: 12px; }
-
+/* Large percentage / multiplier display */
 .bigPct {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--serif);
   font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 720;
-  font-size: 56px;
+  font-size: var(--font-size-1000);
   line-height: 1;
   letter-spacing: -0.045em;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   font-variant-numeric: tabular-nums;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-075);
   display: inline-block;
 }
+:global(.card-big) .bigPct { font-size: calc(var(--font-size-1000) + 0.25rem); }
+:global(.card-max) .bigPct { font-size: calc(var(--font-size-1000) + 1rem); }
 
-.card-big .bigPct { font-size: 68px; }
-.card-max .bigPct { font-size: 80px; }
-
-.kind-up .bigPct { color: var(--success); }
-.kind-top .bigPct {
+:global(.kind-up)   .bigPct { color: var(--color-text-success); }
+:global(.kind-top)  .bigPct {
   background: linear-gradient(135deg, #FFC233 0%, #B58400 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 1px 0 rgba(181, 132, 0, 0.4));
 }
-.kind-down .bigPct { color: var(--warn); }
+:global(.kind-down) .bigPct { color: var(--color-text-warning); }
 
 .bigPctPulse {
   animation: pctPulse 800ms cubic-bezier(0.4, 1.6, 0.5, 1) 380ms both;
@@ -222,29 +196,32 @@
   100% { transform: scale(1); }
 }
 
+/* Department name */
 .dept {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 14px;
+  font-family: var(--sans);
+  font-size: var(--font-size-300);
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-050);
+  display: block;
 }
 
+/* Optional note */
 .note {
-  margin-top: 10px;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 12.5px;
-  color: var(--text-secondary);
+  margin-top: var(--space-125);
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
+  color: var(--color-text-secondary);
   line-height: 1.45;
 }
 
 /* ---------- Confetti ---------- */
 .confettiLayer {
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 3;     /* above halo + rings, beneath card content */
+  z-index: 0;
   overflow: hidden;
 }
 
@@ -255,7 +232,7 @@
   width: 12px;
   height: 18px;
   border-radius: 2px;
-  background: var(--bg, var(--brand));
+  background: var(--bg, var(--color-action-primary));
   opacity: 0;
   transform: translate(-50%, -50%);
   animation: confettoFly 1700ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
@@ -264,9 +241,9 @@
 }
 
 /* Bigger pieces for bigger moments */
-.intensity-3 .confetto { width: 13px; height: 20px; }
-.intensity-4 .confetto { width: 14px; height: 22px; animation-duration: 2000ms; }
-.intensity-5 .confetto { width: 15px; height: 24px; animation-duration: 2200ms; }
+:global(.intensity-3) .confetto { width: 13px; height: 20px; }
+:global(.intensity-4) .confetto { width: 14px; height: 22px; animation-duration: 2000ms; }
+:global(.intensity-5) .confetto { width: 15px; height: 24px; animation-duration: 2200ms; }
 
 @keyframes confettoFly {
   0% {
@@ -286,10 +263,10 @@
 
 /* ---------- Sparkles (110%+ — continuous gold glints) ---------- */
 .sparkleLayer {
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 3;
+  z-index: 0;
   overflow: hidden;
 }
 
@@ -317,10 +294,10 @@
 
 /* ---------- Streamers (top tier only) ---------- */
 .streamerLayer {
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 3;
+  z-index: 0;
   overflow: hidden;
 }
 
@@ -331,7 +308,7 @@
   width: 5px;
   height: 60px;
   background: var(--bg, #FFC233);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   opacity: 0;
   animation: streamerFall 2400ms cubic-bezier(0.4, 0.2, 0.6, 1) forwards;
   animation-delay: var(--delay, 0ms);
@@ -346,5 +323,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .confetto, .streamer, .ring, .halo, .sparkle { display: none; }
-  .card, .bigPctPulse { animation: none; }
+  .bigPctPulse { animation: none; }
 }
