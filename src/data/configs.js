@@ -76,6 +76,19 @@ export const electronicsMultiplierTiers = [
   { gateFromPct: 120,  gateToPct: Infinity, multiplier: 1.20, label: '120% and above' },
 ];
 
+// Floor intelligence — "push these now" SKU prompts surfaced to Electronics
+// SAs on the home view. In production these would be ranked by today's stock
+// position + per-unit incentive + brand-month priority; here we ship a
+// representative set across product families and earn brackets.
+export const electronicsOpportunities = [
+  { sku: 'Vivo Y28 · ₹15k–20k',         band: 'Telecom · Samsung/Oppo/Vivo tier', earn: 50  },
+  { sku: 'Samsung QLED 55"',            band: 'ENT · TV 40k–60k tier',            earn: 100 },
+  { sku: 'Sony Bravia 65" OLED',        band: 'ENT · TV 60k+ tier',               earn: 225 },
+  { sku: 'Lenovo IdeaPad 5 · ₹52k+',    band: 'IT · Laptop 52k+ tier',            earn: 90  },
+  { sku: 'LG 8 kg Front Load Washer',   band: 'Large Appliances · 25k–40k tier',  earn: 100 },
+  { sku: 'boAt Airdopes 141',           band: 'AIOT · Personal AV',               earn: 40  },
+];
+
 export const electronicsExclusions = {
   brands: ['Apple', 'OnePlus', 'Microsoft'],
   brandFamilyRestrictions: [{ brand: 'Microsoft', family: 'Laptop' }], // Microsoft Surface laptops
