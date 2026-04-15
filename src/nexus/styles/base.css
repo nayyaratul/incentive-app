@@ -9,9 +9,9 @@
   --rule:     #DDD9D3;
   --card-bg:  var(--white);
   --radius:   10px;
-  --mono:     'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  --mono:     'Inter', system-ui, -apple-system, sans-serif;
   --sans:     'Inter', system-ui, -apple-system, sans-serif;
-  --serif:    'Inter', Georgia, serif;
+  --serif:    'Inter', system-ui, -apple-system, sans-serif;
 
   /* typography — primitive: font sizes */
   --font-size-100:  0.625rem;   /* 10px */
