@@ -3,7 +3,7 @@
   grid-template-columns: 1fr 1.15fr 1fr;
   gap: var(--space-100);
   align-items: end;
-  padding: var(--space-200) 0 var(--space-150);
+  padding: var(--space-150) 0 var(--space-125);
 }
 
 .tile {
@@ -11,7 +11,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-075);
-  padding: var(--space-150) var(--space-100) var(--space-125);
+  padding: var(--space-125) var(--space-100) 0;
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-200);
@@ -24,6 +24,9 @@
   transform: translateY(8px);
   animation: podium-rise 260ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   animation-delay: var(--stagger-delay, 0ms);
+
+  /* Keeps plinth anchored flush to the bottom edge */
+  overflow: hidden;
 }
 
 @keyframes podium-rise {
@@ -39,10 +42,10 @@
 .tier_silver { border-top: 3px solid var(--medal-silver); }
 .tier_bronze { border-top: 3px solid var(--medal-bronze); }
 
-/* Heights — classic podium: center tallest */
-.tier_silver { min-height: 104px; }
-.tier_gold   { min-height: 128px; }
-.tier_bronze { min-height: 88px; }
+/* Strict podium order: #1 highest, #2 lower, #3 lowest */
+.tier_gold   { min-height: 196px; }
+.tier_silver { min-height: 154px; }
+.tier_bronze { min-height: 118px; }
 
 .self {
   box-shadow: 0 0 0 2px var(--brand-50) inset;
@@ -67,8 +70,8 @@
 }
 
 .avatar {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-full);
   background: var(--color-bg-tertiary);
   color: var(--color-text-primary);
@@ -83,7 +86,7 @@
 
 .name {
   font-family: var(--sans);
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--color-text-primary);
   line-height: 1.2;
@@ -102,9 +105,28 @@
   color: var(--brand-70);
   letter-spacing: -0.01em;
   margin-top: auto;
+  padding-bottom: var(--space-100);
 }
 
 .plinth {
-  /* reserved for future decorative fill — currently a no-op */
-  display: none;
+  width: calc(100% + 2px);
+  margin: 0 -1px;
+  border-top: 1px solid var(--color-border-default);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-bg-sunken) 62%, var(--color-bg-elevated)) 0%,
+    var(--color-bg-sunken) 100%
+  );
+}
+
+.tier_gold .plinth {
+  height: 58px;
+}
+
+.tier_silver .plinth {
+  height: 38px;
+}
+
+.tier_bronze .plinth {
+  height: 22px;
 }

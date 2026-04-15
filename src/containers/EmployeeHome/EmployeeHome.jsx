@@ -48,11 +48,13 @@ export default function EmployeeHome() {
       />
 
       <div className={styles.layout}>
-        <HeaderBar
-          employeeName={tab === 'home' ? firstName : null}
-          rank={tab === 'home' ? myRank?.rank : undefined}
-          onOpenLeaderboard={() => setLeaderboardOpen(true)}
-        />
+        {tab === 'home' && (
+          <HeaderBar
+            employeeName={firstName}
+            rank={myRank?.rank}
+            onOpenLeaderboard={() => setLeaderboardOpen(true)}
+          />
+        )}
 
         <main className={styles.main}>
           {tab === 'home' && (

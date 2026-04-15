@@ -5,6 +5,7 @@ import { employees } from '../../data/masters';
 import { getStoreTransactions } from '../../data/transactions';
 import { formatINR } from '../../utils/format';
 import TransactionDetailSheet from '../../components/Organism/TransactionDetailSheet/TransactionDetailSheet';
+import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
 
 const PERIODS = [
   { id: 'month', label: 'This month' },
@@ -95,13 +96,15 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
 
   return (
     <div className={styles.screen}>
-      <header className={styles.screenHead}>
-        <h1 className={styles.title}>Store transactions</h1>
-        <p className={styles.sub}>Read-only stream of every sale recorded in this store.</p>
-      </header>
+      <div className="rise rise-1">
+        <TabPageHeader
+          title="Store transactions"
+          subtitle="Read-only stream of every sale recorded in this store."
+        />
+      </div>
 
       {/* Period tabs */}
-      <div className={styles.tabs} role="tablist">
+      <div className={`${styles.tabs} rise rise-2`} role="tablist">
         {PERIODS.map((p) => (
           <button
             key={p.id}
@@ -117,7 +120,7 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
       </div>
 
       {/* Search */}
-      <div className={styles.searchRow}>
+      <div className={`${styles.searchRow} rise rise-2`}>
         <div className={styles.searchWrap}>
           <Search size={14} strokeWidth={2.2} className={styles.searchIcon} />
           <input
@@ -136,7 +139,7 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
       </div>
 
       {/* Tx-type chips */}
-      <div className={styles.chipsRow}>
+      <div className={`${styles.chipsRow} rise rise-3`}>
         {TX_TYPE_CHIPS.map((c) => (
           <button
             key={c.id}
@@ -150,7 +153,7 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
       </div>
 
       {/* Employee chips */}
-      <div className={styles.chipsRow}>
+      <div className={`${styles.chipsRow} rise rise-3`}>
         <button
           type="button"
           className={`${styles.chip} ${empFilter === 'ALL' ? styles.chipActive : ''}`}
@@ -174,7 +177,7 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
       </div>
 
       {/* Summary strip */}
-      <section className={styles.summaryRow4}>
+      <section className={`${styles.summaryRow4} rise rise-4`}>
         <div>
           <div className={styles.summaryVal}>{txCount}</div>
           <div className={styles.summaryCap}>tx</div>
@@ -197,7 +200,7 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
       </section>
 
       {filtered.length === 0 ? (
-        <div className={styles.empty}>
+        <div className={`${styles.empty} rise rise-5`}>
           <Info size={16} strokeWidth={2.2} />
           <p>
             {anyFilterActive
@@ -215,7 +218,7 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
           )}
         </div>
       ) : (
-        <div className={styles.groupedList}>
+        <div className={`${styles.groupedList} rise rise-5`}>
           {grouped.map(([day, txs]) => (
             <section key={day} className={styles.dayGroup}>
               <div className={styles.dayHead}>

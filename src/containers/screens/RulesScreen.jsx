@@ -10,6 +10,7 @@ import {
   fnlWeeklyRules,
 } from '../../data/configs';
 import { formatINR, formatDateRange } from '../../utils/format';
+import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
 
 const VERTICAL_LABELS = {
   [VERTICALS.ELECTRONICS]: 'Electronics',
@@ -22,10 +23,10 @@ export default function RulesScreen({ defaultVertical = VERTICALS.ELECTRONICS })
 
   return (
     <div className={styles.screen}>
-      <header className={styles.screenHead}>
-        <h1 className={styles.title}>Incentive rules</h1>
-        <p className={styles.sub}>Read-only copy of the rules your payout is calculated from.</p>
-      </header>
+      <TabPageHeader
+        title="Incentive rules"
+        subtitle="Read-only copy of the rules your payout is calculated from."
+      />
 
       <div className={styles.tabs} role="tablist">
         {Object.values(VERTICALS).map((v) => (

@@ -17,8 +17,8 @@ function initials(name) {
     .toUpperCase();
 }
 
-// Classic podium layout: second place on the left, winner centre, third right.
-const PODIUM_ORDER = [2, 1, 3];
+// Requested visual order: #1 left, #2 center, #3 right.
+const PODIUM_ORDER = [1, 2, 3];
 
 export default function LeaderboardPodium({ entries, unitLabel = 'earned' }) {
   if (!Array.isArray(entries) || entries.length === 0) return null;

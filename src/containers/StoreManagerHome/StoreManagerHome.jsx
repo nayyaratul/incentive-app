@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Users, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Users, TrendingUp, AlertTriangle, Calendar } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
@@ -10,9 +10,14 @@ import { fetchRules } from '../../api/rules';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import StoreTransactions from '../screens/StoreTransactions';
-import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
+import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
+import BadgesStrip from '../../components/Widgets/BadgesStrip/BadgesStrip';
+import QuestCard from '../../components/Widgets/QuestCard/QuestCard';
+import StreakNote from '../../components/Molecule/StreakNote/StreakNote';
+import MomentumPills from '../../components/Molecule/MomentumPills/MomentumPills';
+import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
 import { formatINR, formatDateRange } from '../../utils/format';
 import {
   Accordion,
@@ -24,6 +29,7 @@ import {
 export default function StoreManagerHome() {
   const [tab, setTab] = useState('home');
   const [selectedRow, setSelectedRow] = useState(null);
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [txEmpFilter, setTxEmpFilter] = useState('ALL');
   const { active, employee, store } = usePersona();
 
@@ -120,14 +126,35 @@ export default function StoreManagerHome() {
       const deptTarget = storeDetail.departments?.reduce((s, d) => s + (Number(d.target) || 0), 0) || totalTarget;
       const deptActual = storeDetail.departments?.reduce((s, d) => s + (Number(d.actual) || 0), 0) || 0;
       const achPct = deptTarget > 0 ? Math.round((deptActual / deptTarget) * 100) : 0;
+      const piecesSold = Number(storeDetail.summary?.totalPiecesSold) || 0;
+      const currentSlab = slabs.find((s) => {
+        const from = Number(s.achievementFrom);
+        const to = Number(s.achievementTo);
+        return achPct >= from && (Number.isFinite(to) ? achPct < to : true);
+      });
+      const currentRate = Number(currentSlab?.perPieceRate) || 0;
 
       return {
         kind: 'GROCERY',
-        campaign: campaign ? { campaignName: campaign.campaignName, campaignStart: campaign.startDate, campaignEnd: campaign.endDate } : {},
+        campaign: campaign
+          ? {
+              campaignName: campaign.campaignName,
+              campaignStart: campaign.startDate,
+              campaignEnd: campaign.endDate,
+              geography: campaign.geography || 'Kerala',
+              channel: campaign.channel || 'OFFLINE',
+              incentiveType: campaign.incentiveType || activePlan?.incentiveType || 'Multi-Article',
+            }
+          : {
+              incentiveType: 'Multi-Article',
+            },
         totalTarget: deptTarget,
         totalActual: deptActual,
         totalPayout,
         achievementPct: achPct,
+        piecesSoldTotal: piecesSold,
+        appliedRate: currentRate,
+        splitPerEmployee: perEmp,
         employees: emps.map((emp) => {
           const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
           return {
@@ -142,7 +169,9 @@ export default function StoreManagerHome() {
         projections: slabs.filter((s) => Number(s.achievementFrom) >= 100).map((s) => ({
           scenario: `${Number(s.achievementFrom)}%`,
           rate: Number(s.perPieceRate) || 0,
-          estPerEmployee: 0, // rough placeholder
+          atSalesValue: deptTarget > 0 ? Math.round((Number(s.achievementFrom) / 100) * deptTarget) : 0,
+          estTotalIncentive: (Number(s.perPieceRate) || 0) * piecesSold,
+          estPerEmployee: empCount > 0 ? Math.round(((Number(s.perPieceRate) || 0) * piecesSold) / empCount) : 0,
         })),
       };
     }
@@ -188,6 +217,10 @@ export default function StoreManagerHome() {
 
   if (!summary) return null;
 
+  const myRank = buildMyRankFromSummary(summary, employee?.employeeId);
+  const selfPayout = summary.employees.find((e) => e.employeeId === employee?.employeeId)?.total || 0;
+  const cycleMeta = buildCycleMeta(active?.vertical, employee, storeDetailResult.data, summary);
+
   // Look up the full master record for the selected roster row (drawer needs it)
   const selectedEmployee = selectedRow
     ? storeTeam.find((e) => e.employeeId === selectedRow.employeeId) || null
@@ -196,6 +229,12 @@ export default function StoreManagerHome() {
   return (
     <div className={styles.shell}>
       <BottomNav active={tab} role="SM" onNavigate={handleNavigate} />
+
+      <LeaderboardDrawer
+        open={leaderboardOpen}
+        onClose={() => setLeaderboardOpen(false)}
+        myRank={myRank}
+      />
 
       <EmployeeDetailDrawer
         employee={selectedEmployee}
@@ -206,24 +245,27 @@ export default function StoreManagerHome() {
       />
 
       <div className={styles.layout}>
-        <HeaderBar
-          employeeName={tab === 'home' ? firstName : null}
-          streak={0}
-          showStreak={false}
-        />
+        {tab === 'home' && (
+          <HeaderBar
+            employeeName={firstName}
+            rank={myRank?.rank}
+            onOpenLeaderboard={() => setLeaderboardOpen(true)}
+          />
+        )}
 
         <main className={styles.main}>
           {tab === 'team' && (
-            <>
-              <div className={`${styles.datemark} rise rise-1`}>
-                <span>Team · {store.storeName}</span>
-                <span className={styles.line} />
-                <span>{summary.employees.length} staff</span>
+            <section className={`${styles.pad} ${styles.teamStack}`}>
+              <div className="rise rise-1">
+                <TabPageHeader
+                  title="Team"
+                  subtitle={`${store.storeName} · ${summary.employees.length} staff`}
+                />
               </div>
-              <section className={`${styles.pad} rise rise-2`}>
+              <div className="rise rise-2">
                 <TeamRoster summary={summary} onSelectRow={(row) => setSelectedRow({ row, employeeId: row.employeeId })} />
-              </section>
-            </>
+              </div>
+            </section>
           )}
 
           {tab === 'tx' && (
@@ -238,36 +280,90 @@ export default function StoreManagerHome() {
               <section className={`${styles.pad} rise rise-2`}>
                 <HeroCard>
                   <HeroCard.EyebrowRow>
-                    <HeroCard.Eyebrow withDot>
-                      {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
-                      {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${formatDateRange(summary.campaign.campaignStart, summary.campaign.campaignEnd)}`}
-                      {summary.kind === 'FNL' && `Week · ${summary.week.start} → ${summary.week.end}`}
-                    </HeroCard.Eyebrow>
+                    {summary.kind === 'GROCERY' ? (
+                      <>
+                        <HeroCard.Eyebrow withDot>Live campaign</HeroCard.Eyebrow>
+                        <HeroCard.Badge tone="brand">{summary.campaign.incentiveType}</HeroCard.Badge>
+                      </>
+                    ) : (
+                      <HeroCard.Eyebrow withDot>
+                        {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
+                        {summary.kind === 'FNL' && `Week · ${summary.week.start} → ${summary.week.end}`}
+                      </HeroCard.Eyebrow>
+                    )}
                   </HeroCard.EyebrowRow>
+
+                  {summary.kind === 'GROCERY' && (
+                    <>
+                      <HeroCard.Title>{summary.campaign.campaignName}</HeroCard.Title>
+                      <HeroCard.Meta>
+                        <Calendar size={11} strokeWidth={2.2} />
+                        <span>{formatDateRange(summary.campaign.campaignStart, summary.campaign.campaignEnd)}</span>
+                        <HeroCard.MetaDot />
+                        <span>{summary.campaign.geography}</span>
+                        <HeroCard.MetaDot />
+                        <span>{summary.campaign.channel}</span>
+                      </HeroCard.Meta>
+                    </>
+                  )}
 
                   <HeroCard.Amount suffix="%">{summary.achievementPct}</HeroCard.Amount>
                   <HeroCard.AmountCap>
-                    of store {summary.kind === 'FNL' ? 'weekly' : 'period'} target
+                    {summary.kind === 'GROCERY'
+                      ? `of ${formatINR(summary.totalTarget)} store target`
+                      : `of store ${summary.kind === 'FNL' ? 'weekly' : 'period'} target`}
                   </HeroCard.AmountCap>
 
                   <HeroCard.Figures>
                     <HeroCard.Figure
                       value={formatINR(summary.totalActual)}
-                      cap={`of ${formatINR(summary.totalTarget)}`}
+                      cap={salesCapText(summary.achievementPct, summary.totalActual, summary.totalTarget)}
+                      sub={summary.kind === 'GROCERY' ? `${summary.piecesSoldTotal} pieces sold` : `target ${formatINR(summary.totalTarget)}`}
                     />
+                    {summary.kind === 'GROCERY' && (
+                      <>
+                        <HeroCard.FigureDivider />
+                        <HeroCard.Figure
+                          value={summary.appliedRate > 0 ? `₹${summary.appliedRate}` : '—'}
+                          cap="rate / piece"
+                          sub={summary.appliedRate > 0 ? 'current slab' : 'not yet unlocked'}
+                        />
+                      </>
+                    )}
                   </HeroCard.Figures>
 
                   <HeroCard.FooterBlock>
                     <div>
-                      <HeroCard.FooterLabel>Total store payout</HeroCard.FooterLabel>
-                      <HeroCard.FooterValue>{formatINR(summary.totalPayout)}</HeroCard.FooterValue>
+                      <HeroCard.FooterLabel>
+                        {summary.kind === 'GROCERY' ? 'Your payout so far' : 'Total store payout'}
+                      </HeroCard.FooterLabel>
+                      <HeroCard.FooterValue>
+                        {summary.kind === 'GROCERY' ? formatINR(selfPayout) : formatINR(summary.totalPayout)}
+                      </HeroCard.FooterValue>
                     </div>
                     <HeroCard.FooterMeta>
                       <Users size={12} strokeWidth={2.2} />
-                      <span>{summary.employees.length} staff</span>
+                      <span>
+                        {summary.kind === 'GROCERY'
+                          ? `Split equally across ${summary.employees.length} staff`
+                          : `${summary.employees.length} staff`}
+                      </span>
                     </HeroCard.FooterMeta>
                   </HeroCard.FooterBlock>
                 </HeroCard>
+              </section>
+
+              <section className={`${styles.pad} rise rise-3`}>
+                <StreakNote streak={cycleMeta.streak} />
+              </section>
+
+              <section className={`${styles.pad} rise rise-3`}>
+                <MomentumPills
+                  thisPeriodAmount={selfPayout}
+                  lastPeriodAmount={cycleMeta.lastPeriodAmount}
+                  lastPeriodLabel={cycleMeta.lastPeriodLabel}
+                  nextPayoutDate={cycleMeta.nextPayoutDate}
+                />
               </section>
 
               {summary.kind === 'ELECTRONICS' && (
@@ -309,41 +405,86 @@ export default function StoreManagerHome() {
                 </section>
               )}
 
+              <section className={`rise rise-4`}>
+                <QuestCard employeeId={employee.employeeId} vertical={active.vertical} />
+              </section>
+
+              <section className={`rise rise-4`}>
+                <BadgesStrip employeeId={employee.employeeId} vertical={active.vertical} />
+              </section>
+
               {summary.kind === 'GROCERY' && (
-                <section className={`${styles.pad} rise rise-3`}>
-                  <div className={styles.cardDark}>
-                    <div className={styles.cardHead}>
-                      <span className={styles.eyebrow}>Projections · per employee</span>
-                    </div>
-                    <div className={styles.projList}>
-                      {summary.projections.map((p) => (
-                        <div key={p.scenario} className={styles.projRow}>
-                          <span className={styles.projName}>{p.scenario}</span>
-                          <span className={styles.projRate}>₹{p.rate}/pc</span>
-                          <span className={styles.projTotal}>{formatINR(p.estPerEmployee)}</span>
+                <section className={`${styles.pad} ${styles.compactAccordion} rise rise-5`}>
+                  <Accordion variant="default" type="multiple">
+                    <AccordionItem value="projections">
+                      <AccordionTrigger>Projections · per employee</AccordionTrigger>
+                      <AccordionContent>
+                        <div className={styles.projList}>
+                          {summary.projections.map((p) => (
+                            <div key={p.scenario} className={styles.projRow}>
+                              <div className={styles.projLeft}>
+                                <span className={styles.projName}>{p.scenario}</span>
+                                <span className={styles.projAt}>at {formatINR(p.atSalesValue)}</span>
+                              </div>
+                              <span className={styles.projRate}>₹{p.rate}/pc</span>
+                              <div className={styles.projRight}>
+                                <span className={styles.projTotal}>{formatINR(p.estPerEmployee)}</span>
+                                <span className={styles.projTotalSub}>per employee</span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </div>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="eligibility">
+                      <AccordionTrigger>Store eligibility</AccordionTrigger>
+                      <AccordionContent>
+                        <dl className={styles.compactList}>
+                          {[
+                            { label: 'Store code', value: store.storeCode },
+                            { label: 'Format', value: store.storeFormat },
+                            { label: 'City · State', value: `${store.city}, ${store.state}` },
+                            { label: 'Status', value: store.storeStatus },
+                            { label: 'Operational days', value: `${store.operationalDaysInMonth} / 30` },
+                          ].map((it) => (
+                            <div key={it.label} className={styles.compactRow}>
+                              <dt className={styles.compactLabel}>{it.label}</dt>
+                              <dd className={styles.compactValue}>{it.value}</dd>
+                            </div>
+                          ))}
+                        </dl>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </section>
               )}
 
-              <section className={`${styles.pad} rise rise-4`}>
-                <TeamRoster summary={summary} onSelectRow={(row) => setSelectedRow({ row, employeeId: row.employeeId })} />
-              </section>
-
-              <section className={`${styles.pad} rise rise-5`}>
-                <ComplianceLink
-                  label="Store eligibility"
-                  items={[
-                    { label: 'Store code',              value: store.storeCode },
-                    { label: 'Format',                   value: store.storeFormat },
-                    { label: 'City · State',             value: `${store.city}, ${store.state}` },
-                    { label: 'Status',                   value: store.storeStatus },
-                    { label: 'Operational days',         value: `${store.operationalDaysInMonth} / 30` },
-                  ]}
-                />
-              </section>
+              {summary.kind !== 'GROCERY' && (
+                <section className={`${styles.pad} rise rise-5`}>
+                  <Accordion variant="default" type="multiple">
+                    <AccordionItem value="eligibility">
+                      <AccordionTrigger>Store eligibility</AccordionTrigger>
+                      <AccordionContent>
+                        <dl className={styles.compactList}>
+                          {[
+                            { label: 'Store code', value: store.storeCode },
+                            { label: 'Format', value: store.storeFormat },
+                            { label: 'City · State', value: `${store.city}, ${store.state}` },
+                            { label: 'Status', value: store.storeStatus },
+                            { label: 'Operational days', value: `${store.operationalDaysInMonth} / 30` },
+                          ].map((it) => (
+                            <div key={it.label} className={styles.compactRow}>
+                              <dt className={styles.compactLabel}>{it.label}</dt>
+                              <dd className={styles.compactValue}>{it.value}</dd>
+                            </div>
+                          ))}
+                        </dl>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </section>
+              )}
             </>
           )}
         </main>
@@ -354,7 +495,7 @@ export default function StoreManagerHome() {
 
 function TeamRoster({ summary, onSelectRow }) {
   return (
-    <div className={styles.cardLight}>
+    <div className={`${styles.cardLight} ${styles.teamRosterCard}`}>
       <div className={styles.cardHead}>
         <span className={styles.eyebrow}>Team · {summary.employees.length}</span>
         <span className={styles.headSub}>
@@ -388,4 +529,112 @@ function TeamRoster({ summary, onSelectRow }) {
       </div>
     </div>
   );
+}
+
+function salesCapText(achievementPct, actualSalesValue, targetSalesValue) {
+  if (achievementPct < 100) {
+    const gap = targetSalesValue - actualSalesValue;
+    return `${formatINR(gap)} to clear`;
+  }
+  const over = actualSalesValue - targetSalesValue;
+  if (over > 0) return `+${formatINR(over)} over`;
+  return 'target cleared';
+}
+
+function buildMyRankFromSummary(summary, selfEmployeeId) {
+  const rows = summary?.employees || [];
+  if (!selfEmployeeId || rows.length === 0) return null;
+
+  const sorted = [...rows]
+    .map((r) => ({
+      name: r.employeeName || r.employeeId,
+      earned: Number(r.total) || 0,
+      isSelf: r.employeeId === selfEmployeeId,
+    }))
+    .sort((a, b) => b.earned - a.earned)
+    .map((r, i) => ({ ...r, rank: i + 1 }));
+
+  const self = sorted.find((r) => r.isSelf);
+  if (!self) return null;
+
+  const selfIdx = sorted.findIndex((r) => r.isSelf);
+  const deltaAbove = selfIdx > 0 ? (sorted[selfIdx - 1].earned - self.earned) : 0;
+
+  return {
+    rank: self.rank,
+    deltaAbove,
+    scope: 'store',
+    scopeNote: 'by incentive payout',
+    unitLabel: 'earned',
+    top: sorted.slice(0, 5),
+  };
+}
+
+function buildCycleMeta(vertical, employee, storeDetail, summary) {
+  const byVertical = {
+    ELECTRONICS: {
+      streak: { current: 6, longest: 11, label: 'working days', caption: 'present + selling' },
+      lastPeriodLabel: 'last month',
+      nextPayoutDate: nextMonthlyPayoutDate(),
+    },
+    GROCERY: {
+      streak: { current: 5, longest: 9, label: 'working days', caption: 'present + selling' },
+      lastPeriodLabel: 'last campaign',
+      nextPayoutDate: resolveGroceryPayoutDate(summary),
+    },
+    FNL: {
+      streak: { current: 4, longest: 8, label: 'working days', caption: 'present + selling' },
+      lastPeriodLabel: 'last week',
+      nextPayoutDate: nextMondayPayoutDate(),
+    },
+  };
+
+  const meta = byVertical[vertical] || byVertical.ELECTRONICS;
+  const tenureDays = employee?.dateOfJoining ? daysSince(employee.dateOfJoining) : 999;
+  const reportedLast =
+    Number(storeDetail?.summary?.lastPeriodPayout) ||
+    Number(storeDetail?.summary?.lastCampaignPayoutPerEmp) ||
+    Number(storeDetail?.summary?.lastWeekPayoutPerEmp) ||
+    0;
+
+  // Comparison appears only after first cycle. If no backend last-cycle figure
+  // exists yet, derive a gentle baseline from current payout for tenured staff.
+  const selfPayout = summary?.employees?.find((e) => e.employeeId === employee?.employeeId)?.total || 0;
+  const derivedLast = tenureDays >= 30 && selfPayout > 0 ? Math.round(selfPayout * 0.9) : 0;
+
+  return {
+    ...meta,
+    lastPeriodAmount: reportedLast > 0 ? reportedLast : derivedLast,
+  };
+}
+
+function resolveGroceryPayoutDate(summary) {
+  const end = summary?.campaign?.campaignEnd;
+  if (!end) return null;
+  const d = new Date(end);
+  if (Number.isNaN(d.getTime())) return null;
+  d.setDate(d.getDate() + 5);
+  return d.toISOString().slice(0, 10);
+}
+
+function nextMonthlyPayoutDate() {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 1);
+  d.setDate(7);
+  return d.toISOString().slice(0, 10);
+}
+
+function nextMondayPayoutDate() {
+  const d = new Date();
+  const day = d.getDay(); // 0..6
+  const diff = (8 - day) % 7 || 7;
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().slice(0, 10);
+}
+
+function daysSince(dateStr) {
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return 0;
+  const now = new Date();
+  return Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
 }

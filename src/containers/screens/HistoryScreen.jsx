@@ -6,6 +6,7 @@ import { fetchSales } from '../../api/sales';
 import { transformTransactions } from '../../api/transformers/transactions';
 import { formatINR } from '../../utils/format';
 import TransactionDetailSheet from '../../components/Organism/TransactionDetailSheet/TransactionDetailSheet';
+import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
 
 const PERIODS = [
   { id: 'month', label: 'This month' },
@@ -97,13 +98,15 @@ export default function HistoryScreen({ employeeId }) {
 
   return (
     <div className={styles.screen}>
-      <header className={styles.screenHead}>
-        <h1 className={styles.title}>Sales history</h1>
-        <p className={styles.sub}>Read-only log of your sales for the period.</p>
-      </header>
+      <div className="rise rise-1">
+        <TabPageHeader
+          title="Sales history"
+          subtitle="Read-only log of your sales for the period."
+        />
+      </div>
 
       {/* Period tabs */}
-      <div className={styles.tabs} role="tablist">
+      <div className={`${styles.tabs} rise rise-2`} role="tablist">
         {PERIODS.map((p) => (
           <button
             key={p.id}
@@ -119,7 +122,7 @@ export default function HistoryScreen({ employeeId }) {
       </div>
 
       {/* Search + chips */}
-      <div className={styles.searchRow}>
+      <div className={`${styles.searchRow} rise rise-2`}>
         <div className={styles.searchWrap}>
           <Search size={14} strokeWidth={2.2} className={styles.searchIcon} />
           <input
@@ -137,7 +140,7 @@ export default function HistoryScreen({ employeeId }) {
         </div>
       </div>
 
-      <div className={styles.chipsRow}>
+      <div className={`${styles.chipsRow} rise rise-3`}>
         {TX_TYPE_CHIPS.map((c) => (
           <button
             key={c.id}
@@ -159,7 +162,7 @@ export default function HistoryScreen({ employeeId }) {
       </div>
 
       {/* Summary strip — reflects filtered set */}
-      <section className={styles.summaryRow}>
+      <section className={`${styles.summaryRow} rise rise-4`}>
         <div>
           <div className={styles.summaryVal}>{filtered.length}</div>
           <div className={styles.summaryCap}>transactions</div>
@@ -181,7 +184,7 @@ export default function HistoryScreen({ employeeId }) {
       )}
 
       {filtered.length === 0 ? (
-        <div className={styles.empty}>
+        <div className={`${styles.empty} rise rise-5`}>
           <Info size={16} strokeWidth={2.2} />
           <p>
             {anyFilterActive
@@ -199,7 +202,7 @@ export default function HistoryScreen({ employeeId }) {
           )}
         </div>
       ) : (
-        <div className={styles.groupedList}>
+        <div className={`${styles.groupedList} rise rise-5`}>
           {grouped.map(([day, txs]) => (
             <section key={day} className={styles.dayGroup}>
               <div className={styles.dayHead}>
