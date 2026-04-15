@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldCheck, ChevronRight } from 'lucide-react';
+import { Text } from '@/nexus/atoms';
 import styles from './ComplianceLink.module.scss';
 
 /**
@@ -7,7 +8,7 @@ import styles from './ComplianceLink.module.scss';
  * Renders as a quiet inline link by default; tap to reveal a compact
  * key-value panel. Use this across verticals (Electronics, Grocery, F&L)
  * and roles (SA, DM, BA, SM) to keep the "rules fine print" treatment
- * consistent — never a big card above the fold.
+ * consistent -- never a big card above the fold.
  *
  * items = [{ label: string, value: ReactNode | string }, ...]
  */
@@ -19,7 +20,7 @@ export default function ComplianceLink({ label = 'Eligibility & rules', items = 
     <div className={styles.wrap}>
       <button type="button" className={styles.link} onClick={() => setOpen(!open)} aria-expanded={open}>
         <ShieldCheck size={12} strokeWidth={2.2} />
-        <span>{label}</span>
+        <Text as="span" variant="caption">{label}</Text>
         <ChevronRight
           size={13}
           strokeWidth={2.2}
@@ -30,7 +31,7 @@ export default function ComplianceLink({ label = 'Eligibility & rules', items = 
         <div className={styles.panel}>
           {items.map((it, i) => (
             <div key={i} className={styles.row}>
-              <span className={styles.rowLabel}>{it.label}</span>
+              <Text as="span" variant="caption" className={styles.rowLabel}>{it.label}</Text>
               <strong className={styles.rowValue}>{it.value}</strong>
             </div>
           ))}

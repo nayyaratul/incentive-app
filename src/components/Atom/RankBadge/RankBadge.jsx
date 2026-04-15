@@ -1,10 +1,10 @@
 import React from 'react';
-import styles from './RankBadge.module.scss';
+import { Badge } from '@/nexus/atoms';
 
 export default function RankBadge({ rank }) {
   return (
-    <div className={styles.badge}>
+    <Badge variant="default" size="lg">
       #{rank}
-    </div>
+    </Badge>
   );
 }

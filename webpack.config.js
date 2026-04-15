@@ -28,6 +28,13 @@ module.exports = (env, argv) => {
           use: 'babel-loader'
         },
         {
+          test: /\.css$/,
+          use: [
+            isProd ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader'
+          ]
+        },
+        {
           test: /\.module\.scss$/,
           use: [
             isProd ? MiniCssExtractPlugin.loader : 'style-loader',
@@ -57,7 +64,7 @@ module.exports = (env, argv) => {
       new Dotenv({ path: `.env.${process.env.APP_ENV || 'dev'}`, systemvars: true, safe: false })
     ],
     devServer: {
-      port: 3000,
+      port: 3001,
       historyApiFallback: true,
       hot: true,
       open: false

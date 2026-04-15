@@ -1,0 +1,40 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as TextStories from './Text.stories';
+
+<Meta of={TextStories} />
+
+# Text
+
+General-purpose text component for body copy, captions, and supporting content. Pair with `Heading` for a complete type system.
+
+<Primary />
+
+<Controls />
+
+## Variants
+
+Each variant targets a different content role.
+
+- **body** — Standard paragraph text. Renders as `<p>`.
+- **bodyLg** — Larger body copy for introductions or lead paragraphs. Renders as `<p>`.
+- **caption** — Secondary info like timestamps or helper text. Renders as `<span>`.
+- **micro** — Small metadata such as progress counters. Renders as `<span>`.
+- **overline** — Uppercased category labels above headings. Renders as `<span>`.
+
+<Canvas of={TextStories.Variants} />
+
+## Weights
+
+Override the default weight when you need to add emphasis within a block of text.
+
+<Canvas of={TextStories.Weights} />
+
+## Accessibility
+
+- Defaults to semantic `<p>` for body variants and `<span>` for inline variants.
+- Use the `as` prop to render a different element when semantics require it.
+- The `truncate` prop clips text with an ellipsis — ensure the full content is available via `title` attribute or tooltip when truncating.
+
+## Props
+
+<ArgTypes of={TextStories} />

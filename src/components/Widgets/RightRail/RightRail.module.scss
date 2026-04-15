@@ -1,60 +1,41 @@
 .rail {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-200);
   width: 320px;
   flex-shrink: 0;
-  padding-top: 36px; // align with content that starts after the datemark row
-}
-
-.card {
-  position: relative;
-  padding: 16px 16px 14px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(10, 22, 40, 0.03);
-}
-
-.cardHead {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 12px;
+  padding-top: var(--space-400); // align with content that starts after the datemark row
 }
 
 .iconBrand {
-  color: var(--brand);
+  color: var(--color-action-primary);
 }
 
 .iconMuted {
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   flex-shrink: 0;
 }
 
 .eyebrow {
-  font-family: 'Geist Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-075);
 }
 
 /* --- Momentum --- */
 .momentumRow {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: var(--space-100);
+  margin-bottom: var(--space-150);
 }
 
 .momentumPct {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 700;
   font-size: 44px;
   line-height: 0.85;
-  color: var(--success);
+  color: var(--color-text-success);
   letter-spacing: -0.045em;
   font-variant-numeric: tabular-nums lining-nums;
 }
@@ -62,75 +43,67 @@
 .sign {
   font-style: italic;
   font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 520;
-  font-size: 28px;
-  color: var(--success);
+  font-size: var(--font-size-700);
+  color: var(--color-text-success);
 }
 
 .momentumCaption {
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 11.5px;
-  color: var(--text-secondary);
   line-height: 1.3;
+}
 
-  strong {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
+.momentumStrong {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .divider {
-  height: 1px;
-  background: var(--divider);
-  margin: 2px 0 12px;
+  height: var(--border-width-100);
+  background: var(--color-border-subtle);
+  margin: var(--space-025) 0 var(--space-150);
 }
 
 .miniRow {
   display: grid;
   grid-template-columns: 14px 1fr auto;
   align-items: center;
-  gap: 8px;
-  padding: 6px 0;
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 12px;
+  gap: var(--space-100);
+  padding: var(--space-075) 0;
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
 
   & + & {
-    border-top: 1px solid var(--divider);
+    border-top: var(--border-width-100) solid var(--color-border-subtle);
   }
 }
 
-.miniLabel {
-  color: var(--text-secondary);
-  font-size: 11.5px;
-}
-
 .miniValue {
-  font-family: 'Geist Mono', monospace;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
+  font-family: var(--mono);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-tight);
 }
 
 .miniUnit {
-  color: var(--text-muted);
-  font-weight: 400;
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-regular);
 }
 
 /* --- Floor feed --- */
 .live {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
-  background: var(--brand);
-  box-shadow: 0 0 0 3px rgba(200, 32, 46, 0.14);
+  border-radius: var(--radius-full);
+  background: var(--color-action-primary);
+  box-shadow: 0 0 0 3px var(--brand-a100);
   position: relative;
 
   &::after {
     content: '';
     position: absolute;
     inset: -3px;
-    border-radius: 50%;
-    border: 1px solid var(--brand);
+    border-radius: var(--radius-full);
+    border: var(--border-width-100) solid var(--color-action-primary);
     opacity: 0;
     animation: live-pulse 2s ease-out infinite;
   }
@@ -144,7 +117,7 @@
 .feed {
   list-style: none;
   padding: 0;
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-100);
   display: flex;
   flex-direction: column;
 }
@@ -153,10 +126,10 @@
   display: grid;
   grid-template-columns: auto 14px 1fr auto;
   align-items: center;
-  gap: 8px;
-  padding: 9px 0;
-  border-bottom: 1px solid var(--divider);
-  font-size: 12px;
+  gap: var(--space-100);
+  padding: var(--space-100) 0;
+  border-bottom: var(--border-width-100) solid var(--color-border-subtle);
+  font-size: var(--font-size-200);
 
   &:last-child {
     border-bottom: none;
@@ -164,106 +137,95 @@
 }
 
 .who {
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-primary);
   white-space: nowrap;
 }
 
 .feedIcon {
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
 }
 
 .feedIconAccent {
-  color: var(--accent);
+  color: var(--yellow-50);
 }
 
 .feedBody {
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 11.5px;
-  color: var(--text-secondary);
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
+  color: var(--color-text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .feedEarn {
-  color: var(--accent-deep);
-  font-family: 'Geist Mono', monospace;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  margin-left: 4px;
+  color: var(--yellow-60);
+  font-family: var(--mono);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+  margin-left: var(--space-050);
 }
 
 .feedTime {
-  font-family: 'Geist Mono', monospace;
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 0.02em;
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  letter-spacing: var(--letter-spacing-wide);
 }
 
 .feedAll {
   display: block;
   width: 100%;
-  padding: 8px 10px;
-  margin-top: 4px;
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-primary);
-  background: var(--surface-sunken);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  letter-spacing: 0.02em;
-  transition: all var(--dur-med) var(--ease-out);
+  padding: var(--space-100) var(--space-125);
+  margin-top: var(--space-050);
+  font-family: var(--sans);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  background: var(--color-bg-sunken);
+  border: var(--border-width-100) solid var(--color-border-default);
+  border-radius: var(--radius-150);
+  letter-spacing: var(--letter-spacing-wide);
+  transition: all 200ms ease-out;
 
   &:hover {
-    background: var(--text-primary);
-    color: var(--brand-contrast);
-    border-color: var(--text-primary);
+    background: var(--color-text-primary);
+    color: var(--color-text-on-action);
+    border-color: var(--color-text-primary);
   }
 }
 
 /* --- Quote --- */
 .quoteCard {
-  background: linear-gradient(165deg, var(--surface-raised) 0%, var(--surface-sunken) 100%);
-  border-color: rgba(200, 32, 46, 0.14);
+  background: linear-gradient(165deg, var(--color-bg-secondary) 0%, var(--color-bg-sunken) 100%);
+  border-color: var(--brand-a100);
 }
 
 .quoteMark {
   position: absolute;
   top: 4px;
-  right: 16px;
-  font-family: 'Fraunces', Georgia, serif;
+  right: var(--space-200);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 700;
   font-size: 72px;
-  color: var(--brand);
+  color: var(--color-action-primary);
   opacity: 0.16;
   line-height: 1;
 }
 
 .quote {
-  margin: 0 0 10px;
-  font-family: 'Fraunces', Georgia, serif;
+  margin: 0 0 var(--space-125);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 70, 'wght' 460;
   font-style: italic;
-  font-size: 16px;
+  font-size: var(--font-size-400);
   line-height: 1.35;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.015em;
   position: relative;
   z-index: 1;
 }
 
 .quoteAttr {
-  margin: 0;
-  font-family: 'Geist Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--space-025);
 }

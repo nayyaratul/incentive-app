@@ -1,123 +1,103 @@
-.card {
-  padding: 16px 18px 14px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-}
-
 .head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  width: 100%;
 }
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  font-weight: 600;
-
-  > svg { color: var(--brand); }
+  gap: var(--space-075);
+}
+.iconBrand {
+  color: var(--color-action-primary);
 }
 .clamp {
-  font-family: 'Geist Mono', monospace;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
+  font-family: var(--mono);
+  font-size: var(--font-size-200);
+  letter-spacing: var(--letter-spacing-tight);
 }
 
-.body {
+.bodyGrid {
   display: grid;
   grid-template-columns: 56px 1fr;
-  gap: 14px;
+  gap: var(--space-150);
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-150);
 }
 .medallion {
   width: 56px;
   height: 56px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 20, 'wght' 720;
-  font-size: 26px;
-  color: #FFFFFF;
+  font-size: var(--font-size-700);
+  color: var(--color-white);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--elevation-surface-raised-low);
 }
 .tierName {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
-  font-size: 22px;
+  font-size: var(--font-size-600);
   line-height: 1;
-  color: var(--text-primary);
-  letter-spacing: -0.025em;
-  margin-bottom: 4px;
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-tighter);
+  margin-bottom: var(--space-050);
+  display: block;
 }
 .caption {
-  font-size: 12.5px;
-  color: var(--text-secondary);
   line-height: 1.35;
-
-  strong { color: var(--text-primary); font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 12.5px; }
+}
+.captionStrong {
+  color: var(--color-text-primary);
+  font-family: var(--mono);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-200);
 }
 .nextTier {
-  color: var(--brand);
-  font-weight: 700;
+  color: var(--color-action-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .track {
-  height: 8px;
-  background: var(--surface-sunken);
-  border-radius: 999px;
-  overflow: hidden;
-  margin-bottom: 14px;
-}
-.fill {
-  height: 100%;
-  border-radius: 999px;
-  transition: width 600ms var(--ease-out);
+  margin-bottom: var(--space-150);
 }
 
 .ladder {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--divider);
+  gap: var(--space-050) var(--space-125);
+  padding-top: var(--space-125);
+  border-top: var(--border-width-100) solid var(--color-border-subtle);
 }
 .ladderRow {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding: 4px 0;
-  font-size: 11.5px;
-  color: var(--text-muted);
+  padding: var(--space-050) 0;
+  font-size: var(--font-size-200);
+  color: var(--color-text-tertiary);
   opacity: 0.65;
 }
 .ladderPast {
-  color: var(--success);
+  color: var(--color-text-success);
   opacity: 0.85;
 }
 .ladderCurrent {
-  color: var(--text-primary);
-  font-weight: 700;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
   opacity: 1;
 }
 .ladderName {
-  font-family: 'Instrument Sans', sans-serif;
-  font-weight: 600;
+  font-family: var(--sans);
+  font-weight: var(--font-weight-semibold);
 }
 .ladderRange {
-  font-family: 'Geist Mono', monospace;
-  font-size: 12px;
-  letter-spacing: -0.01em;
+  font-family: var(--mono);
+  font-size: var(--font-size-200);
+  letter-spacing: var(--letter-spacing-tight);
 }

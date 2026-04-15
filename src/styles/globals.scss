@@ -1,11 +1,6 @@
-@use './tokens-semantic';
-@use '../themes/reliance-retail';
+/* Nexus-driven global styles */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+/* Reset is handled by nexus/styles/base.css — only app-specific overrides here */
 
 html,
 body,
@@ -15,47 +10,32 @@ body,
 }
 
 body {
-  background: var(--surface);
-  color: var(--text-primary);
-  font-family: 'Instrument Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px;                      // bumped from 15px for legibility on store floors
-  line-height: 1.5;
-  letter-spacing: -0.003em;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--sans);
+  font-size: var(--font-size-400);
+  line-height: var(--line-height-400);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-size-adjust: 100%;
-
-  /* Subtle dot grid — architectural measuring rhythm, not texture. */
-  background-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.04) 0.8px, transparent 1px);
-  background-size: 40px 40px;
-  background-attachment: fixed;
 }
 
-/* App is mobile-only — no desktop-specific decorative overlays. */
-
-/* Display font for hero amounts — Fraunces variable with warm SOFT axis */
-.display {
-  font-family: 'Fraunces', 'Georgia', 'Times New Roman', serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 480;
-  letter-spacing: -0.02em;
-  line-height: 0.95;
-}
-
+/* Monospace utility — tabular numerals for amounts */
 .mono {
-  font-family: 'Geist Mono', 'SFMono-Regular', 'Menlo', monospace;
+  font-family: var(--mono);
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
-  letter-spacing: -0.01em;
+  letter-spacing: var(--letter-spacing-tight);
 }
 
-/* Non-removable focus ring */
+/* Focus ring — Nexus brand-derived */
 :focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 3px;
-  border-radius: 4px;
+  outline: var(--border-width-200) solid var(--color-border-focus);
+  outline-offset: var(--border-width-200);
+  border-radius: var(--radius-100);
 }
 
-/* Staggered page-load cascade */
+/* Staggered page-load cascade — keep animation, update timing */
 @keyframes incentive-rise {
   0% { opacity: 0; transform: translateY(12px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -73,8 +53,8 @@ body {
 .rise-7 { animation-delay: 590ms; }
 
 @keyframes flame-pulse {
-  0%, 100% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 6px rgba(189, 41, 37, 0.45)); }
-  50%      { transform: scale(1.08) rotate(2deg); filter: drop-shadow(0 0 14px rgba(189, 41, 37, 0.65)); }
+  0%, 100% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 4px color-mix(in srgb, var(--brand-50) 25%, transparent)); }
+  50%      { transform: scale(1.08) rotate(2deg); filter: drop-shadow(0 0 10px color-mix(in srgb, var(--brand-50) 40%, transparent)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -96,6 +76,6 @@ button {
 }
 
 ::selection {
-  background: rgba(189, 41, 37, 0.2);
-  color: var(--text-primary);
+  background: var(--brand-a150);
+  color: var(--color-text-primary);
 }

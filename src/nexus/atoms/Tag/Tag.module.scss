@@ -1,0 +1,89 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-050);
+  border-radius: var(--radius-full);
+  border: var(--border-width-100) solid;
+  font-family: var(--sans);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+/* ─── Sizes ─── */
+.sm {
+  height: var(--space-300);
+  padding: 0 var(--space-075);
+  font-size: var(--font-size-100);
+  line-height: var(--line-height-100);
+}
+
+.md {
+  height: var(--line-height-500);
+  padding: 0 var(--space-100);
+  font-size: var(--font-size-200);
+  line-height: var(--line-height-200);
+}
+
+/* ─── Icon ─── */
+.icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ─── Label ─── */
+.label {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Dismiss button ─── */
+.dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  padding: 0;
+  margin-left: var(--space-025);
+  cursor: pointer;
+  color: inherit;
+  opacity: var(--opacity-064);
+  border-radius: var(--radius-full);
+  transition: opacity 150ms ease;
+
+  &:hover {
+    opacity: var(--opacity-100);
+  }
+}
+
+/* ─── Variants ─── */
+.default {
+  background: var(--color-tag-default-bg);
+  border-color: var(--color-tag-default-border);
+  color: var(--color-text-primary);
+}
+
+.info {
+  background: var(--color-tag-info-bg);
+  border-color: var(--color-tag-info-border);
+  color: var(--color-text-info);
+}
+
+.success {
+  background: var(--color-tag-success-bg);
+  border-color: var(--color-tag-success-border);
+  color: var(--color-text-success);
+}
+
+.warning {
+  background: var(--color-tag-warning-bg);
+  border-color: var(--color-tag-warning-border);
+  color: var(--color-text-warning);
+}
+
+.error {
+  background: var(--color-tag-error-bg);
+  border-color: var(--color-tag-error-border);
+  color: var(--color-text-error);
+}

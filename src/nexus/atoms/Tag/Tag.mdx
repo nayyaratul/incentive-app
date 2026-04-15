@@ -1,0 +1,52 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as TagStories from './Tag.stories';
+
+<Meta of={TagStories} />
+
+# Tag
+
+A compact label for categorisation, filtering, or status indication. Tags can optionally include an icon and a dismiss button.
+
+<Primary />
+
+<Controls />
+
+## Variants
+
+Five colour variants map to semantic meanings.
+
+- **Default** — neutral categorisation.
+- **Info** — informational context.
+- **Success** — positive status.
+- **Warning** — caution.
+- **Error** — critical or negative status.
+
+<Canvas of={TagStories.Variants} />
+
+## Sizes
+
+Available in `sm` and `md` (default).
+
+<Canvas of={TagStories.Sizes} />
+
+## With Icon
+
+Pass any icon element via the `icon` prop to add visual context before the label.
+
+<Canvas of={TagStories.WithIcon} />
+
+## Dismissible
+
+Set `dismissible` to show a close button. Provide an `onDismiss` callback to handle removal.
+
+<Canvas of={TagStories.Dismissible} />
+
+## Accessibility
+
+- Dismiss button includes `aria-label="Remove tag"`.
+- Uses semantic `<span>` and `<button>` elements.
+- Ensure sufficient colour contrast when using variants on non-default backgrounds.
+
+## Props
+
+<ArgTypes of={TagStories} />

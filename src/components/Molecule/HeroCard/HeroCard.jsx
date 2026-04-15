@@ -1,5 +1,8 @@
 import React from 'react';
+import cx from 'classnames';
 import { TrendingUp, Check, X as XIcon } from 'lucide-react';
+import { Card } from '@/nexus/molecules';
+import { ProgressBar, Tag } from '@/nexus/atoms';
 import styles from './HeroCard.module.scss';
 
 /**
@@ -9,6 +12,8 @@ import styles from './HeroCard.module.scss';
  * Grocery = store achievement %, F&L = weekly pool share ₹) so the primary
  * metric varies — but the visual shell, type scale, and subcomponents are
  * shared via this compound component.
+ *
+ * Rebuilt on Nexus Card + design-system tokens.
  *
  * Example:
  *   <HeroCard>
@@ -23,10 +28,10 @@ import styles from './HeroCard.module.scss';
  */
 export default function HeroCard({ ornament, children, className = '' }) {
   return (
-    <div className={`${styles.hero} ${className}`}>
+    <Card variant="elevated" size="lg" className={cx(styles.hero, className)}>
       {ornament && <Ornament text={ornament} />}
       <div className={styles.content}>{children}</div>
-    </div>
+    </Card>
   );
 }
 
@@ -36,7 +41,7 @@ function Ornament({ text }) {
       <defs>
         <path id="hc-circ" d="M 60,60 m -48,0 a 48,48 0 1,1 96,0 a 48,48 0 1,1 -96,0" />
       </defs>
-      <text fontFamily="Geist Mono" fontSize="8.5" letterSpacing="2.4" fill="currentColor">
+      <text fontFamily="var(--mono)" fontSize="8.5" letterSpacing="2.4" fill="currentColor">
         <textPath href="#hc-circ" startOffset="0">{text}&nbsp;{text}&nbsp;</textPath>
       </text>
     </svg>
@@ -44,7 +49,7 @@ function Ornament({ text }) {
 }
 
 function EyebrowRow({ children, className = '' }) {
-  return <div className={`${styles.eyebrowRow} ${className}`}>{children}</div>;
+  return <div className={cx(styles.eyebrowRow, className)}>{children}</div>;
 }
 
 function Eyebrow({ withDot = false, children }) {
@@ -58,25 +63,24 @@ function Eyebrow({ withDot = false, children }) {
 
 function TrendPill({ icon: Icon = TrendingUp, children }) {
   return (
-    <span className={styles.trendPill}>
-      <Icon size={11} strokeWidth={2.4} />
+    <Tag variant="success" size="sm" icon={<Icon size={11} strokeWidth={2.4} />} className={styles.trendPill}>
       {children}
-    </span>
+    </Tag>
   );
 }
 
 function QualifyPill({ qualifies, children }) {
   const Icon = qualifies ? Check : XIcon;
   return (
-    <span className={`${styles.qualifyPill} ${qualifies ? styles.qYes : styles.qNo}`}>
+    <span className={cx(styles.qualifyPill, qualifies ? styles.qYes : styles.qNo)}>
       <Icon size={13} strokeWidth={2.6} />
       {children}
     </span>
   );
 }
 
-function Badge({ children, tone = 'neutral' }) {
-  return <span className={`${styles.badge} ${styles[`tone-${tone}`]}`}>{children}</span>;
+function HeroBadge({ children, tone = 'neutral' }) {
+  return <span className={cx(styles.badge, styles[`tone-${tone}`])}>{children}</span>;
 }
 
 function Title({ children }) {
@@ -95,7 +99,7 @@ function Amount({ prefix, suffix, children, tone }) {
   return (
     <div className={styles.amountRow}>
       {prefix && <span className={styles.amountSymbol}>{prefix}</span>}
-      <span className={`${styles.amount} ${tone ? styles[`amount-${tone}`] : ''}`}>
+      <span className={cx(styles.amount, tone && styles[`amount-${tone}`])}>
         {children}
       </span>
       {suffix && <span className={styles.amountSymbol}>{suffix}</span>}
@@ -115,16 +119,7 @@ function Progress({ pct, scale }) {
   const clamped = Math.max(0, Math.min(100, Math.round(pct)));
   return (
     <div className={styles.progress}>
-      <div className={styles.track}>
-        <div
-          className={styles.fill}
-          style={{ width: `${clamped}%` }}
-          role="progressbar"
-          aria-valuenow={clamped}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        />
-      </div>
+      <ProgressBar value={clamped} max={100} size="md" className={styles.progressBar} />
       {scale && scale.length > 0 && (
         <div className={styles.scale} aria-hidden="true">
           {scale.map((s, i) => <span key={i}>{s}</span>)}
@@ -136,15 +131,16 @@ function Progress({ pct, scale }) {
 
 function Figures({ children, dense = false }) {
   return (
-    <div className={`${styles.figures} ${dense ? styles.dense : ''}`}>
+    <div className={cx(styles.figures, dense && styles.dense)}>
       {children}
     </div>
   );
 }
 
-function Figure({ value, cap, sub }) {
+function Figure({ label, value, cap, sub }) {
   return (
     <div className={styles.figure}>
+      {label && <div className={styles.figLabel}>{label}</div>}
       <div className={styles.figValue}>{value}</div>
       {cap && <div className={styles.figCap}>{cap}</div>}
       {sub && <div className={styles.figSub}>{sub}</div>}
@@ -156,7 +152,7 @@ function FigureDivider() {
   return <div className={styles.figDivider} aria-hidden="true" />;
 }
 
-function Divider() {
+function HeroDivider() {
   return <div className={styles.divider} aria-hidden="true" />;
 }
 
@@ -180,7 +176,7 @@ HeroCard.EyebrowRow = EyebrowRow;
 HeroCard.Eyebrow = Eyebrow;
 HeroCard.TrendPill = TrendPill;
 HeroCard.QualifyPill = QualifyPill;
-HeroCard.Badge = Badge;
+HeroCard.Badge = HeroBadge;
 HeroCard.Title = Title;
 HeroCard.Meta = Meta;
 HeroCard.MetaDot = MetaDot;
@@ -191,7 +187,7 @@ HeroCard.Progress = Progress;
 HeroCard.Figures = Figures;
 HeroCard.Figure = Figure;
 HeroCard.FigureDivider = FigureDivider;
-HeroCard.Divider = Divider;
+HeroCard.Divider = HeroDivider;
 HeroCard.FooterBlock = FooterBlock;
 HeroCard.FooterLabel = FooterLabel;
 HeroCard.FooterValue = FooterValue;

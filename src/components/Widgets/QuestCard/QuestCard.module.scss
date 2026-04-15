@@ -1,145 +1,123 @@
-.card {
-  padding: 14px 16px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
+/* Section header — matches BadgesStrip pattern for visual consistency */
+.section {
+  padding: 0 var(--space-250);
 }
 
-.head {
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-150);
+  padding: 0 var(--space-025);
 }
-.eyebrow {
+
+.headerLeft {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  font-weight: 600;
-
-  > svg { color: var(--brand); }
+  gap: var(--space-075);
 }
+
+.iconBrand {
+  color: var(--color-action-primary);
+}
+
+.title {
+  font-family: var(--sans);
+  font-size: var(--font-size-500);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
 .counter {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  color: var(--brand);
-  font-weight: 700;
-  padding: 3px 8px;
-  background: var(--brand-soft);
-  border: 1px solid rgba(189, 41, 37, 0.2);
-  border-radius: 999px;
-  letter-spacing: 0.02em;
-}
+  font-family: var(--mono);
+  font-size: var(--font-size-200);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--letter-spacing-tight);
 
-.list { display: flex; flex-direction: column; gap: 8px; }
-
-.quest {
-  padding: 12px 14px 12px 16px;
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--brand);
+  strong {
+    color: var(--color-action-primary);
+    font-weight: var(--font-weight-semibold);
   }
 }
-.questDone {
-  background: rgba(15, 122, 58, 0.06);
-  border-color: rgba(15, 122, 58, 0.24);
 
-  &::before { background: var(--success); }
+/* Stack of standalone quest cards. Nexus Card handles bg/border/radius/spacing. */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-125);
 }
 
+/* Quest card — hover lift only on real pointer devices (avoids sticky hover on touch) */
+@media (hover: hover) and (pointer: fine) {
+  .quest {
+    transition: transform 150ms ease-out, border-color 150ms ease-out;
+  }
+  .quest:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Completed: soft success tint. Double-class specificity avoids !important. */
+.quest.questDone {
+  background: var(--color-bg-success);
+  border-color: var(--color-alert-success-border);
+}
+
+/* Header row — two tags side-by-side (Card is column; this overrides within the card) */
 .qHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-.qType {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  font-weight: 700;
-}
-.qDoneTag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  color: var(--success);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.qTitle {
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.35;
-  margin-bottom: 10px;
-  letter-spacing: -0.01em;
+  gap: var(--space-100);
 }
 
 .qProgRow {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 10px;
+  gap: var(--space-125);
   align-items: center;
-  margin-bottom: 8px;
 }
+
 .qTrack {
-  height: 7px;
-  background: var(--surface-sunken);
-  border-radius: 999px;
-  overflow: hidden;
+  width: 100%;
 }
-.qFill {
-  height: 100%;
-  background: var(--brand);
-  border-radius: 999px;
-  transition: width 400ms var(--ease-out);
-}
-.questDone .qFill { background: var(--success); }
+
+/* Tabular mono count — no horizontal jitter when numbers change */
 .qCount {
-  font-family: 'Geist Mono', monospace;
-  font-size: 12px;
-  color: var(--text-primary);
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-family: var(--mono);
+  font-size: var(--font-size-200);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-tight);
   white-space: nowrap;
 }
 
-.qReward {
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 12.5px;
-  color: var(--text-secondary);
-  line-height: 1.4;
-  padding: 7px 10px;
-  background: var(--brand-soft);
-  border-radius: 8px;
-  border: 1px solid rgba(189, 41, 37, 0.14);
+.qCountDone {
+  color: var(--color-text-success);
 }
-.questDone .qReward {
-  background: rgba(15, 122, 58, 0.08);
-  border-color: rgba(15, 122, 58, 0.2);
-  color: var(--text-secondary);
+
+/* Reward footer — quiet divider + icon + copy, left-aligned */
+.qReward {
+  padding-top: var(--space-100);
+  border-top: var(--border-width-100) solid var(--color-border-subtle);
+}
+
+.quest.questDone .qReward {
+  border-top-color: var(--color-alert-success-border);
+}
+
+.qRewardIcon {
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.qRewardText {
+  color: var(--color-text-secondary);
+  line-height: 1.4;
 }

@@ -1,38 +1,25 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Users, TrendingUp, AlertTriangle } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
-import { VERTICALS, employees } from '../../data/masters';
-import {
-  electronicsPayoutsRD3675,
-  groceryPayoutT28V,
-  fnlPayoutTRN0241,
-} from '../../data/payouts';
-import {
-  electronicsTargetsRD3675,
-  electronicsActualsRD3675,
-  electronicsMultiplierTiers,
-  groceryCampaign,
-  fnlWeeklyRules,
-} from '../../data/configs';
+import { VERTICALS } from '../../data/masters';
+import useAsync from '../../hooks/useAsync';
+import { fetchStoreIncentive } from '../../api/incentives';
+import { fetchEmployees } from '../../api/employees';
+import { fetchRules } from '../../api/rules';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import StoreTransactions from '../screens/StoreTransactions';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
-import { formatINR } from '../../utils/format';
-
-function sumTarget(code, targets) {
-  const byDept = {};
-  targets.forEach((t) => { byDept[t.department] = (byDept[t.department] || 0) + t.monthlyTarget; });
-  return byDept;
-}
-
-function findMultiplier(pct) {
-  const tier = electronicsMultiplierTiers.find((t) => pct >= t.gateFromPct && pct < t.gateToPct);
-  return tier ? tier.multiplier : 0;
-}
+import { formatINR, formatDateRange } from '../../utils/format';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/nexus/atoms';
 
 export default function StoreManagerHome() {
   const [tab, setTab] = useState('home');
@@ -50,83 +37,160 @@ export default function StoreManagerHome() {
     if (id !== 'tx') setTxEmpFilter('ALL');  // clear pre-filter when leaving tx
     setTab(id);
   };
-  const firstName = employee.employeeName.split(' ')[0];
+  const firstName = employee?.employeeName?.split(' ')[0] ?? '';
 
-  const storeTeam = employees.filter((e) => e.storeCode === store.storeCode);
+  /* ---- API data ---- */
+  const storeDetailResult = useAsync(
+    () => store?.storeCode ? fetchStoreIncentive(store.storeCode, active?.vertical) : Promise.resolve(null),
+    [store?.storeCode, active?.vertical],
+  );
+
+  const employeesResult = useAsync(
+    () => store?.storeCode ? fetchEmployees(store.storeCode) : Promise.resolve([]),
+    [store?.storeCode],
+  );
+
+  const rulesResult = useAsync(
+    () => active?.vertical ? fetchRules(active.vertical) : Promise.resolve([]),
+    [active?.vertical],
+  );
+
+  const storeTeam = useMemo(() => employeesResult.data || [], [employeesResult.data]);
 
   const summary = useMemo(() => {
+    const storeDetail = storeDetailResult.data;
+    const plans = rulesResult.data || [];
+
+    if (!storeDetail || !active) return null;
+
     if (active.vertical === VERTICALS.ELECTRONICS) {
-      const targets = sumTarget(store.storeCode, electronicsTargetsRD3675);
-      const totalTarget = Object.values(targets).reduce((s, v) => s + v, 0);
-      const totalActual = electronicsActualsRD3675.reduce((s, d) => s + d.actualSales, 0);
-      const totalPayout = electronicsPayoutsRD3675.reduce(
-        (s, emp) => s + emp.byDepartment.reduce((x, d) => x + d.finalPayout, 0),
-        0
-      );
+      const depts = storeDetail.departments || [];
+      const emps = storeDetail.employees || [];
+      const totalTarget = depts.reduce((s, d) => s + (Number(d.target) || 0), 0);
+      const totalActual = depts.reduce((s, d) => s + (Number(d.actual) || 0), 0);
+      const totalPayout = emps.reduce((s, e) => s + (Number(e.finalIncentive) || 0), 0);
+
+      // Get multiplier tiers from active plan
+      const activePlan = plans.find((p) => p.status === 'ACTIVE');
+      const tiers = activePlan?.achievementMultipliers || [];
+      const findMult = (pct) => {
+        const t = tiers.find((x) => pct >= Number(x.achievementFrom) && pct < Number(x.achievementTo));
+        return t ? Number(t.multiplierPct) / 100 : 0;
+      };
+
       return {
         kind: 'ELECTRONICS',
         totalTarget, totalActual, totalPayout,
-        achievementPct: Math.round((totalActual / totalTarget) * 100),
-        departments: electronicsActualsRD3675.map((d) => ({
-          ...d, target: targets[d.department] || 0, multiplier: findMultiplier(d.achievementPct),
+        achievementPct: totalTarget > 0 ? Math.round((totalActual / totalTarget) * 100) : 0,
+        departments: depts.map((d) => ({
+          department: d.department,
+          actualSales: Number(d.actual) || 0,
+          achievementPct: Number(d.achievementPct) || 0,
+          target: Number(d.target) || 0,
+          multiplier: findMult(Number(d.achievementPct) || 0),
         })),
-        employees: electronicsPayoutsRD3675.map((emp) => {
-          const e = storeTeam.find((x) => x.employeeId === emp.employeeId);
-          const total = emp.byDepartment.reduce((s, d) => s + d.finalPayout, 0);
+        employees: emps.map((emp) => {
+          const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
           return {
             employeeId: emp.employeeId,
-            employeeName: e?.employeeName || emp.employeeId,
-            role: e?.role || '—',
-            payrollStatus: e?.payrollStatus || 'ACTIVE',
-            total, ineligible: !!emp.ineligibleReason,
+            employeeName: emp.employeeName || master?.employeeName || emp.employeeId,
+            role: emp.role || master?.role || '—',
+            payrollStatus: master?.payrollStatus || 'ACTIVE',
+            total: Number(emp.finalIncentive) || 0,
+            ineligible: master?.payrollStatus && master.payrollStatus !== 'ACTIVE',
           };
         }),
       };
     }
+
     if (active.vertical === VERTICALS.GROCERY) {
-      const p = groceryPayoutT28V;
-      const allEmployees = storeTeam.map((e) => ({
-        employeeId: e.employeeId, employeeName: e.employeeName, role: e.role,
-        payrollStatus: e.payrollStatus, total: p.individualPayout, ineligible: false,
-      }));
+      // storeDetail has summary with totalIncentive, and employees
+      const emps = storeDetail.employees || [];
+      const empCount = emps.length || 1;
+      const totalPayout = Number(storeDetail.summary?.totalIncentive) || 0;
+      const perEmp = empCount > 0 ? Math.round(totalPayout / empCount) : 0;
+
+      // Get campaign config from rules
+      const activePlan = plans.find((p) => p.status === 'ACTIVE');
+      const campaign = activePlan?.campaignConfigs?.[0] || null;
+      // Get payout slabs for projections
+      const slabs = campaign?.payoutSlabs || [];
+      const totalTarget = Number(campaign?.storeTargets?.find((st) => st.storeCode === store.storeCode)?.targetValue) || 0;
+      // Use departments if available, or summary
+      const deptTarget = storeDetail.departments?.reduce((s, d) => s + (Number(d.target) || 0), 0) || totalTarget;
+      const deptActual = storeDetail.departments?.reduce((s, d) => s + (Number(d.actual) || 0), 0) || 0;
+      const achPct = deptTarget > 0 ? Math.round((deptActual / deptTarget) * 100) : 0;
+
       return {
-        kind: 'GROCERY', campaign: groceryCampaign,
-        totalTarget: p.targetSalesValue, totalActual: p.actualSalesValue,
-        totalPayout: p.totalStoreIncentive, achievementPct: p.achievementPct,
-        employees: allEmployees, projections: p.projections,
+        kind: 'GROCERY',
+        campaign: campaign ? { campaignName: campaign.campaignName, campaignStart: campaign.startDate, campaignEnd: campaign.endDate } : {},
+        totalTarget: deptTarget,
+        totalActual: deptActual,
+        totalPayout,
+        achievementPct: achPct,
+        employees: emps.map((emp) => {
+          const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
+          return {
+            employeeId: emp.employeeId,
+            employeeName: emp.employeeName || master?.employeeName || emp.employeeId,
+            role: emp.role || master?.role || '—',
+            payrollStatus: master?.payrollStatus || 'ACTIVE',
+            total: perEmp,
+            ineligible: false,
+          };
+        }),
+        projections: slabs.filter((s) => Number(s.achievementFrom) >= 100).map((s) => ({
+          scenario: `${Number(s.achievementFrom)}%`,
+          rate: Number(s.perPieceRate) || 0,
+          estPerEmployee: 0, // rough placeholder
+        })),
       };
     }
+
     if (active.vertical === VERTICALS.FNL) {
-      const p = fnlPayoutTRN0241;
-      const allEmployees = p.employees.map((emp) => {
-        const e = storeTeam.find((x) => x.employeeId === emp.employeeId);
-        return {
-          employeeId: emp.employeeId,
-          employeeName: e?.employeeName || emp.employeeId,
-          role: e?.role || emp.role,
-          payrollStatus: e?.payrollStatus || 'ACTIVE',
-          daysPresent: emp.daysPresent,
-          eligible: emp.eligible && emp.daysPresent >= fnlWeeklyRules.minWorkingDays,
-          total: emp.payout,
-          ineligible: !(emp.eligible && emp.daysPresent >= fnlWeeklyRules.minWorkingDays),
-        };
-      });
+      const emps = storeDetail.employees || [];
+      const depts = storeDetail.departments || [];
+      const totalTarget = depts.reduce((s, d) => s + (Number(d.target) || 0), 0);
+      const totalActual = depts.reduce((s, d) => s + (Number(d.actual) || 0), 0);
+      const totalPayout = emps.reduce((s, e) => s + (Number(e.finalIncentive) || 0), 0);
+
       return {
-        kind: 'FNL', week: { start: p.weekStart, end: p.weekEnd },
-        totalTarget: p.weeklySalesTarget, totalActual: p.actualWeeklyGrossSales,
-        totalPayout: p.totalStoreIncentive,
-        achievementPct: Math.round((p.actualWeeklyGrossSales / p.weeklySalesTarget) * 100),
-        storeQualifies: p.storeQualifies, employees: allEmployees,
+        kind: 'FNL',
+        week: { start: '', end: '' }, // Will need period info
+        totalTarget,
+        totalActual,
+        totalPayout,
+        achievementPct: totalTarget > 0 ? Math.round((totalActual / totalTarget) * 100) : 0,
+        storeQualifies: totalActual >= totalTarget,
+        employees: emps.map((emp) => {
+          const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
+          return {
+            employeeId: emp.employeeId,
+            employeeName: emp.employeeName || master?.employeeName || emp.employeeId,
+            role: emp.role || master?.role || '—',
+            payrollStatus: master?.payrollStatus || 'ACTIVE',
+            daysPresent: undefined, // needs attendance endpoint data
+            eligible: true, // placeholder
+            total: Number(emp.finalIncentive) || 0,
+            ineligible: false,
+          };
+        }),
       };
     }
+
     return null;
-  }, [active, store, storeTeam]);
+  }, [active, store, storeTeam, storeDetailResult.data, rulesResult.data]);
+
+  const dataLoading = storeDetailResult.loading || employeesResult.loading || rulesResult.loading;
+  if (!active || !employee || !store || dataLoading) {
+    return <div className={styles.shell}><div className={styles.loading}>Loading...</div></div>;
+  }
 
   if (!summary) return null;
 
   // Look up the full master record for the selected roster row (drawer needs it)
   const selectedEmployee = selectedRow
-    ? employees.find((e) => e.employeeId === selectedRow.employeeId) || null
+    ? storeTeam.find((e) => e.employeeId === selectedRow.employeeId) || null
     : null;
 
   return (
@@ -176,7 +240,7 @@ export default function StoreManagerHome() {
                   <HeroCard.EyebrowRow>
                     <HeroCard.Eyebrow withDot>
                       {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
-                      {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${summary.campaign.campaignStart} → ${summary.campaign.campaignEnd}`}
+                      {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${formatDateRange(summary.campaign.campaignStart, summary.campaign.campaignEnd)}`}
                       {summary.kind === 'FNL' && `Week · ${summary.week.start} → ${summary.week.end}`}
                     </HeroCard.Eyebrow>
                   </HeroCard.EyebrowRow>

@@ -1,0 +1,136 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 24px;
+  background: var(--color-bg-sunken, #f2f2f2);
+}
+
+.card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--color-bg-elevated, #fff);
+  border-radius: var(--radius-200, 16px);
+  box-shadow: var(--elevation-surface-raised-low);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.logo {
+  display: block;
+  height: 40px;
+  width: auto;
+  margin: 0 auto 4px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary, #4d4d4d);
+  letter-spacing: 0.02em;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-bg-sunken, #e0e0e0);
+  border-radius: var(--radius-150, 12px);
+  font-size: 15px;
+  font-family: var(--sans);
+  color: var(--color-text-primary, #000);
+  outline: none;
+  transition: border-color 120ms ease;
+
+  &:focus {
+    border-color: var(--color-action-primary, #bd2925);
+  }
+}
+
+.inputWrap .input {
+  padding-right: 40px;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-tertiary, #595959);
+  cursor: pointer;
+
+  &:active {
+    background: var(--color-bg-sunken, #f2f2f2);
+  }
+}
+
+.submit {
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius-150, 12px);
+  background: var(--color-action-primary, #bd2925);
+  color: var(--color-text-on-action, #fff);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: background 120ms ease;
+
+  &:active {
+    background: var(--brand-70, #8e1e1c);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.error {
+  font-size: 13px;
+  color: var(--color-text-error, #b61e1e);
+  text-align: center;
+}
+
+.forgot {
+  font-size: 12px;
+  color: var(--color-text-tertiary, #595959);
+  text-align: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--sans);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.forgotMsg {
+  font-size: 12px;
+  color: var(--color-text-secondary, #4d4d4d);
+  text-align: center;
+  line-height: 1.5;
+}

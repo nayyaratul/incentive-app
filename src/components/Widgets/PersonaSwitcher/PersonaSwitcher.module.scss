@@ -5,21 +5,19 @@
   left: 50%;
   right: auto;
   transform: translateX(-50%);
-  z-index: calc(var(--z-overlay) + 1);
+  z-index: 1002;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 7px 10px 7px 9px;
-  background: var(--text-primary);
-  color: var(--brand-contrast);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
+  gap: var(--space-075);
+  padding: var(--space-075) var(--space-125) var(--space-075) var(--space-100);
+  background: var(--color-text-primary);
+  color: var(--color-text-on-action);
+  border: var(--border-width-100) solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
   cursor: pointer;
-  font-family: 'Instrument Sans', sans-serif;
-  box-shadow:
-    0 2px 4px rgba(10, 22, 40, 0.10),
-    0 12px 28px rgba(10, 22, 40, 0.22);
-  transition: transform var(--dur-med) var(--ease-out), opacity var(--dur-med) var(--ease-out);
+  font-family: var(--sans);
+  box-shadow: var(--elevation-surface-raised-mid);
+  transition: transform 200ms ease-out, opacity 200ms ease-out;
 
   &:hover {
     transform: translateX(-50%) translateY(-1px);
@@ -37,153 +35,50 @@
 }
 
 .pillLabel {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.92);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 @media (min-width: 900px) {
   .pill {
     top: calc(20px + env(safe-area-inset-top, 0px));
-    padding: 8px 12px 8px 10px;
+    padding: var(--space-100) var(--space-150) var(--space-100) var(--space-125);
   }
   .pillLabel {
-    font-size: 12px;
+    font-size: var(--font-size-200);
   }
 }
 
-/* ---------- Modal overlay ---------- */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(10, 22, 40, 0.52);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: var(--z-milestone);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  animation: overlayFade 220ms var(--ease-out) both;
-}
-
-@keyframes overlayFade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.modal {
-  width: 100%;
-  max-width: 720px;
-  max-height: 88vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  background: var(--surface-card);
-  border-radius: 24px;
-  box-shadow:
-    0 2px 4px rgba(10, 22, 40, 0.08),
-    0 40px 80px rgba(10, 22, 40, 0.32);
-  border: 1px solid var(--border);
-  animation: modalRise 320ms var(--ease-out) both;
-}
-
-@keyframes modalRise {
-  from { opacity: 0; transform: translateY(16px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.modalHead {
-  padding: 22px 24px 16px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  border-bottom: 1px solid var(--divider);
-  background: linear-gradient(180deg, var(--surface-card) 0%, var(--surface-raised) 100%);
-}
-
-.eyebrow {
-  font-family: 'Geist Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--brand);
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.title {
-  margin: 0 0 6px;
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 580;
-  font-size: 26px;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-  color: var(--text-primary);
-}
-
-.sub {
-  margin: 0;
-  font-size: 12.5px;
-  color: var(--text-secondary);
-  max-width: 520px;
-}
-
-.close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  color: var(--text-secondary);
-  background: var(--surface-card);
-  flex-shrink: 0;
-
-  &:hover {
-    color: var(--text-primary);
-    border-color: var(--text-primary);
-  }
-}
-
+/* ---------- Modal body content ---------- */
 .body {
-  padding: 16px 24px 8px;
-  overflow-y: auto;
+  padding: 0;
 }
 
 .group {
-  margin-bottom: 18px;
+  margin-bottom: var(--space-200);
 }
 
 .groupTitle {
-  margin: 4px 0 10px;
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  font-weight: 600;
+  margin: var(--space-050) 0 var(--space-125);
   display: flex;
   align-items: center;
+}
 
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--divider);
-    margin-left: 10px;
-  }
+.groupLine {
+  flex: 1;
+  height: var(--border-width-100);
+  background: var(--color-border-subtle);
+  margin-left: var(--space-125);
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: var(--space-125);
 }
 
 @media (min-width: 560px) {
@@ -204,14 +99,14 @@
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
-  gap: 6px;
-  padding: 14px 14px 12px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--surface-card);
+  gap: var(--space-075);
+  padding: var(--space-150) var(--space-150) var(--space-150);
+  border: var(--border-width-100) solid var(--color-border-default);
+  border-radius: var(--radius-200);
+  background: var(--color-bg-elevated);
   cursor: pointer;
   overflow: hidden;
-  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-med) var(--ease-out), background var(--dur-med) var(--ease-out);
+  transition: transform 150ms ease-out, border-color 200ms ease-out, background 200ms ease-out;
 
   &::before {
     content: '';
@@ -222,12 +117,12 @@
     width: 3px;
     background: currentColor;
     opacity: 0;
-    transition: opacity var(--dur-med) var(--ease-out);
+    transition: opacity 200ms ease-out;
   }
 
   &:hover {
     transform: translateY(-1px);
-    border-color: var(--text-primary);
+    border-color: var(--color-text-primary);
 
     &::before { opacity: 1; }
   }
@@ -235,14 +130,14 @@
 
 .cardActive {
   border-color: currentColor !important;
-  background: var(--surface-raised);
+  background: var(--color-bg-secondary);
 
   &::before { opacity: 1; }
 }
 
-.color-crimson { color: var(--brand); }
-.color-navy    { color: var(--secondary); }
-.color-saffron { color: var(--accent-deep); }
+.color-crimson { color: var(--brand-50); }
+.color-navy    { color: var(--blue-60); }
+.color-saffron { color: var(--yellow-50); }
 
 .cardHead {
   width: 100%;
@@ -252,15 +147,15 @@
 }
 
 .badge {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: currentColor;
-  padding: 3px 7px;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  font-weight: 700;
+  padding: var(--space-025) var(--space-075);
+  border: var(--border-width-100) solid currentColor;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-semibold);
   background: transparent;
 }
 
@@ -270,31 +165,21 @@
 }
 
 .name {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
   font-size: 17px;
   line-height: 1.1;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-tighter);
 }
 
 .tagline {
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 11.5px;
-  color: var(--text-secondary);
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
   line-height: 1.35;
 }
 
-.footer {
-  padding: 12px 24px 16px;
-  border-top: 1px solid var(--divider);
-  background: var(--surface-raised);
-}
-
 .footnote {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  width: 100%;
+  text-align: left;
 }

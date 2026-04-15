@@ -1,10 +1,21 @@
 import React from 'react';
 import { Medal } from 'lucide-react';
+import { Text } from '@/nexus/atoms';
 import styles from './BadgesStrip.module.scss';
 import { badgesByEmployee } from '../../../data/gamification';
 
-export default function BadgesStrip({ employeeId }) {
-  const badges = badgesByEmployee[employeeId] || [];
+// Sample employee per vertical — used when the API-fetched employeeId
+// isn't in the gamification mock data, so every user sees example badges.
+const VERTICAL_SAMPLE_ID = {
+  ELECTRONICS: 'EMP-0041',
+  GROCERY: 'GRC-2203',
+  FNL: 'FNL-3103',
+};
+
+export default function BadgesStrip({ employeeId, vertical }) {
+  const direct = badgesByEmployee[employeeId];
+  const fallbackId = VERTICAL_SAMPLE_ID[vertical];
+  const badges = direct || (fallbackId ? badgesByEmployee[fallbackId] : null) || [];
   if (badges.length === 0) return null;
 
   const unlocked = badges.filter((b) => b.unlockedAt).length;
@@ -13,12 +24,12 @@ export default function BadgesStrip({ employeeId }) {
     <section className={styles.section}>
       <div className={styles.header}>
         <div className={styles.headerLeft}>
-          <Medal size={14} strokeWidth={2.4} />
+          <Medal size={14} strokeWidth={2.4} className={styles.iconAccent} />
           <span className={styles.title}>Badges</span>
         </div>
-        <span className={styles.counter}>
+        <Text variant="caption" size="sm" as="span" className={styles.counter}>
           <strong>{unlocked}</strong> of {badges.length}
-        </span>
+        </Text>
       </div>
 
       <div className={styles.scroll}>
@@ -32,10 +43,12 @@ export default function BadgesStrip({ employeeId }) {
             >
               <div className={styles.icon} aria-hidden="true">{b.icon}</div>
               <div className={styles.body}>
-                <div className={styles.label}>{b.label}</div>
-                <div className={styles.note}>
+                <Text as="div" variant="caption" size="sm" weight="semibold" truncate className={styles.label}>
+                  {b.label}
+                </Text>
+                <Text as="div" variant="micro" className={styles.note}>
                   {isLocked ? 'Not yet' : new Date(b.unlockedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
-                </div>
+                </Text>
               </div>
             </div>
           );

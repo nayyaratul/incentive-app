@@ -1,0 +1,160 @@
+.group {
+  display: inline-flex;
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  user-select: none;
+  font-family: var(--sans);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  border: var(--border-width-100) solid transparent;
+  border-radius: 0;
+
+  &:focus-visible {
+    outline: var(--border-width-200) solid var(--color-border-focus);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: var(--opacity-048);
+    cursor: not-allowed;
+  }
+}
+
+/* Horizontal joined borders */
+.group:not(.vertical) .item + .item {
+  border-left: none;
+}
+
+.group:not(.vertical) .item:first-child {
+  border-radius: var(--radius-100) 0 0 var(--radius-100);
+}
+
+.group:not(.vertical) .item:last-child {
+  border-radius: 0 var(--radius-100) var(--radius-100) 0;
+}
+
+/* Vertical joined borders */
+.vertical .item + .item {
+  border-top: none;
+}
+
+.vertical .item:first-child {
+  border-radius: var(--radius-100) var(--radius-100) 0 0;
+}
+
+.vertical .item:last-child {
+  border-radius: 0 0 var(--radius-100) var(--radius-100);
+}
+
+/* Default variant */
+[data-variant='default'] .item {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    background: var(--color-interactive-hover);
+  }
+
+  &[data-state='on'] {
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+    border-color: var(--color-action-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-action-primary-hover);
+      border-color: var(--color-action-primary-hover);
+    }
+  }
+}
+
+/* Outline variant */
+[data-variant='outline'] .item {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: var(--color-border-default);
+
+  &:hover:not(:disabled) {
+    background: var(--color-interactive-hover);
+  }
+
+  &[data-state='on'] {
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+    border-color: var(--color-action-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-action-primary-hover);
+      border-color: var(--color-action-primary-hover);
+    }
+  }
+}
+
+/* Pill variant — separate pills with gap, no joining */
+.group[data-variant='pill'] {
+  gap: var(--space-075);
+}
+
+.group[data-variant='pill'] .item + .item {
+  border-left: var(--border-width-100) solid var(--color-border-default);
+}
+
+.group[data-variant='pill'] .item,
+.group[data-variant='pill'] .item:first-child,
+.group[data-variant='pill'] .item:last-child {
+  border-radius: var(--radius-full);
+}
+
+[data-variant='pill'] .item {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: var(--color-border-default);
+
+  &:hover:not(:disabled) {
+    background: var(--color-interactive-hover);
+  }
+
+  &[data-state='on'] {
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+    border-color: var(--color-action-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-action-primary-hover);
+      border-color: var(--color-action-primary-hover);
+    }
+  }
+}
+
+/* Sizes */
+[data-size='sm'] .item {
+  height: 32px;
+  padding: 0 var(--space-100);
+  font-size: var(--font-size-200);
+  gap: var(--space-050);
+}
+
+[data-size='md'] .item {
+  height: 40px;
+  padding: 0 var(--space-200);
+  font-size: var(--font-size-300);
+  gap: var(--space-075);
+}
+
+[data-size='lg'] .item {
+  height: 48px;
+  padding: 0 var(--space-300);
+  font-size: var(--font-size-400);
+  gap: var(--space-100);
+}

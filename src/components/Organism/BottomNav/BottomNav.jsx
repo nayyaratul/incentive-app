@@ -1,8 +1,8 @@
 import React from 'react';
 import { Home, Users, BarChart3, Flag, Store, Receipt } from 'lucide-react';
+import cx from 'classnames';
 import styles from './BottomNav.module.scss';
 
-// Persona-specific nav sets. Kept ≤ 4 items for clarity on mobile.
 const NAV_SETS = {
   EMPLOYEE: [
     { id: 'home',    label: 'Home',    Icon: Home },
@@ -27,7 +27,7 @@ export function navSetFor(role) {
   if (role === 'SM') return NAV_SETS.SM;
   if (role === 'BA') return NAV_SETS.BA;
   if (role === 'CENTRAL') return NAV_SETS.CENTRAL;
-  return NAV_SETS.EMPLOYEE; // SA / DM default
+  return NAV_SETS.EMPLOYEE;
 }
 
 export default function BottomNav({ active = 'home', role = 'SA', onNavigate }) {
@@ -42,7 +42,7 @@ export default function BottomNav({ active = 'home', role = 'SA', onNavigate }) 
             <button
               key={id}
               type="button"
-              className={`${styles.item} ${isActive ? styles.active : ''}`}
+              className={cx(styles.item, isActive && styles.active)}
               aria-current={isActive ? 'page' : undefined}
               aria-label={label}
               onClick={() => onNavigate && onNavigate(id)}

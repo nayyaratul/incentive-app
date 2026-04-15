@@ -1,70 +1,46 @@
-import React, { useEffect } from 'react';
-import { X, Trophy } from 'lucide-react';
+import React from 'react';
+import { Trophy } from 'lucide-react';
+import { Drawer } from '@/nexus/molecules';
+import LeaderboardPodium from '../../Molecule/LeaderboardPodium/LeaderboardPodium';
+import LeaderboardFocusList from '../../Molecule/LeaderboardFocusList/LeaderboardFocusList';
 import styles from './LeaderboardDrawer.module.scss';
 
 /**
- * Mobile bottom-sheet leaderboard. Opens when the header rank chip is tapped.
- * Closes on ESC, backdrop click, or the X button.
+ * Mobile bottom-sheet leaderboard. Opens when the header rank pill is tapped.
+ * Layout: optional top-3 banner → podium (#2 / #1 / #3) → focus list (self ± 1).
  */
 export default function LeaderboardDrawer({ open, onClose, myRank }) {
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
-
-  if (!open || !myRank) return null;
+  if (!myRank) return null;
 
   const unitLabel = myRank.unitLabel || 'earned';
   const scopeNote = myRank.scopeNote || `in ${myRank.scope}`;
+  const inTop3 = myRank.rank >= 1 && myRank.rank <= 3;
 
   return (
-    <div className={styles.overlay} onClick={onClose} role="dialog" aria-label="Store leaderboard">
-      <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.handle} aria-hidden="true" />
-
-        <header className={styles.head}>
-          <div className={styles.headLeft}>
-            <div className={styles.iconWrap} aria-hidden="true"><Trophy size={16} strokeWidth={2.4} /></div>
-            <div>
-              <div className={styles.eyebrow}>Leaderboard · {scopeNote}</div>
-              <h2 className={styles.title}>You're #{myRank.rank}</h2>
-            </div>
+    <Drawer
+      open={open}
+      onOpenChange={(isOpen) => !isOpen && onClose()}
+      placement="bottom"
+      title={`You're #${myRank.rank}`}
+      subtitle={`Leaderboard \u00b7 ${scopeNote}`}
+      icon={<Trophy size={16} strokeWidth={2.4} />}
+    >
+      <div className={styles.body}>
+        {inTop3 && (
+          <div className={styles.banner} role="status">
+            <span aria-hidden="true">&#127942;</span>
+            <span>Top 3 &mdash; keep it up!</span>
           </div>
-          <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
-            <X size={18} strokeWidth={2.2} />
-          </button>
-        </header>
+        )}
 
-        <div className={styles.list}>
-          <div className={styles.listHead}>
-            <span>Rank</span>
-            <span>Associate</span>
-            <span className={styles.listUnit}>{unitLabel}</span>
-          </div>
-          {myRank.top.map((r) => (
-            <div
-              key={r.rank}
-              className={`${styles.row} ${r.isSelf ? styles.rowSelf : ''}`}
-            >
-              <span className={styles.rank}>#{r.rank}</span>
-              <div className={styles.who}>
-                <span className={styles.name}>{r.name}</span>
-                {r.note && <span className={styles.note}>{r.note}</span>}
-              </div>
-              <span className={styles.earn}>
-                {formatEarn(r.earned, myRank.unitLabel)}
-              </span>
-            </div>
-          ))}
-        </div>
+        <LeaderboardPodium entries={myRank.top} unitLabel={unitLabel} />
+
+        <LeaderboardFocusList
+          entries={myRank.top}
+          selfRank={myRank.rank}
+          unitLabel={unitLabel}
+        />
       </div>
-    </div>
+    </Drawer>
   );
-}
-
-function formatEarn(val, unitLabel) {
-  if (unitLabel === 'pieces' || unitLabel === 'units') return `${val}`;
-  return `₹${val.toLocaleString('en-IN')}`;
 }

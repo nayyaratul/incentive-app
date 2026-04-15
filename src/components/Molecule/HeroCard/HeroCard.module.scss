@@ -1,6 +1,9 @@
 /* ============================================================================
  * HeroCard — shared visual shell for every persona's primary metric card.
  *
+ * Rebuilt on Nexus design tokens. All colours, spacing, typography, radius,
+ * and elevation values reference semantic or primitive token variables.
+ *
  * Unified:
  *   - container gradient, border, shadow, radial flourish, ornament
  *   - type scale:  48px hero / 22px figure / 13px caption / 11px eyebrow
@@ -11,11 +14,11 @@
 
 .hero {
   position: relative;
-  padding: 22px 22px 20px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, var(--brand-tint, #FBEBEA) 0%, #FFFFFF 70%, #FFFFFF 100%);
-  border: 1px solid var(--brand-soft);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px -12px rgba(189, 41, 37, 0.16);
+  padding: var(--space-300) var(--space-300) var(--space-250);
+  border-radius: var(--radius-400);
+  background: linear-gradient(135deg, var(--brand-a100) 0%, var(--color-bg-elevated) 70%, var(--color-bg-elevated) 100%);
+  border: var(--border-width-100) solid var(--brand-a150);
+  box-shadow: var(--elevation-surface-raised-low);
   overflow: hidden;
 
   // Radial flourish top-right
@@ -26,8 +29,8 @@
     top: -60px;
     width: 200px;
     height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(189, 41, 37, 0.12) 0%, transparent 70%);
+    border-radius: var(--radius-full);
+    background: radial-gradient(circle, var(--brand-a150) 0%, transparent 70%);
     pointer-events: none;
   }
 }
@@ -37,18 +40,18 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-175, 14px);
 }
 
 /* ---------- Ornament ---------- */
 .ornament {
   position: absolute;
-  right: -12px;
-  top: -12px;
-  width: 96px;
-  height: 96px;
-  color: var(--brand);
-  opacity: 0.28;
+  right: calc(-1 * var(--space-150));
+  top: calc(-1 * var(--space-150));
+  width: var(--size-96);
+  height: var(--size-96);
+  color: var(--color-action-primary);
+  opacity: var(--opacity-024);
   animation: hc-spin 40s linear infinite;
   z-index: 0;
 
@@ -67,101 +70,113 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 10px 12px;
+  gap: var(--space-125) var(--space-150);
   min-height: 22px;
 }
 
 .eyebrow {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--brand-deep);
+  color: var(--brand-80);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-100);
+
+  /* Mirror: 80 ↔ 20 */
+  [data-theme="dark"] & {
+    color: var(--brand-20);
+  }
 }
 
 .dot {
   width: 7px;
   height: 7px;
-  border-radius: 50%;
-  background: var(--brand);
-  box-shadow: 0 0 10px rgba(189, 41, 37, 0.6);
+  border-radius: var(--radius-full);
+  background: var(--color-action-primary);
+  box-shadow: 0 0 var(--space-125) var(--brand-a200);
 }
 
 /* ---------- Pills ---------- */
 .trendPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  background: rgba(15, 122, 58, 0.08);
-  color: var(--success);
-  border-radius: 999px;
-  font-family: 'Geist Mono', monospace;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  border: 1px solid rgba(15, 122, 58, 0.22);
+  font-family: var(--mono);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
 }
 
 .qualifyPill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  border: 1px solid transparent;
+  gap: var(--space-075);
+  padding: var(--space-050) var(--space-125);
+  border-radius: var(--radius-full);
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+  border: var(--border-width-100) solid transparent;
   width: fit-content;
 }
 .qYes {
-  background: rgba(15, 122, 58, 0.08);
-  color: var(--success);
-  border-color: rgba(15, 122, 58, 0.22);
+  background: var(--color-bg-success);
+  color: var(--color-text-success);
+  border-color: var(--color-border-success);
 }
 .qNo {
-  background: rgba(182, 30, 30, 0.08);
-  color: var(--error);
-  border-color: rgba(182, 30, 30, 0.22);
+  background: var(--color-bg-error);
+  color: var(--color-text-error);
+  border-color: var(--color-border-error);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-family: 'Geist Mono', monospace;
-  font-size: 10.5px;
-  font-weight: 600;
+  padding: var(--space-050) var(--space-125);
+  border-radius: var(--radius-full);
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .tone-neutral {
-  background: rgba(10, 22, 40, 0.06);
-  color: var(--text-primary);
-  border: 1px solid var(--divider);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border: var(--border-width-100) solid var(--color-border-subtle);
 }
+/* Brand tone — solid step tokens (not alpha tints) so contrast is
+   predictable regardless of what hero gradient sits behind. Follows
+   Nexus's N ↔ (100 − N) mirror principle:
+     bg:     10 ↔ 90
+     text:   80 ↔ 20
+     border: 20 ↔ 80
+   Note on the bg choice: Nexus default tag convention is 0 ↔ 100, but
+   step 0 is near-white and would blend into the hero's brand-tinted
+   gradient. Stepping up one notch (10 ↔ 90) keeps the tag visually
+   distinct while still respecting the mirror. */
 .tone-brand {
-  background: var(--brand-soft);
-  color: var(--brand-deep);
-  border: 1px solid rgba(189, 41, 37, 0.22);
+  background: var(--brand-10);
+  color: var(--brand-80);
+  border: var(--border-width-100) solid var(--brand-20);
+
+  [data-theme="dark"] & {
+    background: var(--brand-90);
+    color: var(--brand-20);
+    border-color: var(--brand-80);
+  }
 }
 
 /* ---------- Title / meta ---------- */
 .title {
   margin: 0;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 640;
-  font-size: 22px;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-  color: var(--text-primary);
+  font-size: var(--font-size-600);
+  line-height: var(--line-height-600);
+  letter-spacing: var(--letter-spacing-tighter);
+  color: var(--color-text-primary);
 }
 
 .meta {
@@ -169,84 +184,84 @@
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 12px;
-  color: var(--text-secondary);
+  gap: var(--space-075);
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
+  color: var(--color-text-secondary);
 }
 
 .metaDot {
-  color: var(--text-muted);
-  opacity: 0.6;
+  color: var(--color-text-tertiary);
+  opacity: var(--opacity-056);
 }
 
 /* ---------- Hero amount (48px unified) ---------- */
 .amountRow {
   display: flex;
   align-items: baseline;
-  gap: 4px;
+  gap: var(--space-050);
 }
 
 .amount {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
-  font-size: 48px;
+  font-size: var(--font-size-1000);
   line-height: 0.9;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums lining-nums;
 }
 
-.amount-brand { color: var(--brand-deep); }
-.amount-success { color: var(--success); }
+.amount-brand { color: var(--brand-70); }
+.amount-success { color: var(--color-text-success); }
 
 .amountSymbol {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-style: italic;
   font-variation-settings: 'opsz' 72, 'SOFT' 100, 'wght' 420;
-  font-size: 30px;
+  font-size: var(--font-size-800);
   line-height: 0.9;
-  color: var(--brand);
+  color: var(--color-action-primary);
   letter-spacing: -0.03em;
-  transform: translateY(-2px);
+  transform: translateY(calc(-1 * var(--space-025)));
   display: inline-block;
 }
 
 .amountCap {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  font-weight: 500;
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-medium);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  margin-top: -4px;
+  color: var(--color-text-tertiary);
+  margin-top: calc(-1 * var(--space-050));
 }
 
 /* ---------- Caption ---------- */
 .caption {
   margin: 0;
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 13px;
-  color: var(--text-secondary);
+  font-family: var(--sans);
+  font-size: var(--font-size-300);
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-075);
   flex-wrap: wrap;
 
   strong {
-    font-family: 'Geist Mono', monospace;
+    font-family: var(--mono);
     font-weight: 700;
-    color: var(--text-primary);
-    font-size: 13px;
-    letter-spacing: -0.01em;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-300);
+    letter-spacing: var(--letter-spacing-tight);
   }
 
   em {
-    font-family: 'Geist Mono', monospace;
+    font-family: var(--mono);
     font-style: normal;
-    font-weight: 600;
-    color: var(--brand-deep);
-    font-size: 12.5px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--brand-70);
+    font-size: var(--font-size-200);
   }
 }
 
@@ -254,77 +269,54 @@
 .progress {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-100);
 }
 
-.track {
-  background: rgba(10, 22, 40, 0.08);
-  border-radius: 999px;
-  height: 10px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: inset 0 1px 2px rgba(10, 22, 40, 0.08);
-}
+.progressBar {
+  height: var(--space-125);
+  width: 100%;
+  max-width: 100%;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+  box-shadow: inset 0 var(--border-width-100) var(--space-025) var(--color-bg-tertiary);
 
-.fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--brand) 0%, var(--brand-deep) 100%);
-  border-radius: 999px;
-  position: relative;
-  transition: width 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
-  box-shadow: 0 0 12px rgba(189, 41, 37, 0.5);
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.35) 50%,
-      transparent 100%
-    );
-    background-size: 60% 100%;
-    background-repeat: no-repeat;
-    animation: hc-shimmer 2.8s ease-in-out infinite;
-
-    @media (prefers-reduced-motion: reduce) {
-      animation: none;
-    }
+  // Override the Nexus ProgressBar fill indicator to use brand gradient
+  [data-state="indeterminate"],
+  [data-state="loading"],
+  > span,
+  > div {
+    background: linear-gradient(90deg, var(--color-action-primary) 0%, var(--brand-70) 100%);
+    border-radius: var(--radius-full);
+    box-shadow: 0 0 var(--space-150) var(--brand-a200);
   }
-}
-
-@keyframes hc-shimmer {
-  0% { background-position: -120% 0; }
-  100% { background-position: 220% 0; }
 }
 
 .scale {
   display: flex;
   justify-content: space-between;
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
   letter-spacing: 0.04em;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
 
-  span:first-child { margin-left: -2px; }
-  span:last-child  { margin-right: -2px; }
+  span:first-child { margin-left: calc(-1 * var(--space-025)); }
+  span:last-child  { margin-right: calc(-1 * var(--space-025)); }
 }
 
 /* ---------- Figures row ---------- */
 .figures {
   display: flex;
   align-items: stretch;
-  gap: 12px;
-  padding: 14px 0;
-  border-top: 1px solid rgba(10, 22, 40, 0.12);
-  border-bottom: 1px solid rgba(10, 22, 40, 0.12);
+  gap: var(--space-150);
+  padding: var(--space-175, 14px) 0;
+  border-top: var(--border-width-100) solid var(--color-border-default);
+  border-bottom: var(--border-width-100) solid var(--color-border-default);
 
   // When Figures is the last child, the bottom border becomes an orphan line
   // hovering above the card's bottom padding. Drop it in that case.
   &:last-child {
     border-bottom: 0;
-    padding-bottom: 4px;
+    padding-bottom: var(--space-050);
   }
 }
 
@@ -333,23 +325,32 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-075);
+}
+
+.figLabel {
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
 }
 
 .figValue {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
-  font-size: 22px;
-  line-height: 1;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
+  font-size: var(--font-size-600);
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: var(--letter-spacing-tighter);
   font-variant-numeric: tabular-nums;
 }
 
 // Dense variant — used when 3+ figures share a narrow row. Reduces the value
-// size from 22 → 18 so long INR strings don't overflow their column.
+// size from 24 → 18 so long INR strings don't overflow their column.
 .figures.dense {
-  gap: 10px;
+  gap: var(--space-125);
 
   .figValue {
     font-size: 18px;
@@ -357,32 +358,31 @@
 }
 
 .figCap {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  line-height: 1;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-top: 3px;
+  color: var(--color-text-secondary);
 }
 
 .figSub {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11.5px;
-  color: var(--text-muted);
-  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  line-height: 1;
+  color: var(--color-text-tertiary);
 }
 
 .figDivider {
-  width: 1px;
-  align-self: center;
-  height: 36px;
-  background: rgba(10, 22, 40, 0.12);
+  width: var(--border-width-100);
+  align-self: stretch;
+  background: var(--color-border-default);
 }
 
 .divider {
-  height: 1px;
-  background: var(--divider);
-  margin: 2px 0;
+  height: var(--border-width-100);
+  background: var(--color-border-subtle);
+  margin: var(--space-025) 0;
 }
 
 /* ---------- Footer block (highlighted sub-card for "Your share" / payout) ---------- */
@@ -390,39 +390,39 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px;
-  background: var(--surface-sunken);
-  border: 1px solid var(--divider);
-  border-radius: 12px;
+  gap: var(--space-150);
+  padding: var(--space-150) var(--space-175, 14px);
+  background: var(--color-bg-sunken);
+  border: var(--border-width-100) solid var(--color-border-subtle);
+  border-radius: var(--radius-200);
 }
 
 .footerLabel {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  font-weight: 500;
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-medium);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 2px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-025);
 }
 
 .footerValue {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
-  font-size: 22px;
-  line-height: 1;
-  color: var(--brand-deep);
-  letter-spacing: -0.02em;
+  font-size: var(--font-size-600);
+  line-height: var(--line-height-600);
+  color: var(--brand-70);
+  letter-spacing: var(--letter-spacing-tighter);
   font-variant-numeric: tabular-nums;
 }
 
 .footerMeta {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 11.5px;
-  color: var(--text-secondary);
+  gap: var(--space-075);
+  font-family: var(--sans);
+  font-size: var(--font-size-100);
+  color: var(--color-text-secondary);
   text-align: right;
 }

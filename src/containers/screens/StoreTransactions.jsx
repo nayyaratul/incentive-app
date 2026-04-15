@@ -186,12 +186,12 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
         </div>
         <div className={styles.summaryDiv} />
         <div>
-          <div className={styles.summaryVal} style={{ color: 'var(--brand-deep)' }}>{formatINR(finalTotal)}</div>
+          <div className={styles.summaryVal} style={{ color: 'var(--brand-70)' }}>{formatINR(finalTotal)}</div>
           <div className={styles.summaryCap}>incentive</div>
         </div>
         <div className={styles.summaryDiv} />
         <div>
-          <div className={styles.summaryVal} style={{ color: excludedCount > 0 ? 'var(--warn)' : 'var(--text-primary)' }}>{excludedCount}</div>
+          <div className={styles.summaryVal} style={{ color: excludedCount > 0 ? 'var(--color-text-warning)' : 'var(--color-text-primary)' }}>{excludedCount}</div>
           <div className={styles.summaryCap}>excluded</div>
         </div>
       </section>

@@ -1,0 +1,109 @@
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: var(--border-width-100) solid transparent;
+  border-radius: var(--radius-100);
+  font-family: var(--sans);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  user-select: none;
+
+  &:focus-visible {
+    outline: var(--border-width-200) solid var(--color-border-focus);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: var(--opacity-048);
+    cursor: not-allowed;
+  }
+}
+
+.default {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    background: var(--color-interactive-hover);
+  }
+
+  &[data-state='on'] {
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+    border-color: var(--color-action-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-action-primary-hover);
+      border-color: var(--color-action-primary-hover);
+    }
+  }
+}
+
+.outline {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: var(--color-border-default);
+
+  &:hover:not(:disabled) {
+    background: var(--color-interactive-hover);
+  }
+
+  &[data-state='on'] {
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+    border-color: var(--color-action-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-action-primary-hover);
+      border-color: var(--color-action-primary-hover);
+    }
+  }
+}
+
+.pill {
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: var(--color-border-default);
+
+  &:hover:not(:disabled) {
+    background: var(--color-interactive-hover);
+  }
+
+  &[data-state='on'] {
+    background: var(--color-action-primary);
+    color: var(--color-text-on-action);
+    border-color: var(--color-action-primary);
+
+    &:hover:not(:disabled) {
+      background: var(--color-action-primary-hover);
+      border-color: var(--color-action-primary-hover);
+    }
+  }
+}
+
+.sm {
+  height: 32px;
+  padding: 0 var(--space-100);
+  font-size: var(--font-size-200);
+  gap: var(--space-050);
+}
+
+.md {
+  height: 40px;
+  padding: 0 var(--space-200);
+  font-size: var(--font-size-300);
+  gap: var(--space-075);
+}
+
+.lg {
+  height: 48px;
+  padding: 0 var(--space-300);
+  font-size: var(--font-size-400);
+  gap: var(--space-100);
+}
