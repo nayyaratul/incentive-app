@@ -80,10 +80,14 @@
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--brand-70);
+  color: var(--brand-80);
   display: inline-flex;
   align-items: center;
   gap: var(--space-100);
+
+  [data-theme="dark"] & {
+    color: var(--brand-30);
+  }
 }
 
 .dot {
@@ -141,10 +145,20 @@
   color: var(--color-text-primary);
   border: var(--border-width-100) solid var(--color-border-subtle);
 }
+/* Brand tone — solid step tokens (not alpha tints) so contrast is
+   predictable regardless of what hero gradient sits behind.
+   Light: brand-10 pastel bg + brand-80 near-black-red text (~12:1).
+   Dark: brand-80 deep bg + brand-10 pastel text (~10:1). */
 .tone-brand {
-  background: var(--brand-a100);
-  color: var(--brand-70);
-  border: var(--border-width-100) solid var(--brand-a200);
+  background: var(--brand-10);
+  color: var(--brand-80);
+  border: var(--border-width-100) solid var(--brand-20);
+
+  [data-theme="dark"] & {
+    background: var(--brand-80);
+    color: var(--brand-10);
+    border-color: var(--brand-60);
+  }
 }
 
 /* ---------- Title / meta ---------- */
@@ -153,7 +167,7 @@
   font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 640;
   font-size: var(--font-size-600);
-  line-height: var(--line-height-200);
+  line-height: var(--line-height-600);
   letter-spacing: var(--letter-spacing-tighter);
   color: var(--color-text-primary);
 }
@@ -311,7 +325,7 @@
   font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
   font-size: var(--font-size-600);
-  line-height: var(--line-height-200);
+  line-height: var(--line-height-600);
   color: var(--color-text-primary);
   letter-spacing: var(--letter-spacing-tighter);
   font-variant-numeric: tabular-nums;
@@ -382,7 +396,7 @@
   font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
   font-size: var(--font-size-600);
-  line-height: var(--line-height-200);
+  line-height: var(--line-height-600);
   color: var(--brand-70);
   letter-spacing: var(--letter-spacing-tighter);
   font-variant-numeric: tabular-nums;
