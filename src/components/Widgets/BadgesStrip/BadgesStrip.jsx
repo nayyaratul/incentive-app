@@ -16,7 +16,6 @@ export default function BadgesStrip({ employeeId, vertical }) {
   const direct = badgesByEmployee[employeeId];
   const fallbackId = VERTICAL_SAMPLE_ID[vertical];
   const badges = direct || (fallbackId ? badgesByEmployee[fallbackId] : null) || [];
-  if (badges.length === 0) return null;
 
   const unlocked = badges.filter((b) => b.unlockedAt).length;
 
@@ -31,6 +30,15 @@ export default function BadgesStrip({ employeeId, vertical }) {
           <strong>{unlocked}</strong> of {badges.length}
         </Text>
       </div>
+
+      {badges.length === 0 && (
+        <div className={styles.empty}>
+          <Medal size={18} strokeWidth={1.8} className={styles.emptyIcon} />
+          <Text as="span" variant="caption" size="sm" className={styles.emptyText}>
+            Complete your first sale to start earning badges!
+          </Text>
+        </div>
+      )}
 
       <div className={styles.scroll}>
         {badges.map((b) => {

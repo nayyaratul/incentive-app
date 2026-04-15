@@ -1,4 +1,5 @@
 import React from 'react';
+import { TrendingUp } from 'lucide-react';
 import { computeFocusRows } from './computeFocusRows';
 import styles from './LeaderboardFocusList.module.scss';
 
@@ -28,22 +29,34 @@ export default function LeaderboardFocusList({ entries, selfRank, unitLabel = 'e
         <div className={styles.ellipsis} aria-hidden="true">&middot; &middot; &middot;</div>
       )}
 
-      {rows.map((r) => (
-        <div
-          key={r.rank}
-          role="listitem"
-          className={`${styles.row} ${r.isSelf ? styles.rowSelf : ''}`}
-        >
-          <span className={styles.rank}>#{r.rank}</span>
-          <div className={styles.who}>
-            <span className={styles.name}>
-              {r.isSelf ? `${r.name} (You)` : r.name}
+      {rows.map((r) => {
+        /* Simulated delta for demo — in prod this would come from backend */
+        const delta = r.isSelf ? Math.floor(Math.random() * 3) : 0;
+        return (
+          <div
+            key={r.rank}
+            role="listitem"
+            className={`${styles.row} ${r.isSelf ? styles.rowSelf : ''}`}
+          >
+            <span className={styles.rank}>
+              #{r.rank}
+              {r.isSelf && delta > 0 && (
+                <span className={styles.rankUp}>
+                  <TrendingUp size={9} strokeWidth={3} />
+                  {delta}
+                </span>
+              )}
             </span>
-            {r.note && <span className={styles.note}>{r.note}</span>}
+            <div className={styles.who}>
+              <span className={styles.name}>
+                {r.isSelf ? `${r.name} (You)` : r.name}
+              </span>
+              {r.note && <span className={styles.note}>{r.note}</span>}
+            </div>
+            <span className={styles.earn}>{formatEarn(r.earned, unitLabel)}</span>
           </div>
-          <span className={styles.earn}>{formatEarn(r.earned, unitLabel)}</span>
-        </div>
-      ))}
+        );
+      })}
 
       {ellipsisBottom && (
         <div className={styles.ellipsis} aria-hidden="true">&middot; &middot; &middot;</div>

@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import PullToRefresh from 'pulltorefreshjs';
+import { RefreshCw } from 'lucide-react';
 import styles from './EmployeeHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
@@ -16,6 +18,8 @@ import HistoryScreen from '../screens/HistoryScreen';
 export default function EmployeeHome() {
   const [tab, setTab] = useState('home');
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const mainRef = useRef(null);
   const { active, employee, store } = usePersona();
 
   const firstName = employee?.employeeName?.split(' ')[0] ?? '';
@@ -32,6 +36,30 @@ export default function EmployeeHome() {
   const myPayout = isElec ? elec.payout : isGroc ? groc.payout : isFnl ? fnl.payout : null;
 
   const myRank = myPayout?.myRank;
+
+  /* Pull-to-refresh — triggers a re-render that reloads data hooks */
+  const handleRefresh = useCallback(() => {
+    return new Promise((resolve) => {
+      setRefreshKey((k) => k + 1);
+      setTimeout(resolve, 800); // short delay for visual feedback
+    });
+  }, []);
+
+  useEffect(() => {
+    const ptr = PullToRefresh.init({
+      mainElement: 'main',
+      triggerElement: 'main',
+      onRefresh: handleRefresh,
+      instructionsPullToRefresh: 'Pull down to refresh',
+      instructionsReleaseToRefresh: 'Release to refresh',
+      instructionsRefreshing: 'Refreshing...',
+      distThreshold: 60,
+      distMax: 80,
+      distReload: 50,
+      resistanceFunction: (t) => Math.min(1, t / 2.5),
+    });
+    return () => PullToRefresh.destroyAll();
+  }, [handleRefresh]);
 
   if (!active || !employee || dataLoading) {
     return <div className={styles.loading}>Loading...</div>;
@@ -51,10 +79,11 @@ export default function EmployeeHome() {
         <HeaderBar
           employeeName={tab === 'home' ? firstName : null}
           rank={tab === 'home' ? myRank?.rank : undefined}
+          deltaRank={tab === 'home' ? myRank?.deltaRank : undefined}
           onOpenLeaderboard={() => setLeaderboardOpen(true)}
         />
 
-        <main className={styles.main}>
+        <main className={styles.main} ref={mainRef}>
           {tab === 'home' && (
             <>
               {active.vertical === VERTICALS.ELECTRONICS && (

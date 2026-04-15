@@ -14,7 +14,7 @@ const TIER_ICON = {
   default: Trophy,
 };
 
-export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
+export default function HeaderBar({ employeeName, rank, deltaRank, onOpenLeaderboard }) {
   const { logout, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
@@ -71,6 +71,12 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
                   <span className={styles.hash} aria-hidden="true">#</span>
                   <span className={styles.num}>{rank}</span>
                 </span>
+                {typeof deltaRank === 'number' && deltaRank > 0 && (
+                  <span className={styles.rankDelta} aria-label={`Up ${deltaRank} positions`}>
+                    <TrendingUp size={10} strokeWidth={2.8} />
+                    <span>{deltaRank}</span>
+                  </span>
+                )}
               </button>
             )}
             {isAuthenticated && (

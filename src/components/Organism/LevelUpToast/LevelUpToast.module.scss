@@ -1,0 +1,100 @@
+/* Level-Up Toast — slides up from bottom, auto-dismisses */
+
+.toast {
+  position: fixed;
+  bottom: 80px; /* above BottomNav */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9000;
+  width: calc(100% - 32px);
+  max-width: 380px;
+  border-radius: var(--radius-200);
+  overflow: hidden;
+  animation: toast-enter 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both,
+             toast-exit  400ms cubic-bezier(0.4, 0, 1, 1) 4000ms both;
+}
+
+@keyframes toast-enter {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(24px) scale(0.92); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+@keyframes toast-exit {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(12px); }
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  background: var(--tier-gradient, linear-gradient(135deg, #E5E7EB 0%, #9CA3AF 100%));
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-150);
+  padding: 14px var(--space-200);
+  background: var(--color-bg-elevated);
+  border: var(--border-width-100) solid color-mix(in srgb, var(--tier-color, #6B7280) 35%, transparent);
+  border-radius: inherit;
+  box-shadow:
+    0 8px 32px -8px color-mix(in srgb, var(--tier-color, #6B7280) 30%, transparent),
+    0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--tier-gradient, linear-gradient(135deg, #E5E7EB 0%, #9CA3AF 100%));
+  color: white;
+  flex-shrink: 0;
+  animation: icon-spin 800ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: 200ms;
+}
+
+@keyframes icon-spin {
+  0%   { transform: rotate(-30deg) scale(0.6); opacity: 0; }
+  60%  { transform: rotate(10deg) scale(1.1); }
+  100% { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tier-color, var(--color-text-tertiary));
+  margin-bottom: 2px;
+}
+
+.tierName {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.note {
+  font-size: 11.5px;
+  color: var(--color-text-secondary);
+  margin-top: 1px;
+  line-height: 1.3;
+}

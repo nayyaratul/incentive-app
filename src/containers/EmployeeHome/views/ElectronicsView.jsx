@@ -15,6 +15,8 @@ import MomentumPills from '../../../components/Molecule/MomentumPills/MomentumPi
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import TierCelebration from '../../../components/Organism/TierCelebration/TierCelebration';
+import LevelUpToast from '../../../components/Organism/LevelUpToast/LevelUpToast';
+import WeeklyChallenge from '../../../components/Widgets/WeeklyChallenge/WeeklyChallenge';
 import {
   electronicsMultiplierTiers,
   electronicsOpportunities,
@@ -50,8 +52,14 @@ export default function ElectronicsView({ payout, employee, store, role }) {
     { label: 'Apple / OnePlus / MS Surface',value: 'Excluded entirely' },
   ];
 
+  /* Simulate a "previous" amount slightly below a tier boundary for demo.
+     In production this would come from a cached/yesterday snapshot. */
+  const prevAmount = Math.max(0, finalTotal - Math.round(finalTotal * 0.15));
+
   return (
     <>
+      <LevelUpToast previousAmount={prevAmount} currentAmount={finalTotal} />
+
       {payout.ineligibleReason && (
         <div className={`${styles.notice} rise rise-1`}>
           <AlertTriangle size={14} strokeWidth={2.4} />
@@ -67,6 +75,7 @@ export default function ElectronicsView({ payout, employee, store, role }) {
           thisMonth={{ amount: finalTotal }}
           today={{ amount: payout.todayEarned }}
           goal={goalBlock}
+          milestones={payout.milestones}
         />
       </section>
 
@@ -87,6 +96,10 @@ export default function ElectronicsView({ payout, employee, store, role }) {
           lastPeriodLabel="last month"
           nextPayoutDate={payout.nextPayoutDate}
         />
+      </section>
+
+      <section className={`rise rise-3`}>
+        <WeeklyChallenge vertical="ELECTRONICS" payout={payout} />
       </section>
 
       <section className={`rise rise-4`}>

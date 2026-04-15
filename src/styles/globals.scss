@@ -79,3 +79,17 @@ button {
   background: var(--brand-a150);
   color: var(--color-text-primary);
 }
+
+/* Pull-to-refresh styling */
+.ptr--ptr {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  box-shadow: none !important;
+}
+
+.ptr--icon,
+.ptr--text {
+  color: var(--color-text-secondary);
+}
+

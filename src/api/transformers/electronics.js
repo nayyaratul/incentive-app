@@ -68,6 +68,8 @@ function buildMyRank(storeEmployees, employeeId) {
   return {
     rank,
     deltaAbove,
+    /** Simulated rank change from yesterday — positive = improved */
+    deltaRank: rank > 0 ? Math.floor(Math.random() * 3) : 0,
     scope: 'store',
     top: ranked.slice(0, 5),
   };
