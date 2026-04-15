@@ -78,6 +78,7 @@ export default function EmployeeHome() {
       <div className={styles.layout}>
         <HeaderBar
           employeeName={tab === 'home' ? firstName : null}
+          storeName={tab === 'home' && store ? `${store.storeFormat || store.storeName} — ${store.city}, ${store.state}` : undefined}
           rank={tab === 'home' ? myRank?.rank : undefined}
           deltaRank={tab === 'home' ? myRank?.deltaRank : undefined}
           onOpenLeaderboard={() => setLeaderboardOpen(true)}

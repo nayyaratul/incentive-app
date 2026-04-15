@@ -76,6 +76,10 @@ export default function ElectronicsView({ payout, employee, store, role }) {
           today={{ amount: payout.todayEarned }}
           goal={goalBlock}
           milestones={payout.milestones}
+          potential={payout.baseIncentive}
+          achievementPct={payout.achievementPct}
+          multiplierPct={payout.currentMultiplierPct}
+          apiTiers={payout.apiMultiplierTiers}
         />
       </section>
 
