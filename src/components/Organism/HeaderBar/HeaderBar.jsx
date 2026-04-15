@@ -1,10 +1,18 @@
 import React from 'react';
-import { LogOut, Trophy, Sun, Moon } from 'lucide-react';
+import { LogOut, Trophy, Crown, Medal, TrendingUp, Sun, Moon } from 'lucide-react';
 import { Heading, Text, Button, Switch } from '@/nexus/atoms';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import BrandLogo from '../../Atom/BrandLogo/BrandLogo';
 import styles from './HeaderBar.module.scss';
+
+const TIER_ICON = {
+  gold:    Crown,
+  silver:  Medal,
+  bronze:  Medal,
+  brand:   TrendingUp,
+  default: Trophy,
+};
 
 export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
   const { logout, isAuthenticated } = useAuth();
@@ -18,6 +26,8 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
       : rank === 3 ? 'bronze'
       : rank <= 10 ? 'brand'
       : 'default';
+
+  const TierIcon = TIER_ICON[rankTier];
 
   return (
     <header className={styles.header}>
@@ -54,9 +64,19 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
                     : 'Open leaderboard'
                 }
               >
-                <Trophy size={14} strokeWidth={2.4} aria-hidden="true" />
+                <span className={styles.pillShine} aria-hidden="true" />
+                <span className={styles.pillIcon} aria-hidden="true">
+                  <TierIcon size={15} strokeWidth={2.2} />
+                </span>
                 <span className={styles.leaderboardLabel}>
-                  {typeof rank === 'number' ? `#${rank}` : 'Leaderboard'}
+                  {typeof rank === 'number' ? (
+                    <>
+                      <span className={styles.hash} aria-hidden="true">#</span>
+                      <span className={styles.num}>{rank}</span>
+                    </>
+                  ) : (
+                    'Leaderboard'
+                  )}
                 </span>
               </button>
             )}
