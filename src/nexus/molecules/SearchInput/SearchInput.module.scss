@@ -1,0 +1,118 @@
+ .root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
+
+.left {
+  left: var(--space-150);
+}
+
+.right {
+  right: var(--space-150);
+}
+
+.clearButton {
+  position: absolute;
+  top: 50%;
+  right: var(--space-150);
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: var(--radius-050);
+  background: transparent;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+}
+
+.clearButton:hover:not(:disabled) {
+  background: var(--color-interactive-hover);
+  color: var(--color-text-primary);
+}
+
+.clearButton:focus-visible {
+  outline: var(--border-width-200) solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.clearButton:disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-048);
+}
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  right: var(--space-150);
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-tertiary);
+}
+
+/* When an icon or control is present, increase input padding to avoid overlap */
+.inputWithIconLeft {
+  padding-left: calc(var(--space-250) + var(--space-150));
+}
+
+.inputWithIconRight {
+  padding-right: calc(var(--space-250) + var(--space-150));
+}
+
+.sm .inputWithIconLeft {
+  padding-left: calc(var(--space-200) + var(--space-150));
+}
+
+.sm .inputWithIconRight {
+  padding-right: calc(var(--space-200) + var(--space-150));
+}
+
+.lg .inputWithIconLeft {
+  padding-left: calc(var(--space-300) + var(--space-150));
+}
+
+.lg .inputWithIconRight {
+  padding-right: calc(var(--space-300) + var(--space-150));
+}
+
+.error .icon {
+  color: var(--color-text-error);
+}
+
+.disabled .icon,
+.disabled .spinner {
+  opacity: var(--opacity-048);
+}
+
+.sm {
+}
+
+.md {
+}
+
+.lg {
+}
+

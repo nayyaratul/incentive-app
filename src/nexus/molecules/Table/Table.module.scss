@@ -1,0 +1,179 @@
+/* ─── Table Atom ─────────────────────────────────────────────── */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-family: var(--sans);
+  color: var(--color-text-primary);
+
+  &.fixed {
+    table-layout: fixed;
+  }
+}
+
+/* ─── Sizes ─── */
+.sm {
+  font-size: var(--font-size-200);
+
+  .cell,
+  .head {
+    padding: var(--space-050) var(--space-100);
+  }
+}
+
+.md {
+  font-size: var(--font-size-300);
+
+  .cell,
+  .head {
+    padding: var(--space-100) var(--space-150);
+  }
+}
+
+.lg {
+  font-size: var(--font-size-400);
+
+  .cell,
+  .head {
+    padding: var(--space-150) var(--space-200);
+  }
+}
+
+/* ─── Header ─── */
+.header {
+  background: var(--grey-0);
+
+  [data-theme="dark"] & {
+    background: var(--grey-100);
+  }
+}
+
+.sticky {
+  position: sticky;
+  z-index: 1;
+  background: var(--grey-0);
+
+  [data-theme="dark"] & {
+    background: var(--grey-100);
+  }
+}
+
+/* ─── Head (th) ─── */
+.head {
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  border-bottom: var(--border-width-100) solid var(--color-border-subtle);
+  white-space: nowrap;
+}
+
+/* ─── Cell (td) ─── */
+.cell {
+  border-bottom: var(--border-width-100) solid var(--color-border-subtle);
+}
+
+/* ─── Body ─── */
+.body {}
+
+/* ─── Footer ─── */
+.footer {
+  background: var(--brand-a50);
+
+  [data-theme="dark"] & {
+    background: var(--brand-a50);
+  }
+
+  .cell {
+    font-weight: var(--font-weight-semibold);
+    color: var(--brand-80);
+    border-bottom: none;
+    border-top: var(--border-width-200) solid var(--color-border-default);
+
+    [data-theme="dark"] & {
+      color: var(--brand-20);
+    }
+  }
+}
+
+/* ─── Caption ─── */
+.caption {
+  caption-side: bottom;
+  padding: var(--space-100) 0;
+  font-size: var(--font-size-200);
+  color: var(--color-text-tertiary);
+  text-align: left;
+}
+
+/* ─── Row ─── */
+.row {}
+
+/* ─── Variants ─── */
+.striped {
+  .body .row:nth-child(even) {
+    background: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+  }
+}
+
+.hoverable {
+  .body .row {
+    transition: background-color 150ms ease;
+
+    &:hover {
+      background: color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+    }
+  }
+}
+
+/* ─── Bordered ─── */
+.bordered {
+  border: var(--border-width-100) solid var(--color-border-default);
+
+  .head,
+  .cell {
+    border: var(--border-width-100) solid var(--color-border-subtle);
+  }
+
+  .head {
+    border-bottom-width: var(--border-width-100);
+    border-bottom-color: var(--color-border-subtle);
+  }
+}
+
+/* ─── Selected row ─── */
+.selected {
+  background: var(--color-bg-info);
+}
+
+/* ─── Alignment ─── */
+.alignLeft   { text-align: left; }
+.alignCenter { text-align: center; }
+.alignRight  { text-align: right; }
+
+/* ─── Sort button ─── */
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-050);
+  background: none;
+  border: none;
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-transform: inherit;
+  letter-spacing: inherit;
+
+  &:focus-visible {
+    outline: var(--border-width-200) solid var(--color-border-focus);
+    outline-offset: var(--space-025);
+    border-radius: var(--space-025);
+  }
+}
+
+.sortIcon {
+  display: inline-flex;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}

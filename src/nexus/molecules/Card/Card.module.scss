@@ -1,0 +1,115 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-150);
+  padding: var(--space-250);
+  border-radius: var(--radius-150);
+  background: var(--color-bg-elevated);
+  border-width: var(--border-width-100);
+  border-style: solid;
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-primary);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
+}
+
+.sm {
+  padding: var(--space-200);
+  gap: var(--space-100);
+  border-radius: var(--radius-100);
+}
+
+.md {
+}
+
+.lg {
+  padding: var(--space-300);
+  gap: var(--space-200);
+  border-radius: var(--radius-200);
+}
+
+.elevated {
+  background: var(--color-bg-elevated);
+}
+
+.outlined {
+  background: var(--color-bg-primary);
+  border-color: var(--color-border-default);
+}
+
+.flat {
+  background: var(--color-bg-primary);
+  border-color: transparent;
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  background: var(--color-interactive-hover);
+  border-color: var(--color-border-default);
+}
+
+.interactive:active {
+  background: var(--color-interactive-active);
+  transform: translateY(var(--size-01));
+}
+
+.interactive:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--border-width-200) var(--color-border-focus);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-050);
+}
+
+.headerAlignCenter {
+  align-items: center;
+  text-align: center;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-100);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-100);
+}
+
+.footerAlignStart {
+  justify-content: flex-start;
+}
+
+.footerAlignCenter {
+  justify-content: center;
+}
+
+.media {
+  margin-bottom: var(--space-100);
+  border-radius: var(--radius-150);
+  overflow: hidden;
+}
+
+.title {
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.subtitle {
+}
+
