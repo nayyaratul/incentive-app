@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
 import { fetchEmployeeIncentive, fetchStoreIncentive } from '../api/incentives';
 import { fetchSales } from '../api/sales';
 import { fetchRules } from '../api/rules';
@@ -18,9 +19,12 @@ export default function useElectronicsData(employeeId, storeCode) {
     let cancelled = false;
     setLoading(true);
 
+    const periodStart = dayjs().startOf('month').format('YYYY-MM-DD');
+    const periodEnd = dayjs().endOf('month').format('YYYY-MM-DD');
+
     Promise.all([
-      fetchEmployeeIncentive(employeeId, 'ELECTRONICS'),
-      fetchStoreIncentive(storeCode, 'ELECTRONICS'),
+      fetchEmployeeIncentive(employeeId, 'ELECTRONICS', periodStart, periodEnd),
+      fetchStoreIncentive(storeCode, 'ELECTRONICS', periodStart, periodEnd),
       fetchSales({ employeeId, vertical: 'ELECTRONICS' }),
       fetchRules('ELECTRONICS'),
     ])

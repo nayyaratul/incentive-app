@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
 import { fetchEmployeeIncentive } from '../api/incentives';
 import { fetchRules } from '../api/rules';
 import { transformFnlPayout } from '../api/transformers/fnl';
@@ -17,8 +18,11 @@ export default function useFnlData(employeeId) {
     let cancelled = false;
     setLoading(true);
 
+    const periodStart = dayjs().startOf('month').format('YYYY-MM-DD');
+    const periodEnd = dayjs().endOf('month').format('YYYY-MM-DD');
+
     Promise.all([
-      fetchEmployeeIncentive(employeeId, 'FNL'),
+      fetchEmployeeIncentive(employeeId, 'FNL', periodStart, periodEnd),
       fetchRules('FNL'),
     ])
       .then(([empDetail, plans]) => {

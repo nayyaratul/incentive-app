@@ -39,7 +39,8 @@ export default function ElectronicsView({ payout, employee, store, role }) {
     multiplier: findMultiplier(d.achievementPct),
   }));
 
-  const primary = allDepartments.find((d) => d.department === employee.primaryDepartment) || allDepartments[0];
+  const empDept = payout.employeeDepartment || employee.department;
+  const primary = allDepartments.find((d) => d.department === empDept) || allDepartments[0];
 
   const complianceItems = [
     { label: 'Role',                        value: `${role} · ${employee?.employeeId}` },

@@ -56,6 +56,7 @@ function buildPersonas(employees, stores) {
       role: emp.role,
       vertical,
       storeCode: emp.storeCode || null,
+      department: emp.department || null,
       badge: vertical ? `${displayRole} \u00b7 ${vertical}` : displayRole,
       tagline: store ? `${displayRole} \u00b7 ${store.storeName}` : displayRole,
       color: roleColor(emp.role),
@@ -127,6 +128,7 @@ export function PersonaProvider({ children }) {
       role: u.role,
       vertical: u.vertical || null,
       storeCode: u.storeCode || null,
+      department: u.department || null,
       badge: u.vertical ? `${u.role} \u00b7 ${u.vertical}` : u.role,
       tagline: u.storeName ? `${u.role} \u00b7 ${u.storeName}` : u.role,
       color: u.role === 'SA' ? 'crimson' : u.role === 'BA' ? 'saffron' : 'navy',
@@ -140,6 +142,7 @@ export function PersonaProvider({ children }) {
       storeCode: u.storeCode,
       storeName: u.storeName,
       vertical: u.vertical,
+      department: u.department || null,
       payrollStatus: u.payrollStatus || 'ACTIVE',
     }]);
     setStoreList(u.storeCode ? [{
