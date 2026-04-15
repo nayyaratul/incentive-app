@@ -1,83 +1,21 @@
-/* ---------- List ---------- */
-.list {
-  padding: 0;
-}
-
-.listHead {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 12px;
-  padding: 8px 0 10px;
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-text-tertiary);
-  border-bottom: 1px solid var(--color-border-subtle);
-  font-weight: 600;
-}
-.listUnit { text-align: right; }
-
-.row {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 12px;
-  padding: 12px 0;
-  align-items: center;
-  border-bottom: 1px solid var(--color-border-subtle);
-
-  &:last-child { border-bottom: none; }
-}
-
-.rowSelf {
-  background: var(--brand-a100);
-  margin: 0 -12px;
-  padding: 12px;
-  border-radius: 10px;
-  border-bottom-color: transparent;
-
-  .rank, .name { color: var(--brand-70); }
-  .earn { color: var(--brand-70); }
-}
-
-.rank {
-  font-family: var(--sans);
-  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
-  font-size: 17px;
-  color: var(--color-text-primary);
-  letter-spacing: -0.02em;
-  min-width: 28px;
-}
-
-.who {
+.body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+  gap: var(--space-150);
 }
 
-.name {
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.note {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  color: var(--color-text-warning);
-  letter-spacing: 0.04em;
-}
-
-.earn {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 700;
+.banner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-075);
+  align-self: flex-start;
+  padding: var(--space-075) var(--space-125);
+  background: var(--brand-a100);
   color: var(--brand-70);
-  letter-spacing: -0.01em;
-  white-space: nowrap;
+  border-radius: var(--radius-full);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: 0 0 0 1px var(--brand-50) inset;
 }
