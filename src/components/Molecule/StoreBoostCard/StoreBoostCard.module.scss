@@ -75,7 +75,7 @@
 }
 
 .multiplier {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 20, 'wght' 720;
   font-size: var(--font-size-400);
   color: var(--color-action-primary);
@@ -96,7 +96,7 @@
   position: relative;
   z-index: 1;
   margin: 0 0 var(--space-175, 14px);
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 560;
   font-size: var(--font-size-500);
   line-height: 1.15;
@@ -122,7 +122,7 @@
 }
 
 .pctValue {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 144, 'SOFT' 20, 'wght' 700;
   font-size: 52px;
   line-height: 0.85;
@@ -154,7 +154,7 @@
 }
 
 .figValue {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
   font-size: var(--font-size-600);
   line-height: 1;
@@ -238,7 +238,7 @@
 .tickMult {
   position: absolute;
   top: -18px;
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
   font-size: var(--font-size-100);
   color: color-mix(in srgb, var(--color-white) 90%, transparent);
@@ -305,7 +305,7 @@
 
 .mult {
   color: var(--color-action-primary);
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
   font-size: var(--font-size-300);
   letter-spacing: var(--letter-spacing-tighter);

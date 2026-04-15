@@ -150,7 +150,7 @@
 /* ---------- Title / meta ---------- */
 .title {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 640;
   font-size: var(--font-size-600);
   line-height: var(--line-height-200);
@@ -182,7 +182,7 @@
 }
 
 .amount {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
   font-size: var(--font-size-1000);
   line-height: 0.9;
@@ -195,7 +195,7 @@
 .amount-success { color: var(--color-text-success); }
 
 .amountSymbol {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-style: italic;
   font-variation-settings: 'opsz' 72, 'SOFT' 100, 'wght' 420;
   font-size: var(--font-size-800);
@@ -308,7 +308,7 @@
 }
 
 .figValue {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
   font-size: var(--font-size-600);
   line-height: var(--line-height-200);
@@ -379,7 +379,7 @@
 }
 
 .footerValue {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
   font-size: var(--font-size-600);
   line-height: var(--line-height-200);

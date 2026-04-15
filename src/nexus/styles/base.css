@@ -11,7 +11,7 @@
   --radius:   10px;
   --mono:     'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
   --sans:     'Inter', system-ui, -apple-system, sans-serif;
-  --serif:    'Fraunces', Georgia, serif;
+  --serif:    'Inter', Georgia, serif;
 
   /* typography — primitive: font sizes */
   --font-size-100:  0.625rem;   /* 10px */

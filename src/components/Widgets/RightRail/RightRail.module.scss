@@ -31,7 +31,7 @@
 }
 
 .momentumPct {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 144, 'SOFT' 30, 'wght' 700;
   font-size: 44px;
   line-height: 0.85;
@@ -203,7 +203,7 @@
   position: absolute;
   top: 4px;
   right: var(--space-200);
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 700;
   font-size: 72px;
   color: var(--color-action-primary);
@@ -213,7 +213,7 @@
 
 .quote {
   margin: 0 0 var(--space-125);
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 70, 'wght' 460;
   font-style: italic;
   font-size: var(--font-size-400);

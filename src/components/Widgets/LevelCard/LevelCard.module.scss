@@ -32,7 +32,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 20, 'wght' 720;
   font-size: var(--font-size-700);
   color: var(--color-white);
@@ -40,7 +40,7 @@
   box-shadow: var(--elevation-surface-raised-low);
 }
 .tierName {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
   font-size: var(--font-size-600);
   line-height: 1;

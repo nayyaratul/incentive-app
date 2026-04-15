@@ -53,7 +53,7 @@
 }
 
 .hash {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 420;
   font-style: italic;
   font-size: var(--font-size-700);
@@ -63,7 +63,7 @@
 }
 
 .rank {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 144, 'SOFT' 20, 'wght' 700;
   font-size: 56px;
   line-height: 0.85;
@@ -97,7 +97,7 @@
 }
 
 .qty {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
   font-size: 19px;
   color: var(--color-action-primary);
