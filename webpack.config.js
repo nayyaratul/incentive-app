@@ -28,6 +28,13 @@ module.exports = (env, argv) => {
           use: 'babel-loader'
         },
         {
+          test: /\.css$/,
+          use: [
+            isProd ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader'
+          ]
+        },
+        {
           test: /\.module\.scss$/,
           use: [
             isProd ? MiniCssExtractPlugin.loader : 'style-loader',
