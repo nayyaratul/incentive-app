@@ -39,27 +39,38 @@ export default function QuestCard({ employeeId, vertical }) {
       </Card.Header>
 
       <Card.Body>
-        <div className={styles.list}>
+        <ul className={styles.list}>
           {quests.map((q) => {
             const pctRaw = q.progress.target > 0 ? q.progress.current / q.progress.target : 0;
             const pctInt = Math.min(100, Math.round(pctRaw * 100));
             const done = q.status === 'completed';
             return (
-              <div key={q.id} className={`${styles.quest} ${done ? styles.questDone : ''}`}>
+              <li key={q.id} className={`${styles.quest} ${done ? styles.questDone : ''}`}>
                 <div className={styles.qHead}>
-                  <Text variant="overline" size="xs" weight="semibold" color="var(--color-text-tertiary)" as="span">
+                  <Text
+                    as="span"
+                    variant="overline"
+                    size="xs"
+                    weight="semibold"
+                    className={styles.qType}
+                  >
                     {q.type}
                   </Text>
                   {done && (
                     <span className={styles.qDoneTag}>
-                      <CheckCircle2 size={12} strokeWidth={2.4} />
-                      <Text variant="micro" as="span" color="var(--color-text-success)" weight="semibold">
-                        Unlocked
-                      </Text>
+                      <CheckCircle2 size={12} strokeWidth={2.4} aria-hidden="true" />
+                      <Text as="span" variant="micro" weight="semibold">Unlocked</Text>
                     </span>
                   )}
                 </div>
-                <Text variant="body" size="md" weight="semibold" className={styles.qTitle}>
+
+                <Text
+                  as="div"
+                  variant="body"
+                  size="md"
+                  weight="semibold"
+                  className={styles.qTitle}
+                >
                   {q.title}
                 </Text>
 
@@ -71,20 +82,17 @@ export default function QuestCard({ employeeId, vertical }) {
                     variant={done ? 'success' : 'default'}
                     className={styles.qTrack}
                   />
-                  <Text variant="micro" as="span" weight="semibold" color="var(--color-text-primary)" className={styles.qCount}>
-                    {formatProgress(q.progress)}
-                  </Text>
+                  <span className={styles.qCount}>{formatProgress(q.progress)}</span>
                 </div>
 
                 <div className={styles.qReward}>
-                  <Text variant="caption" size="sm" color="var(--color-text-secondary)">
-                    {q.reward}
-                  </Text>
+                  <span className={styles.qRewardArrow} aria-hidden="true">↳</span>
+                  <Text as="span" variant="caption" size="sm">{q.reward}</Text>
                 </div>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </Card.Body>
     </Card>
   );

@@ -4,14 +4,17 @@
   justify-content: space-between;
   width: 100%;
 }
+
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: var(--space-075);
 }
+
 .iconBrand {
   color: var(--color-action-primary);
 }
+
 .counter {
   font-family: var(--mono);
   font-size: var(--font-size-100);
@@ -24,31 +27,29 @@
   letter-spacing: var(--letter-spacing-wide);
 }
 
-.list { display: flex; flex-direction: column; gap: var(--space-100); }
+/* Dividers-only list — no per-row chrome. */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
 .quest {
-  padding: var(--space-150) var(--space-150) var(--space-150) var(--space-200);
-  background: var(--color-bg-secondary);
-  border: var(--border-width-100) solid var(--color-border-default);
-  border-radius: var(--radius-200);
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--color-action-primary);
+  /* Hairline divider ONLY between quests (not before first or after last) */
+  & + & {
+    border-top: var(--border-width-100) solid var(--color-border-subtle);
+    padding-top: var(--space-200);
+    margin-top: var(--space-200);
   }
 }
-.questDone {
-  background: var(--color-bg-success);
-  border-color: var(--color-alert-success-border);
 
-  &::before { background: var(--color-text-success); }
+/* Completed: strikethrough + muted title, success-tinted progress tag.
+   No full-row green flood. */
+.questDone .qTitle {
+  color: var(--color-text-tertiary);
+  text-decoration: line-through;
+  text-decoration-thickness: var(--border-width-100);
+  text-decoration-color: var(--color-text-tertiary);
 }
 
 .qHead {
@@ -56,8 +57,13 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-100);
-  margin-bottom: var(--space-075);
+  margin-bottom: var(--space-050);
 }
+
+.qType {
+  color: var(--color-text-tertiary);
+}
+
 .qDoneTag {
   display: inline-flex;
   align-items: center;
@@ -69,6 +75,7 @@
   line-height: 1.35;
   margin-bottom: var(--space-125);
   letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-text-primary);
 }
 
 .qProgRow {
@@ -78,23 +85,39 @@
   align-items: center;
   margin-bottom: var(--space-100);
 }
+
 .qTrack {
   width: 100%;
 }
+
+/* Tabular mono count — no horizontal jitter when numbers change */
 .qCount {
   font-family: var(--mono);
   font-size: var(--font-size-200);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
   letter-spacing: var(--letter-spacing-tight);
   white-space: nowrap;
 }
 
+/* Reward: indented caption line with ↳ glyph — no box, no bg. */
 .qReward {
-  padding: var(--space-075) var(--space-125);
-  background: var(--brand-a50);
-  border-radius: var(--radius-150);
-  border: var(--border-width-100) solid var(--brand-a100);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-075);
+  color: var(--color-text-secondary);
+  padding-left: var(--space-025);
 }
+
+.qRewardArrow {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-400);
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
 .questDone .qReward {
-  background: var(--color-bg-success);
-  border-color: var(--color-alert-success-border);
+  color: var(--color-text-tertiary);
 }
