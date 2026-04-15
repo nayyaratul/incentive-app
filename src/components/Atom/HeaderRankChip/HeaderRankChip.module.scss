@@ -1,47 +1,23 @@
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 6px 12px 6px 8px;
-  border-radius: 999px;
-  background: var(--text-primary);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  gap: var(--space-050);
+  padding: var(--space-050) var(--space-100);
+  background: var(--color-bg-tertiary);
+  border: var(--border-width-100) solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  color: var(--color-text-primary);
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  white-space: nowrap;
-  transition: transform var(--dur-fast) var(--ease-out), background var(--dur-med) var(--ease-out);
+  transition: background 120ms ease;
 
   &:hover {
-    background: var(--brand-deep);
-  }
-
-  &:active {
-    transform: scale(0.96);
+    background: var(--color-interactive-hover);
   }
 }
 
-.iconWrap {
-  display: inline-flex;
-  color: var(--accent, var(--brand));
-}
-
-.hash {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-style: italic;
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
-  line-height: 1;
-  transform: translateY(-1px);
-  letter-spacing: -0.02em;
-}
-
-.rank {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  color: #FFFFFF;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums lining-nums;
+.rankText {
+  font-variant-numeric: tabular-nums;
 }
