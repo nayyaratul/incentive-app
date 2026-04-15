@@ -331,37 +331,75 @@ details[open] .tierSummary::before { content: '–  '; }
   }
 }
 
-/* ---------- Compact accordion — tightens trigger padding + content padding
-   so "Distribution rule", "Payout slabs" and "Eligible articles" feel
-   minimal and consistent. */
+/* ---------- Quiet footer accordion — "Distribution rule", "Payout slabs"
+   and "Eligible articles" are reference metadata, not primary content.
+   Styling pushes them firmly into the background:
+     - Default (line-separated) variant: no card bg, no border box
+     - Trigger text: smaller, medium-weight, tertiary color, wide tracking
+     - Content text: tertiary, tight line-height
+     - Even the chevron dims a shade
+   So the section reads as a quiet "tap for details" row stack. */
 .compactAccordion {
   :global(button[class*="trigger"]) {
-    padding: var(--space-125) var(--space-150);
-    font-size: var(--font-size-300);
-    font-weight: var(--font-weight-semibold);
-    min-height: 40px;
+    padding: var(--space-100) 0;
+    font-family: var(--sans);
+    font-size: var(--font-size-200);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-tertiary);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    min-height: 36px;
+
+    &:hover {
+      background: none;
+      color: var(--color-text-secondary);
+    }
   }
 
   :global(div[class*="contentInner"]) {
-    padding: var(--space-100) var(--space-150) var(--space-150);
+    padding: var(--space-075) 0 var(--space-150);
     font-size: var(--font-size-200);
+    color: var(--color-text-secondary);
   }
 
-  /* Inside the compact accordion, tighten the slab rows and article list */
+  :global(svg[class*="chevron"]) {
+    opacity: var(--opacity-056);
+  }
+
+  /* Inside the quiet accordion, tighten the slab rows and article list
+     and drop the contained card chrome so rows read as plain tabular data */
   .slabRow {
-    padding: 8px 10px;
-    border-radius: 8px;
-    gap: 10px;
+    padding: var(--space-075) var(--space-100);
+    border-radius: var(--radius-100);
+    background: var(--color-bg-sunken);
+    border: none;
+    gap: var(--space-125);
+  }
+
+  .slabTitle {
+    font-size: var(--font-size-200);
+    color: var(--color-text-secondary);
+  }
+
+  .slabRate {
+    font-size: var(--font-size-300);
+  }
+
+  .slabTotal,
+  .slabPer {
+    font-size: var(--font-size-100);
   }
 
   .slabFootnote {
-    margin-top: 8px;
-    font-size: 11px;
+    margin-top: var(--space-100);
+    font-size: var(--font-size-100);
+    color: var(--color-text-tertiary);
   }
 
   .artList li {
-    padding: 6px 0;
-    font-size: 12px;
+    padding: var(--space-075) 0;
+    font-size: var(--font-size-200);
+    color: var(--color-text-secondary);
   }
 }
 

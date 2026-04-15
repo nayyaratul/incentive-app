@@ -101,10 +101,11 @@ export default function GroceryView({ payout, employee, store, role }) {
         <BadgesStrip employeeId={employee.employeeId} vertical="GROCERY" />
       </section>
 
-      {/* Unified compact disclosure — distribution rule, payout slabs, eligible articles.
-          All closed by default; bordered card style groups them visually. */}
+      {/* Unified quiet disclosure — distribution rule, payout slabs, eligible articles.
+          Default (line-separated) variant + subdued trigger styling so this footer
+          metadata reads as quiet reference, not a primary content block. */}
       <section className={`${styles.pad} ${styles.compactAccordion} rise rise-5`}>
-        <Accordion variant="bordered" type="multiple">
+        <Accordion variant="default" type="multiple">
           <AccordionItem value="distribution">
             <AccordionTrigger>Distribution rule & your record</AccordionTrigger>
             <AccordionContent>
