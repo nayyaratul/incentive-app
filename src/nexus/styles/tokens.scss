@@ -200,6 +200,11 @@
   /* Rating star — filled state uses yellow-20 (standard exception for brighter star) */
   --color-rating-filled: var(--yellow-20);
 
+  /* Medal — leaderboard podium (gold / silver / bronze) */
+  --medal-gold:   #D4A437;
+  --medal-silver: #B8BCC4;
+  --medal-bronze: #B86F4A;
+
   /* Table — header background (semantic → primitive) */
   --color-table-header-bg: var(--grey-10);
 
@@ -320,6 +325,11 @@
 
   /* Rating star — filled state uses yellow-20 (standard exception for brighter star) */
   --color-rating-filled: var(--yellow-20);
+
+  /* Medal — leaderboard podium (gold / silver / bronze) */
+  --medal-gold:   #E5B84A;
+  --medal-silver: #CFD3DB;
+  --medal-bronze: #D78A63;
 
   /* Table — header background (semantic → primitive) */
   --color-table-header-bg: var(--grey-90);
