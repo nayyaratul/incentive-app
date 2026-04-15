@@ -88,7 +88,7 @@ export default function ElectronicsView({ payout, employee, store, role }) {
         <OpportunityStrip opportunities={OPPS} />
       </section>
 
-      <section className={`${styles.pad} rise rise-4`}>
+      <section className={`rise rise-4`}>
         <QuestCard employeeId={employee.employeeId} vertical="ELECTRONICS" />
       </section>
 

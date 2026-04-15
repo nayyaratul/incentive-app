@@ -117,7 +117,7 @@ export default function FnlView({ payout, employee, store, role }) {
       </section>
 
       {/* Active quest */}
-      <section className={`${styles.pad} rise rise-4`}>
+      <section className={`rise rise-4`}>
         <QuestCard employeeId={employee.employeeId} vertical="FNL" />
       </section>
 
