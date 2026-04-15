@@ -1,123 +1,6 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(10, 22, 40, 0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: var(--z-milestone);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0;
-  animation: overlayFade 200ms ease-out both;
-}
-
-@keyframes overlayFade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.sheet {
-  width: 100%;
-  max-width: 480px;
-  max-height: 88vh;
-  background: var(--surface-card);
-  border-radius: 24px 24px 0 0;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 -4px 20px rgba(10, 22, 40, 0.2);
-  animation: sheetSlide 280ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  overflow: hidden;
-}
-
-@keyframes sheetSlide {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
-}
-
-.handle {
-  align-self: center;
-  width: 36px;
-  height: 4px;
-  background: var(--border);
-  border-radius: 999px;
-  margin: 10px 0 4px;
-  flex-shrink: 0;
-}
-
-.head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 10px 20px 14px;
-  border-bottom: 1px solid var(--divider);
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.headLeft {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.iconWrap {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--brand-soft);
-  color: var(--brand);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.eyebrow {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  font-weight: 600;
-  margin-bottom: 3px;
-}
-
-.title {
-  margin: 0;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 18px;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-  font-weight: 700;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.close {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--surface-card);
-  color: var(--text-secondary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  &:hover {
-    border-color: var(--text-primary);
-    color: var(--text-primary);
-  }
-}
-
+/* ---------- Body ---------- */
 .body {
-  padding: 16px 20px 24px;
-  overflow-y: auto;
+  padding: 0;
 }
 
 /* ---------- Calc trace ---------- */
@@ -128,16 +11,16 @@
   gap: 4px 10px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: var(--surface-sunken);
-  border: 1px solid var(--border);
+  background: var(--color-bg-sunken);
+  border: 1px solid var(--color-border-default);
   margin-bottom: 14px;
 }
 .traceEarned {
-  background: var(--brand-soft);
+  background: var(--brand-a100);
   border-color: rgba(189, 41, 37, 0.22);
 }
 .traceZero {
-  background: var(--surface-sunken);
+  background: var(--color-bg-sunken);
 }
 
 .traceRow {
@@ -148,36 +31,36 @@
 }
 
 .traceLabel {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--sans);
   font-size: 10.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   font-weight: 600;
 }
 
 .traceValue {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--sans);
   font-size: 16px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
 
 .traceFinal {
   font-size: 20px;
-  color: var(--brand-deep);
+  color: var(--brand-70);
 }
 
-.traceEarned .traceFinal { color: var(--brand-deep); }
-.traceZero .traceFinal { color: var(--text-muted); }
+.traceEarned .traceFinal { color: var(--brand-70); }
+.traceZero .traceFinal { color: var(--color-text-tertiary); }
 
 .traceOp {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--sans);
   font-size: 18px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   line-height: 1;
   padding-top: 12px;
 }
@@ -189,7 +72,7 @@
   background: rgba(193, 75, 0, 0.08);
   border: 1px solid rgba(193, 75, 0, 0.22);
   border-radius: 10px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--sans);
   font-size: 12.5px;
   color: var(--warn);
   line-height: 1.4;
@@ -201,17 +84,17 @@
   padding: 10px 0;
 
   & + & {
-    border-top: 1px solid var(--divider);
+    border-top: 1px solid var(--color-border-subtle);
   }
 }
 
 .groupTitle {
   margin: 0 0 6px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--sans);
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   font-weight: 600;
 }
 
@@ -221,25 +104,25 @@
   align-items: center;
   gap: 12px;
   padding: 7px 0;
-  border-bottom: 1px solid var(--divider);
+  border-bottom: 1px solid var(--color-border-subtle);
 
   &:last-child { border-bottom: none; }
 }
 
 .rowLabel {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--sans);
   font-size: 12.5px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 }
 
 .rowValue {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--sans);
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.005em;
   text-align: right;
@@ -252,12 +135,12 @@
 .rowValueStrong {
   font-size: 14px;
   font-weight: 800;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 
 .rowTag {
   display: inline-flex;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--sans);
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -279,13 +162,13 @@
   width: 22px;
   height: 22px;
   border-radius: 6px;
-  border: 1px solid var(--border);
-  background: var(--surface-card);
-  color: var(--text-muted);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-tertiary);
   cursor: pointer;
 
   &:hover {
-    color: var(--text-primary);
-    border-color: var(--text-primary);
+    color: var(--color-text-primary);
+    border-color: var(--color-text-primary);
   }
 }
