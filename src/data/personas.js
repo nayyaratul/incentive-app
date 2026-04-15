@@ -97,6 +97,17 @@ export const personas = [
     color: 'navy',
   },
   {
+    id: 'p-aarav-sa-fnl',
+    employeeId: 'FNL-3110',
+    employeeName: 'Aarav Kapoor',
+    role: ROLES.SA,
+    vertical: VERTICALS.FNL,
+    storeCode: 'TRN0241',
+    badge: 'SA · Trends',
+    tagline: 'Store Associate · Trends Koregaon Park',
+    color: 'crimson',
+  },
+  {
     id: 'p-rashmi-central-reporting',
     employeeId: 'OPS-0001',
     employeeName: 'Rashmi Iyer',

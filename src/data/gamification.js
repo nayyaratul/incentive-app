@@ -40,6 +40,11 @@ export const badgesByEmployee = {
     { id: 'first-qualify',  icon: '✅', label: 'Store qualified',     note: 'Store beat the weekly target — pool unlocked',     unlockedAt: '2026-04-11T20:00:00' },
     { id: 'consistency',    icon: '🏆', label: '3 weeks in a row',    note: 'Store qualified three consecutive weeks',          unlockedAt: null },
   ],
+  'FNL-3110': [
+    { id: 'first-qualify',  icon: '✅', label: 'Store qualified',     note: 'Store beat the weekly target — pool unlocked',     unlockedAt: '2026-04-11T20:00:00' },
+    { id: 'streak-5',       icon: '🔥', label: '5-day attendance',    note: 'Crossed the F&L minimum working-days threshold',   unlockedAt: '2026-04-17T18:10:00' },
+    { id: 'weekend-push',   icon: '🛍️', label: 'Weekend push',        note: 'Strong conversion during Fri-Sat peak hours',      unlockedAt: null },
+  ],
 };
 
 // -------- Quests — brief-aligned only --------
@@ -125,6 +130,24 @@ export const questsByEmployee = {
       type: 'Eligibility',
       title: 'Be present 5+ days this week',
       progress: { current: 7, target: 5, unit: 'days' },
+      reward: 'Keeps you eligible for this week\'s payout',
+      status: 'completed',
+    },
+  ],
+  'FNL-3110': [
+    {
+      id: 'q-store-beat',
+      type: 'Store gate',
+      title: 'Store beats ₹12L weekly target',
+      progress: { current: 1260000, target: 1200000, unit: '₹' },
+      reward: 'Unlocks 1% of weekly gross as store pool',
+      status: 'completed',
+    },
+    {
+      id: 'q-5-days',
+      type: 'Eligibility',
+      title: 'Be present 5+ days this week',
+      progress: { current: 6, target: 5, unit: 'days' },
       reward: 'Keeps you eligible for this week\'s payout',
       status: 'completed',
     },

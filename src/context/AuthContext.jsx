@@ -2,10 +2,12 @@ import React, { createContext, useContext, useState, useCallback, useEffect, use
 import secureLocalStorage from 'react-secure-storage';
 import { login as apiLogin, fetchMe } from '../api/auth';
 import { TOKEN_KEY } from '../api/client';
+import { findDemoLoginUser } from '../data/mockAuthUsers';
 
 const AuthContext = createContext(null);
 
 const useMock = process.env.REACT_APP_USE_MOCK_DATA === 'true';
+const demoLoginEnabled = process.env.REACT_APP_ENABLE_DEMO_LOGIN === 'true';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -65,6 +67,15 @@ export function AuthProvider({ children }) {
       setToken(res.token);
       setUser(res.user);
     } catch (err) {
+      if (demoLoginEnabled) {
+        const demoUser = findDemoLoginUser(employerId, password);
+        if (demoUser) {
+          secureLocalStorage.setItem(TOKEN_KEY, demoUser.token);
+          setToken(demoUser.token);
+          setUser(demoUser.user);
+          return;
+        }
+      }
       setError(err.message || 'Login failed');
       throw err;
     }

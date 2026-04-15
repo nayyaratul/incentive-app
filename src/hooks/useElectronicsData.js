@@ -3,6 +3,10 @@ import { fetchEmployeeIncentive, fetchStoreIncentive } from '../api/incentives';
 import { fetchSales } from '../api/sales';
 import { fetchRules } from '../api/rules';
 import { transformElectronicsPayout, transformMultiplierTiers } from '../api/transformers/electronics';
+import { electronicsPayoutsRD3675 } from '../data/payouts';
+import { electronicsMultiplierTiers as staticMultiplierTiers } from '../data/configs';
+
+const useMock = process.env.REACT_APP_USE_MOCK_DATA === 'true';
 
 export default function useElectronicsData(employeeId, storeCode) {
   const [payout, setPayout] = useState(null);
@@ -15,6 +19,16 @@ export default function useElectronicsData(employeeId, storeCode) {
       setLoading(false);
       return;
     }
+
+    if (useMock) {
+      const mockPayout = electronicsPayoutsRD3675.find((row) => row.employeeId === employeeId) || null;
+      setPayout(mockPayout);
+      setMultiplierTiers(staticMultiplierTiers);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
 

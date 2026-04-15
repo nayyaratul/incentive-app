@@ -1,24 +1,15 @@
 import React from 'react';
-import { LogOut, Trophy, Crown, Medal, TrendingUp } from 'lucide-react';
+import { LogOut, Trophy } from 'lucide-react';
 import { Heading, Text, Button } from '@/nexus/atoms';
 import { useAuth } from '@/context/AuthContext';
 import BrandLogo from '../../Atom/BrandLogo/BrandLogo';
 import styles from './HeaderBar.module.scss';
 
-const TIER_ICON = {
-  gold:    Crown,
-  silver:  Medal,
-  bronze:  Medal,
-  brand:   TrendingUp,
-  default: Trophy,
-};
-
 export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
   const { logout, isAuthenticated } = useAuth();
 
   // Only render the pill when we have a real, positive rank.
-  // F&L has no individual leaderboard (transformer returns myRank: null),
-  // and a rank of 0 means the API didn't find the user in the peer set.
+  // A rank of 0 means the API didn't find the user in the peer set.
   const hasRank = typeof rank === 'number' && rank > 0;
 
   const rankTier =
@@ -27,8 +18,6 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
     : rank === 3 ? 'bronze'
     : rank <= 10 ? 'brand'
     : 'default';
-
-  const TierIcon = TIER_ICON[rankTier];
 
   return (
     <header className={styles.header}>
@@ -62,7 +51,7 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
           >
             <span className={styles.pillShine} aria-hidden="true" />
             <span className={styles.pillIcon} aria-hidden="true">
-              <TierIcon size={15} strokeWidth={2.2} />
+              <Trophy size={15} strokeWidth={2.2} />
             </span>
             <span className={styles.leaderboardLabel}>
               <span className={styles.hash} aria-hidden="true">#</span>

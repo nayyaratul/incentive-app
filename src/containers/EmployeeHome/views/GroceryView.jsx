@@ -4,6 +4,7 @@ import styles from './VerticalViews.module.scss';
 import { groceryCampaign } from '../../../data/configs';
 import { formatINR, formatDateRange } from '../../../utils/format';
 import HeroCard from '../../../components/Molecule/HeroCard/HeroCard';
+import TargetTrendBreakdown from '../../../components/Molecule/TargetTrendBreakdown/TargetTrendBreakdown';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
@@ -44,19 +45,16 @@ export default function GroceryView({ payout, employee, store, role }) {
           <HeroCard.Amount suffix="%">{achievementPct}</HeroCard.Amount>
           <HeroCard.AmountCap>of {formatINR(payout.targetSalesValue)} store target</HeroCard.AmountCap>
 
-          <HeroCard.Figures>
-            <HeroCard.Figure
-              value={formatINR(payout.actualSalesValue)}
-              cap={salesCapText(achievementPct, payout.actualSalesValue, payout.targetSalesValue)}
-              sub={`${payout.piecesSoldTotal} pieces sold`}
-            />
-            <HeroCard.FigureDivider />
-            <HeroCard.Figure
-              value={appliedRate === 0 ? '—' : `₹${appliedRate}`}
-              cap="rate / piece"
-              sub={appliedRate === 0 ? 'not yet unlocked' : 'current slab'}
-            />
-          </HeroCard.Figures>
+          <TargetTrendBreakdown
+            actualValue={payout.actualSalesValue}
+            targetValue={payout.targetSalesValue}
+          />
+
+          <HeroCard.Caption>
+            <strong>{payout.piecesSoldTotal}</strong>
+            <span>pieces sold</span>
+            <em>{appliedRate === 0 ? 'rate not unlocked' : `₹${appliedRate}/piece`}</em>
+          </HeroCard.Caption>
 
           <HeroCard.FooterBlock>
             <div>
@@ -171,16 +169,3 @@ export default function GroceryView({ payout, employee, store, role }) {
   );
 }
 
-// Cap line for the sales figure. Target value is already shown in the amount
-// cap up top ("of ₹67,000 store target") and achievement % is the big number,
-// so this cap only carries the gap-to-target or over-target delta — never
-// repeats the target value or the percentage.
-function salesCapText(achievementPct, actualSalesValue, targetSalesValue) {
-  if (achievementPct < 100) {
-    const gap = targetSalesValue - actualSalesValue;
-    return `${formatINR(gap)} to clear`;
-  }
-  const over = actualSalesValue - targetSalesValue;
-  if (over > 0) return `+${formatINR(over)} over`;
-  return 'target cleared';
-}

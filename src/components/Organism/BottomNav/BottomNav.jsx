@@ -24,7 +24,7 @@ const NAV_SETS = {
 };
 
 export function navSetFor(role) {
-  if (role === 'SM') return NAV_SETS.SM;
+  if (role === 'SM' || role === 'DM') return NAV_SETS.SM;
   if (role === 'BA') return NAV_SETS.BA;
   if (role === 'CENTRAL') return NAV_SETS.CENTRAL;
   return NAV_SETS.EMPLOYEE;

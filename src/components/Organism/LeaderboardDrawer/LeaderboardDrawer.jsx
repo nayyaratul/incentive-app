@@ -14,7 +14,6 @@ export default function LeaderboardDrawer({ open, onClose, myRank }) {
 
   const unitLabel = myRank.unitLabel || 'earned';
   const scopeNote = myRank.scopeNote || `in ${myRank.scope}`;
-  const inTop3 = myRank.rank >= 1 && myRank.rank <= 3;
 
   return (
     <Drawer
@@ -26,13 +25,6 @@ export default function LeaderboardDrawer({ open, onClose, myRank }) {
       icon={<Trophy size={16} strokeWidth={2.4} />}
     >
       <div className={styles.body}>
-        {inTop3 && (
-          <div className={styles.banner} role="status">
-            <span aria-hidden="true">&#127942;</span>
-            <span>Top 3 &mdash; keep it up!</span>
-          </div>
-        )}
-
         <LeaderboardPodium entries={myRank.top} unitLabel={unitLabel} />
 
         <LeaderboardFocusList

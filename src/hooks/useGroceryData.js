@@ -3,6 +3,10 @@ import { fetchEmployeeIncentive } from '../api/incentives';
 import { fetchSales } from '../api/sales';
 import { fetchRules } from '../api/rules';
 import { transformGroceryPayout } from '../api/transformers/grocery';
+import { groceryPayoutT28V } from '../data/payouts';
+import { groceryCampaign } from '../data/configs';
+
+const useMock = process.env.REACT_APP_USE_MOCK_DATA === 'true';
 
 export default function useGroceryData(employeeId) {
   const [payout, setPayout] = useState(null);
@@ -15,6 +19,15 @@ export default function useGroceryData(employeeId) {
       setLoading(false);
       return;
     }
+
+    if (useMock) {
+      setPayout(groceryPayoutT28V);
+      setCampaign(groceryCampaign);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
 

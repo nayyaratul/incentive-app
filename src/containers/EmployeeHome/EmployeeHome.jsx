@@ -28,12 +28,13 @@ export default function EmployeeHome() {
   const groc = useGroceryData(isGroc ? employee?.employeeId : null);
   const fnl = useFnlData(isFnl ? employee?.employeeId : null);
 
-  const dataLoading = elec.loading || groc.loading || fnl.loading;
+  const activeDataLoading = isElec ? elec.loading : isGroc ? groc.loading : isFnl ? fnl.loading : true;
+  const activeDataReady = isElec ? !!elec.payout : isGroc ? !!groc.payout : isFnl ? !!fnl.payout : false;
   const myPayout = isElec ? elec.payout : isGroc ? groc.payout : isFnl ? fnl.payout : null;
 
   const myRank = myPayout?.myRank;
 
-  if (!active || !employee || dataLoading) {
+  if (!active || !employee || activeDataLoading || !activeDataReady) {
     return <div className={styles.loading}>Loading...</div>;
   }
 

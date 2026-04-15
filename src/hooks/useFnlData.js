@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { fetchEmployeeIncentive } from '../api/incentives';
 import { fetchRules } from '../api/rules';
 import { transformFnlPayout } from '../api/transformers/fnl';
+import { fnlPayoutTRN0241 } from '../data/payouts';
+import { fnlWeeklyRules as staticWeeklyRules } from '../data/configs';
+
+const useMock = process.env.REACT_APP_USE_MOCK_DATA === 'true';
 
 export default function useFnlData(employeeId) {
   const [payout, setPayout] = useState(null);
@@ -14,6 +18,18 @@ export default function useFnlData(employeeId) {
       setLoading(false);
       return;
     }
+
+    if (useMock) {
+      setPayout(fnlPayoutTRN0241);
+      setWeeklyRules({
+        splitMatrix: staticWeeklyRules.splitMatrix,
+        minWorkingDays: staticWeeklyRules.minWorkingDays,
+      });
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
 
