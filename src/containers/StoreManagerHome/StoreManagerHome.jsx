@@ -256,7 +256,7 @@ export default function StoreManagerHome() {
       <div className={styles.layout}>
         <HeaderBar
           employeeName={tab === 'home' ? firstName : null}
-          storeName={tab === 'home' ? store.storeName : null}
+          storeName={tab === 'home' ? `${store.storeFormat || store.storeName} — ${store.city}, ${store.state}` : null}
           streak={0}
           showStreak={false}
         />
