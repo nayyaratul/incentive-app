@@ -24,21 +24,21 @@ export function tierFor(mtdPayout) {
 // campaign qualification). No invented rupee value.
 export const badgesByEmployee = {
   'EMP-0041': [
-    { id: 'first-sale',     icon: '🎯', label: 'First sale',          note: 'Made your first qualifying sale this month',       unlockedAt: '2026-04-01T10:32:00' },
-    { id: 'streak-7',       icon: '🔥', label: '7-day streak',        note: 'Qualifying sale every day for 7 days',             unlockedAt: '2026-04-13T12:01:00' },
-    { id: 'multiplier-120', icon: '🎉', label: 'Dept at 120%',        note: 'Large Appliances crossed 120% — paying 1.20× rate', unlockedAt: '2026-04-11T17:22:00' },
-    { id: 'tv-premium',     icon: '📺', label: 'Premium TV',          note: 'Sold a TV in the ₹60k+ top-incentive band',         unlockedAt: null },
-    { id: 'all-depts',      icon: '🧭', label: 'All depts',           note: 'Made at least one qualifying sale in every dept',  unlockedAt: null },
+    { id: 'first-sale',     icon: '🎯', label: 'First sale',     note: 'Made your first qualifying sale this month',        unlockedAt: '2026-04-01T10:32:00', rarity: 'bronze', category: 'milestone' },
+    { id: 'streak-7',       icon: '🔥', label: '7-day streak',   note: 'Qualifying sale every day for 7 days',              unlockedAt: '2026-04-13T12:01:00', rarity: 'gold',   category: 'streak' },
+    { id: 'multiplier-120', icon: '🎉', label: 'Dept at 120%',   note: 'Large Appliances crossed 120% — paying 1.20× rate', unlockedAt: '2026-04-11T17:22:00', rarity: 'silver', category: 'sales' },
+    { id: 'tv-premium',     icon: '📺', label: 'Premium TV',     note: 'Sold a TV in the ₹60k+ top-incentive band',          unlockedAt: null,                  rarity: 'silver', category: 'sales' },
+    { id: 'all-depts',      icon: '🧭', label: 'All depts',      note: 'Made at least one qualifying sale in every dept',    unlockedAt: null,                  rarity: 'gold',   category: 'milestone' },
   ],
   'GRC-2203': [
-    { id: 'first-campaign', icon: '🎂', label: 'Campaign opener',     note: 'Sold your first eligible article in the campaign', unlockedAt: '2026-04-15T11:20:00' },
-    { id: 'store-100',      icon: '🎯', label: 'Store at 100%',       note: 'Store crosses target — unlocks ₹2/pc per brief',   unlockedAt: null },
-    { id: 'all-brands',     icon: '✨', label: 'Every brand',         note: 'Sold at least one piece from every campaign brand', unlockedAt: '2026-04-18T14:15:00' },
+    { id: 'first-campaign', icon: '🎂', label: 'Campaign opener', note: 'Sold your first eligible article in the campaign',   unlockedAt: '2026-04-15T11:20:00', rarity: 'bronze', category: 'milestone' },
+    { id: 'store-100',      icon: '🎯', label: 'Store at 100%',   note: 'Store crosses target — unlocks ₹2/pc per brief',     unlockedAt: null,                  rarity: 'silver', category: 'milestone' },
+    { id: 'all-brands',     icon: '✨', label: 'Every brand',     note: 'Sold at least one piece from every campaign brand',  unlockedAt: '2026-04-18T14:15:00', rarity: 'gold',   category: 'sales' },
   ],
   'FNL-3103': [
-    { id: 'full-week',      icon: '📅', label: 'Full week present',   note: '7 PRESENT days — exceeds the weekly minimum',      unlockedAt: '2026-04-18T19:00:00' },
-    { id: 'first-qualify',  icon: '✅', label: 'Store qualified',     note: 'Store beat the weekly target — pool unlocked',     unlockedAt: '2026-04-11T20:00:00' },
-    { id: 'consistency',    icon: '🏆', label: '3 weeks in a row',    note: 'Store qualified three consecutive weeks',          unlockedAt: null },
+    { id: 'full-week',      icon: '📅', label: 'Full week present', note: '7 PRESENT days — exceeds the weekly minimum',     unlockedAt: '2026-04-18T19:00:00', rarity: 'silver', category: 'streak' },
+    { id: 'first-qualify',  icon: '✅', label: 'Store qualified',   note: 'Store beat the weekly target — pool unlocked',    unlockedAt: '2026-04-11T20:00:00', rarity: 'bronze', category: 'milestone' },
+    { id: 'consistency',    icon: '🏆', label: '3 weeks in a row',  note: 'Store qualified three consecutive weeks',         unlockedAt: null,                  rarity: 'gold',   category: 'streak' },
   ],
   'FNL-3110': [
     { id: 'first-qualify',  icon: '✅', label: 'Store qualified',     note: 'Store beat the weekly target — pool unlocked',     unlockedAt: '2026-04-11T20:00:00' },

@@ -1,0 +1,63 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-150);
+  padding: var(--space-100) 0 var(--space-200);
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-125);
+  padding: var(--space-150) 0;
+}
+
+.chips {
+  display: inline-flex;
+  gap: var(--space-075);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--sans);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+}
+
+.chipGold   { background: var(--color-bg-sunken); color: var(--medal-gold);   border-color: var(--medal-rim-gold); }
+.chipSilver { background: var(--color-bg-sunken); color: var(--medal-silver); border-color: var(--medal-rim-silver); }
+.chipBronze { background: var(--color-bg-sunken); color: var(--medal-bronze); border-color: var(--medal-rim-bronze); }
+.chipNeutral {
+  background: var(--color-bg-sunken);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-subtle);
+}
+
+.note {
+  margin: 0;
+  max-width: 38ch;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: var(--font-size-300);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.unlockLine {
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+

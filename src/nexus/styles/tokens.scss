@@ -205,6 +205,16 @@
   --medal-silver: #B8BCC4;
   --medal-bronze: #B86F4A;
 
+  /* Medal coin — gradient fill + rim for Medallion atom.
+     Kept distinct from the single-color --medal-{gold,silver,bronze} accents
+     used by the leaderboard podium; those remain untouched. */
+  --medal-fill-gold:   radial-gradient(circle at 30% 25%, #FFE999 0%, #F7D973 40%, #B58400 100%);
+  --medal-fill-silver: radial-gradient(circle at 30% 25%, #FBFBFD 0%, #E5E7EB 40%, #9CA3AF 100%);
+  --medal-fill-bronze: radial-gradient(circle at 30% 25%, #F6D9B3 0%, #E7BE8A 40%, #B57832 100%);
+  --medal-rim-gold:   #E6B820;
+  --medal-rim-silver: #C9CFD9;
+  --medal-rim-bronze: #C88A4A;
+
   /* Table — header background (semantic → primitive) */
   --color-table-header-bg: var(--grey-10);
 
@@ -330,6 +340,16 @@
   --medal-gold:   #E5B84A;
   --medal-silver: #CFD3DB;
   --medal-bronze: #D78A63;
+
+  /* Medal coin — dark theme. Slightly deeper lows so the coin still reads
+     as metallic against an elevated dark surface; highlight stops lifted
+     marginally so the bevel still catches. */
+  --medal-fill-gold:   radial-gradient(circle at 30% 25%, #FFEDA8 0%, #E8C354 45%, #8F6700 100%);
+  --medal-fill-silver: radial-gradient(circle at 30% 25%, #F1F3F7 0%, #BFC5D0 45%, #6C7280 100%);
+  --medal-fill-bronze: radial-gradient(circle at 30% 25%, #F0C69A 0%, #C58A57 45%, #7B4F24 100%);
+  --medal-rim-gold:   #D4A437;
+  --medal-rim-silver: #AEB4C0;
+  --medal-rim-bronze: #A3623A;
 
   /* Table — header background (semantic → primitive) */
   --color-table-header-bg: var(--grey-90);
