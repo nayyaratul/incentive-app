@@ -17,12 +17,15 @@ const VERTICAL_SAMPLE_ID = {
 const SHELF_MAX = 4;
 
 export default function BadgesStrip({ employeeId, vertical }) {
-  const direct = badgesByEmployee[employeeId];
-  const fallbackId = VERTICAL_SAMPLE_ID[vertical];
-  const badges = direct || (fallbackId ? badgesByEmployee[fallbackId] : null) || [];
-
   const [trophyOpen, setTrophyOpen] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState(null);
+
+  const badges = useMemo(() => {
+    const direct = badgesByEmployee[employeeId];
+    if (direct) return direct;
+    const fallbackId = VERTICAL_SAMPLE_ID[vertical];
+    return fallbackId ? badgesByEmployee[fallbackId] || [] : [];
+  }, [employeeId, vertical]);
 
   const sorted = useMemo(() => sortBadgesForStrip(badges), [badges]);
   const visible = sorted.slice(0, SHELF_MAX);
