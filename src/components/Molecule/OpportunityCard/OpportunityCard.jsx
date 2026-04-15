@@ -1,21 +1,27 @@
 import React from 'react';
+import { Card } from '@/nexus/molecules';
+import { Text } from '@/nexus/atoms';
 import styles from './OpportunityCard.module.scss';
 
 export default function OpportunityCard({ sku, band, earn }) {
   return (
-    <article className={styles.card}>
+    <Card as="article" variant="elevated" className={styles.card}>
       <div className={styles.body}>
         <h3 className={styles.sku}>{sku}</h3>
-        <p className={styles.band}>{band}</p>
+        <Text as="span" variant="caption" className={styles.band}>
+          {band}
+        </Text>
       </div>
 
       <footer className={styles.earn}>
         <span className={styles.earnAmount}>
-          <span className={styles.earnRupee}>₹</span>
+          <span className={styles.earnRupee}>&#8377;</span>
           {earn}
         </span>
-        <span className={styles.earnUnit}>per sale</span>
+        <Text as="span" variant="micro" className={styles.earnUnit}>
+          per sale
+        </Text>
       </footer>
-    </article>
+    </Card>
   );
 }

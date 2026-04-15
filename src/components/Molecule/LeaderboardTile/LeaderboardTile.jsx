@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { Text, Badge } from '@/nexus/atoms';
 import styles from './LeaderboardTile.module.scss';
 
 export default function LeaderboardTile({ rank, deltaAbove, scope }) {
@@ -11,11 +12,17 @@ export default function LeaderboardTile({ rank, deltaAbove, scope }) {
       </div>
 
       <div className={styles.meta}>
-        <span className={styles.eyebrow}>Standing · {scope}</span>
+        <Text as="span" variant="overline" className={styles.eyebrow}>
+          Standing &middot; {scope}
+        </Text>
         <span className={styles.line}>
-          <span className={styles.qty}>₹{deltaAbove}</span>
-          <span className={styles.qtyUnit}>to catch</span>
-          <span className={styles.rival}>#{rank - 1}</span>
+          <span className={styles.qty}>&#8377;{deltaAbove}</span>
+          <Text as="span" variant="caption" className={styles.qtyUnit}>
+            to catch
+          </Text>
+          <Badge variant="default" size="sm" className={styles.rival}>
+            #{rank - 1}
+          </Badge>
         </span>
       </div>
 

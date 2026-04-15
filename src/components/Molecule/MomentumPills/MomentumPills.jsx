@@ -1,12 +1,13 @@
 import React from 'react';
 import { CalendarDays, TrendingUp, TrendingDown } from 'lucide-react';
+import { Text } from '@/nexus/atoms';
 import styles from './MomentumPills.module.scss';
 
 /**
  * Two compact pills sitting side-by-side under the earnings hero:
- *  • Days-to-payout countdown (brief §6.3 — Electronics paid following month
+ *  - Days-to-payout countdown (brief S6.3 -- Electronics paid following month
  *    with salary; Grocery after campaign close; F&L after week close)
- *  • Vs-last momentum (this period payout vs the equivalent last period)
+ *  - Vs-last momentum (this period payout vs the equivalent last period)
  *
  * Both inputs derive from data already required by the brief; no invented
  * thresholds or rewards.
@@ -38,7 +39,7 @@ export default function MomentumPills({
       {showCountdown && (
         <span className={styles.pill}>
           <CalendarDays size={12} strokeWidth={2.4} className={styles.iconMuted} />
-          <span className={styles.label}>Payout in</span>
+          <Text as="span" variant="caption" className={styles.label}>Payout in</Text>
           <span className={styles.value}>{days === 0 ? 'today' : `${days}d`}</span>
         </span>
       )}
@@ -56,7 +57,7 @@ export default function MomentumPills({
                 {momentumKind === 'up' ? '+' : ''}
                 {pctDelta.toFixed(0)}%
               </span>
-              <span className={styles.label}>vs {lastPeriodLabel}</span>
+              <Text as="span" variant="caption" className={styles.label}>vs {lastPeriodLabel}</Text>
             </>
           )}
         </span>

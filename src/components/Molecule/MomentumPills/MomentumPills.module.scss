@@ -1,73 +1,73 @@
-/* Two compact data-tag pills — countdown + momentum delta.
+/* Two compact data-tag pills -- countdown + momentum delta.
    Each hugs its own content; no full-width stretch. */
 
 .row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-100);
   flex-wrap: wrap;
 }
 
 .pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
-  border-radius: 10px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  gap: var(--space-075);
+  padding: 7px var(--space-150);
+  border-radius: var(--radius-150);
+  background: var(--color-bg-elevated);
+  border: var(--border-width-100) solid var(--color-border-default);
   line-height: 1;
   white-space: nowrap;
 }
 
-.iconMuted { color: var(--text-muted); }
+.iconMuted { color: var(--color-text-tertiary); }
 
 .label {
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-tertiary);
 }
 
 .value {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12.5px;
   font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-text-primary);
   font-variant-numeric: tabular-nums;
 }
 
 /* ---- Momentum sentiment variants ---- */
 
-/* Up — green tint */
+/* Up -- green tint */
 .mom-up {
-  background: rgba(15, 122, 58, 0.06);
-  border-color: rgba(15, 122, 58, 0.22);
+  background: var(--color-bg-success);
+  border-color: var(--color-border-success);
 
-  > svg       { color: var(--success); }
-  .value      { color: var(--success); }
-  .label      { color: var(--success); opacity: 0.78; }
+  > svg       { color: var(--color-text-success); }
+  .value      { color: var(--color-text-success); }
+  .label      { color: var(--color-text-success); opacity: 0.78; }
 }
 
-/* Down — amber tint */
+/* Down -- amber tint */
 .mom-down {
-  background: rgba(193, 75, 0, 0.06);
-  border-color: rgba(193, 75, 0, 0.22);
+  background: var(--color-bg-warning);
+  border-color: color-mix(in srgb, var(--color-text-warning) 22%, transparent);
 
-  > svg       { color: var(--warn); }
-  .value      { color: var(--warn); }
-  .label      { color: var(--warn); opacity: 0.78; }
+  > svg       { color: var(--color-text-warning); }
+  .value      { color: var(--color-text-warning); }
+  .label      { color: var(--color-text-warning); opacity: 0.78; }
 }
 
-/* Flat — stays neutral */
+/* Flat -- stays neutral */
 .mom-flat {}
 
-/* First period — brand tint */
+/* First period -- brand tint */
 .mom-first {
-  background: var(--brand-soft);
-  border-color: rgba(189, 41, 37, 0.2);
+  background: var(--brand-a100);
+  border-color: var(--brand-a200);
 
-  .value { color: var(--brand-deep); }
-  .label { color: var(--brand-deep); opacity: 0.78; }
+  .value { color: var(--brand-70); }
+  .label { color: var(--brand-70); opacity: 0.78; }
 }
