@@ -1,8 +1,7 @@
 import React from 'react';
-import { LogOut, Trophy, Crown, Medal, TrendingUp, Sun, Moon } from 'lucide-react';
-import { Heading, Text, Button, Switch } from '@/nexus/atoms';
+import { LogOut, Trophy, Crown, Medal, TrendingUp } from 'lucide-react';
+import { Heading, Text, Button } from '@/nexus/atoms';
 import { useAuth } from '@/context/AuthContext';
-import { useTheme } from '@/context/ThemeContext';
 import BrandLogo from '../../Atom/BrandLogo/BrandLogo';
 import styles from './HeaderBar.module.scss';
 
@@ -16,7 +15,6 @@ const TIER_ICON = {
 
 export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
   const { logout, isAuthenticated } = useAuth();
-  const { theme, toggleTheme } = useTheme();
 
   // Only render the pill when we have a real, positive rank.
   // F&L has no individual leaderboard (transformer returns myRank: null),
@@ -34,58 +32,45 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
 
   return (
     <header className={styles.header}>
-      <div className={styles.top}>
+      <div className={styles.left}>
         <BrandLogo variant="full" height={28} />
-        <div className={styles.themeToggle}>
-          <Sun size={14} />
-          <Switch
-            checked={theme === 'dark'}
-            onCheckedChange={toggleTheme}
-            size="sm"
-            aria-label="Toggle dark mode"
-          />
-          <Moon size={14} />
-        </div>
-      </div>
-
-      {employeeName && (
-        <div className={styles.greetingRow}>
+        {employeeName && (
           <div className={styles.greeting}>
-            <Text variant="body" className={styles.namaste}>Namaste,</Text>
+            <Text variant="body" className={styles.namaste}>Hi</Text>
             <Heading level={2} className={styles.name}>{employeeName}</Heading>
           </div>
-          <div className={styles.actions}>
-            {hasRank && onOpenLeaderboard && (
-              <button
-                type="button"
-                className={styles.leaderboardPill}
-                data-rank-tier={rankTier}
-                onClick={onOpenLeaderboard}
-                aria-label={`Rank ${rank} — tap to see leaderboard`}
-              >
-                <span className={styles.pillShine} aria-hidden="true" />
-                <span className={styles.pillIcon} aria-hidden="true">
-                  <TierIcon size={15} strokeWidth={2.2} />
-                </span>
-                <span className={styles.leaderboardLabel}>
-                  <span className={styles.hash} aria-hidden="true">#</span>
-                  <span className={styles.num}>{rank}</span>
-                </span>
-              </button>
-            )}
-            {isAuthenticated && (
-              <Button
-                variant="ghost"
-                size="sm"
-                iconOnly
-                iconLeft={<LogOut size={14} strokeWidth={2.2} />}
-                onClick={logout}
-                aria-label="Log out"
-              />
-            )}
-          </div>
-        </div>
-      )}
+        )}
+      </div>
+      <div className={styles.actions}>
+        {isAuthenticated && (
+          <Button
+            variant="ghost"
+            size="sm"
+            iconOnly
+            iconLeft={<LogOut size={14} strokeWidth={2.2} />}
+            onClick={logout}
+            aria-label="Log out"
+          />
+        )}
+        {hasRank && onOpenLeaderboard && (
+          <button
+            type="button"
+            className={styles.leaderboardPill}
+            data-rank-tier={rankTier}
+            onClick={onOpenLeaderboard}
+            aria-label={`Rank ${rank} — tap to see leaderboard`}
+          >
+            <span className={styles.pillShine} aria-hidden="true" />
+            <span className={styles.pillIcon} aria-hidden="true">
+              <TierIcon size={15} strokeWidth={2.2} />
+            </span>
+            <span className={styles.leaderboardLabel}>
+              <span className={styles.hash} aria-hidden="true">#</span>
+              <span className={styles.num}>{rank}</span>
+            </span>
+          </button>
+        )}
+      </div>
     </header>
   );
 }
