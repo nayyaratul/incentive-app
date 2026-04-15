@@ -12,7 +12,7 @@
   border: var(--border-width-100) solid var(--color-border-default);
   border-radius: var(--radius-full);
   cursor: pointer;
-  transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  transition: background 120ms ease-out, border-color 120ms ease-out;
 
   &:hover {
     background: var(--color-interactive-hover);
@@ -66,7 +66,7 @@
 .chevron {
   color: var(--color-text-tertiary);
   flex-shrink: 0;
-  transition: transform var(--dur-fast) var(--ease-out);
+  transition: transform 120ms ease-out;
 }
 
 .chevronOpen {
@@ -81,7 +81,7 @@
   border: var(--border-width-100) solid var(--color-border-default);
   border-top: none;
   border-radius: 0 0 var(--radius-200) var(--radius-200);
-  animation: panelReveal 220ms var(--ease-out) both;
+  animation: panelReveal 220ms ease-out both;
   overflow: hidden;
 }
 

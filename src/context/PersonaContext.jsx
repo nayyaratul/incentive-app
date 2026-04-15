@@ -196,7 +196,7 @@ export function PersonaProvider({ children }) {
   return (
     <PersonaContext.Provider value={value}>
       {loading ? (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', fontFamily: "'Instrument Sans', sans-serif", color: 'var(--text-muted, #595959)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', fontFamily: "var(--sans)", color: 'var(--color-text-tertiary, #595959)' }}>
           Loading…
         </div>
       ) : children}

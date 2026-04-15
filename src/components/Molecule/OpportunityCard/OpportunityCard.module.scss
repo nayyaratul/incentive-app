@@ -11,7 +11,7 @@
   grid-template-rows: 1fr auto;
   gap: var(--space-100);
   box-shadow: var(--elevation-surface-raised-low);
-  transition: transform var(--dur-med) var(--ease-out), box-shadow var(--dur-med) var(--ease-out);
+  transition: transform 220ms ease-out, box-shadow 220ms ease-out;
   overflow: hidden;
   box-sizing: border-box;
 
@@ -24,7 +24,7 @@
     width: 3px;
     background: linear-gradient(180deg, var(--color-action-primary) 0%, var(--brand-70) 100%);
     opacity: 0;
-    transition: opacity var(--dur-med) var(--ease-out);
+    transition: opacity 220ms ease-out;
   }
 
   &:hover,

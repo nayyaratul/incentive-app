@@ -13,7 +13,7 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  transition: transform var(--dur-med) var(--ease-out);
+  transition: transform 220ms ease-out;
   text-align: left;
 
   &::before {

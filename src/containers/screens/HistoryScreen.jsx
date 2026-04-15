@@ -171,7 +171,7 @@ export default function HistoryScreen({ employeeId }) {
         </div>
         <div className={styles.summaryDiv} />
         <div>
-          <div className={styles.summaryVal} style={{ color: 'var(--brand-deep)' }}>{formatINR(mtdEarned)}</div>
+          <div className={styles.summaryVal} style={{ color: 'var(--brand-70)' }}>{formatINR(mtdEarned)}</div>
           <div className={styles.summaryCap}>final incentive</div>
         </div>
       </section>
