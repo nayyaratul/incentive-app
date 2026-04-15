@@ -10,6 +10,15 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
   const { logout, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
+  const rankTier =
+    typeof rank !== 'number'
+      ? 'default'
+      : rank === 1 ? 'gold'
+      : rank === 2 ? 'silver'
+      : rank === 3 ? 'bronze'
+      : rank <= 10 ? 'brand'
+      : 'default';
+
   return (
     <header className={styles.header}>
       <div className={styles.top}>
@@ -37,6 +46,7 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
               <button
                 type="button"
                 className={styles.leaderboardPill}
+                data-rank-tier={rankTier}
                 onClick={onOpenLeaderboard}
                 aria-label={
                   typeof rank === 'number'

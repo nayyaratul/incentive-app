@@ -21,7 +21,7 @@
 
 .greetingRow {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-150);
 }
@@ -29,26 +29,31 @@
 .greeting {
   display: flex;
   align-items: baseline;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: var(--space-100);
   min-width: 0;
   flex: 1 1 auto;
 }
 
 .namaste {
-  font-size: var(--font-size-900);
+  font-size: var(--font-size-700);
   font-weight: var(--font-weight-regular);
   font-style: italic;
   color: var(--color-text-secondary);
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .name {
-  font-size: var(--font-size-900);
+  font-size: var(--font-size-700);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
   line-height: 1;
   letter-spacing: var(--letter-spacing-tighter);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .actions {
@@ -56,7 +61,6 @@
   align-items: center;
   gap: var(--space-100);
   flex-shrink: 0;
-  margin-top: var(--space-050);
 }
 
 .leaderboardPill {
@@ -83,4 +87,27 @@
 
 .leaderboardLabel {
   font-variant-numeric: tabular-nums;
+}
+
+.leaderboardPill[data-rank-tier='gold'] {
+  border-color: var(--medal-gold);
+  color: var(--medal-gold);
+  box-shadow: 0 0 0 1px var(--medal-gold) inset;
+}
+
+.leaderboardPill[data-rank-tier='silver'] {
+  border-color: var(--medal-silver);
+  color: var(--medal-silver);
+  box-shadow: 0 0 0 1px var(--medal-silver) inset;
+}
+
+.leaderboardPill[data-rank-tier='bronze'] {
+  border-color: var(--medal-bronze);
+  color: var(--medal-bronze);
+  box-shadow: 0 0 0 1px var(--medal-bronze) inset;
+}
+
+.leaderboardPill[data-rank-tier='brand'] {
+  border-color: var(--brand-50);
+  color: var(--brand-70);
 }
