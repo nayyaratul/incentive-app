@@ -72,51 +72,6 @@ export default function GroceryView({ payout, employee, store, role }) {
         </HeroCard>
       </section>
 
-      {/* Collapsible details: payout slabs + eligible articles */}
-      <section className={`${styles.pad} rise rise-3`}>
-        <Accordion type="multiple" defaultValue={['slabs']}>
-          <AccordionItem value="slabs">
-            <AccordionTrigger>Payout slabs</AccordionTrigger>
-            <AccordionContent>
-              <div className={styles.slabGrid}>
-                {payout.projections.map((p) => (
-                  <div key={p.scenario} className={styles.slabRow}>
-                    <div className={styles.slabLeft}>
-                      <span className={styles.slabTitle}>{p.scenario}</span>
-                      <span className={styles.slabAt}>at {formatINR(p.atSalesValue)}</span>
-                    </div>
-                    <div className={styles.slabMid}>
-                      <span className={styles.slabRate}>₹{p.rate}/pc</span>
-                    </div>
-                    <div className={styles.slabRight}>
-                      <span className={styles.slabTotal}>{formatINR(p.estPerEmployee)}</span>
-                      <span className={styles.slabPer}>per employee</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className={styles.slabFootnote}>
-                Higher slab rates apply to <strong>all pieces sold</strong>, not just the incremental pieces above the threshold.
-              </p>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="articles">
-            <AccordionTrigger>
-              Eligible articles ({groceryCampaign.eligibleArticles.length})
-            </AccordionTrigger>
-            <AccordionContent>
-              <ul className={styles.artList}>
-                <li><strong>Andree</strong> Butterscotch · Dates · Plum</li>
-                <li><strong>Bakemill</strong> Chocolate · Coffee · Dates & Carrot · Jackfruit</li>
-                <li><strong>Kairali</strong> Pudding CBD</li>
-                <li><strong>Unibic</strong> Plum (Egg) · Veg Plum</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </section>
-
       {/* Streak note — always positive. Falls back to sample when API data is empty */}
       <section className={`${styles.streakRow} rise rise-2`}>
         <StreakNote
@@ -159,6 +114,51 @@ export default function GroceryView({ payout, employee, store, role }) {
             { label: 'Split rule',        value: 'Equal across SM, DM, SA, BA' },
           ]}
         />
+      </section>
+
+      {/* Collapsible details: payout slabs + eligible articles. Both closed by default. */}
+      <section className={`${styles.pad} rise rise-5`}>
+        <Accordion type="multiple">
+          <AccordionItem value="slabs">
+            <AccordionTrigger>Payout slabs</AccordionTrigger>
+            <AccordionContent>
+              <div className={styles.slabGrid}>
+                {payout.projections.map((p) => (
+                  <div key={p.scenario} className={styles.slabRow}>
+                    <div className={styles.slabLeft}>
+                      <span className={styles.slabTitle}>{p.scenario}</span>
+                      <span className={styles.slabAt}>at {formatINR(p.atSalesValue)}</span>
+                    </div>
+                    <div className={styles.slabMid}>
+                      <span className={styles.slabRate}>₹{p.rate}/pc</span>
+                    </div>
+                    <div className={styles.slabRight}>
+                      <span className={styles.slabTotal}>{formatINR(p.estPerEmployee)}</span>
+                      <span className={styles.slabPer}>per employee</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className={styles.slabFootnote}>
+                Higher slab rates apply to <strong>all pieces sold</strong>, not just the incremental pieces above the threshold.
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="articles">
+            <AccordionTrigger>
+              Eligible articles ({groceryCampaign.eligibleArticles.length})
+            </AccordionTrigger>
+            <AccordionContent>
+              <ul className={styles.artList}>
+                <li><strong>Andree</strong> Butterscotch · Dates · Plum</li>
+                <li><strong>Bakemill</strong> Chocolate · Coffee · Dates & Carrot · Jackfruit</li>
+                <li><strong>Kairali</strong> Pudding CBD</li>
+                <li><strong>Unibic</strong> Plum (Egg) · Veg Plum</li>
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </section>
     </>
   );
