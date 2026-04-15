@@ -1,29 +1,29 @@
 .wrap {
-  padding: 4px 0;
+  padding: var(--space-050) 0;
 }
 
 .link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 12px;
-  color: var(--text-muted);
+  gap: var(--space-075);
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
+  color: var(--color-text-tertiary);
   background: transparent;
   border: none;
-  padding: 4px 0;
+  padding: var(--space-050) 0;
   cursor: pointer;
 
-  > svg:first-child { color: var(--text-muted); }
+  > svg:first-child { color: var(--color-text-tertiary); }
 
   &:hover {
-    color: var(--text-primary);
-    > svg:first-child { color: var(--text-primary); }
+    color: var(--color-text-primary);
+    > svg:first-child { color: var(--color-text-primary); }
   }
 }
 
 .chevron {
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   transition: transform 140ms var(--ease-out);
 }
 .chevronOpen {
@@ -31,11 +31,11 @@
 }
 
 .panel {
-  margin-top: 8px;
-  padding: 10px 12px;
-  background: var(--surface-sunken);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  margin-top: var(--space-100);
+  padding: var(--space-125) var(--space-150);
+  background: var(--color-bg-sunken);
+  border: var(--border-width-100) solid var(--color-border-default);
+  border-radius: var(--radius-150);
   animation: panelReveal 180ms var(--ease-out) both;
 }
 
@@ -47,11 +47,11 @@
 .row {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--divider);
+  gap: var(--space-150);
+  padding: var(--space-075) 0;
+  border-bottom: var(--border-width-100) solid var(--color-border-subtle);
   font-size: 12.5px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 
   &:last-child { border-bottom: none; }
 }
@@ -61,10 +61,10 @@
 }
 
 .rowValue {
-  color: var(--text-primary);
-  font-family: 'Geist Mono', monospace;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+  font-family: var(--mono);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
   text-align: right;
 }
