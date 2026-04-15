@@ -28,6 +28,8 @@ function buildStreakShape(salesRows) {
 // ---------------------------------------------------------------------------
 // Leaderboard synthesis (mock) — peers and ranks are fabricated from the
 // current user's individual payout since the API doesn't yet return peers.
+// MOCK-TODO: Remove this synthesiser and consume real peer data from the
+//            API when the grocery peers endpoint ships.
 // ---------------------------------------------------------------------------
 
 const GROCERY_PEER_NAMES = [
