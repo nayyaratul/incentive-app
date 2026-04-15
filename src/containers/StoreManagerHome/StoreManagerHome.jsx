@@ -100,6 +100,7 @@ export default function StoreManagerHome() {
             employeeName: emp.employeeName || master?.employeeName || emp.employeeId,
             role: emp.role || master?.role || '—',
             payrollStatus: master?.payrollStatus || 'ACTIVE',
+            eligible: Number(emp.baseIncentive) || 0,
             total: Number(emp.finalIncentive) || 0,
             ineligible: master?.payrollStatus && master.payrollStatus !== 'ACTIVE',
           };
@@ -139,6 +140,7 @@ export default function StoreManagerHome() {
             employeeName: emp.employeeName || master?.employeeName || emp.employeeId,
             role: emp.role || master?.role || '—',
             payrollStatus: master?.payrollStatus || 'ACTIVE',
+            eligible: Number(emp.baseIncentive) || perEmp,
             total: perEmp,
             ineligible: false,
           };
@@ -174,7 +176,7 @@ export default function StoreManagerHome() {
             role: emp.role || master?.role || '—',
             payrollStatus: master?.payrollStatus || 'ACTIVE',
             daysPresent: undefined, // needs attendance endpoint data
-            eligible: true, // placeholder
+            eligible: Number(emp.baseIncentive) || 0,
             total: Number(emp.finalIncentive) || 0,
             ineligible: false,
           };
@@ -384,9 +386,17 @@ function TeamRoster({ summary, onSelectRow }) {
                 <span className={styles.rosterDays}>{e.daysPresent}/7 days</span>
               )}
             </div>
-            <span className={styles.rosterPayout}>
-              {e.ineligible ? '—' : formatINR(e.total)}
-            </span>
+            <div className={styles.rosterPayoutWrap}>
+              {!e.ineligible && <span className={styles.rosterPayoutLabel}>Earned</span>}
+              <span className={styles.rosterPayout}>
+                {e.ineligible ? '—' : formatINR(e.total)}
+              </span>
+              {!e.ineligible && e.eligible > 0 && (
+                <span className={styles.rosterEligible}>
+                  Eligible {formatINR(e.eligible)}
+                </span>
+              )}
+            </div>
           </button>
         ))}
       </div>
