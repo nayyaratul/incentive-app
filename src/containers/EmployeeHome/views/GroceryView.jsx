@@ -8,7 +8,6 @@ import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
 import MomentumPills from '../../../components/Molecule/MomentumPills/MomentumPills';
-import ComplianceLink from '../../../components/Molecule/ComplianceLink/ComplianceLink';
 import {
   Accordion,
   AccordionItem,
@@ -102,23 +101,30 @@ export default function GroceryView({ payout, employee, store, role }) {
         <BadgesStrip employeeId={employee.employeeId} vertical="GROCERY" />
       </section>
 
-      {/* Compliance — demoted to quiet inline disclosure for consistency */}
-      <section className={`${styles.pad} rise rise-5`}>
-        <ComplianceLink
-          label="Distribution rule & your record"
-          items={[
-            { label: 'Store incentive',  value: formatINR(totalStoreIncentive) },
-            { label: 'Total staff',       value: String(payout.staffCount) },
-            { label: 'Per employee',      value: formatINR(per) },
-            { label: 'Role',              value: `${role} · ${employee?.employeeId}` },
-            { label: 'Split rule',        value: 'Equal across SM, DM, SA, BA' },
-          ]}
-        />
-      </section>
+      {/* Unified compact disclosure — distribution rule, payout slabs, eligible articles.
+          All closed by default; bordered card style groups them visually. */}
+      <section className={`${styles.pad} ${styles.compactAccordion} rise rise-5`}>
+        <Accordion variant="bordered" type="multiple">
+          <AccordionItem value="distribution">
+            <AccordionTrigger>Distribution rule & your record</AccordionTrigger>
+            <AccordionContent>
+              <dl className={styles.compactList}>
+                {[
+                  { label: 'Store incentive', value: formatINR(totalStoreIncentive) },
+                  { label: 'Total staff',     value: String(payout.staffCount) },
+                  { label: 'Per employee',    value: formatINR(per) },
+                  { label: 'Role',            value: `${role} · ${employee?.employeeId}` },
+                  { label: 'Split rule',      value: 'Equal across SM, DM, SA, BA' },
+                ].map((it) => (
+                  <div key={it.label} className={styles.compactRow}>
+                    <dt className={styles.compactLabel}>{it.label}</dt>
+                    <dd className={styles.compactValue}>{it.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </AccordionContent>
+          </AccordionItem>
 
-      {/* Collapsible details: payout slabs + eligible articles. Both closed by default. */}
-      <section className={`${styles.pad} rise rise-5`}>
-        <Accordion type="multiple">
           <AccordionItem value="slabs">
             <AccordionTrigger>Payout slabs</AccordionTrigger>
             <AccordionContent>

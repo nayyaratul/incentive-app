@@ -331,6 +331,75 @@ details[open] .tierSummary::before { content: '–  '; }
   }
 }
 
+/* ---------- Compact accordion — tightens trigger padding + content padding
+   so "Distribution rule", "Payout slabs" and "Eligible articles" feel
+   minimal and consistent. */
+.compactAccordion {
+  :global(button[class*="trigger"]) {
+    padding: var(--space-125) var(--space-150);
+    font-size: var(--font-size-300);
+    font-weight: var(--font-weight-semibold);
+    min-height: 40px;
+  }
+
+  :global(div[class*="contentInner"]) {
+    padding: var(--space-100) var(--space-150) var(--space-150);
+    font-size: var(--font-size-200);
+  }
+
+  /* Inside the compact accordion, tighten the slab rows and article list */
+  .slabRow {
+    padding: 8px 10px;
+    border-radius: 8px;
+    gap: 10px;
+  }
+
+  .slabFootnote {
+    margin-top: 8px;
+    font-size: 11px;
+  }
+
+  .artList li {
+    padding: 6px 0;
+    font-size: 12px;
+  }
+}
+
+/* Key-value pairs shown inside the Distribution accordion — mirrors the old
+   ComplianceLink panel shape, but without the separate card wrapper. */
+.compactList {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.compactRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-150);
+  padding: var(--space-075) 0;
+  border-bottom: var(--border-width-100) solid var(--color-border-subtle);
+
+  &:last-child { border-bottom: none; }
+}
+
+.compactLabel {
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
+  color: var(--color-text-tertiary);
+  margin: 0;
+}
+
+.compactValue {
+  font-family: var(--mono);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+  text-align: right;
+}
+
 /* ---------- F&L ---------- */
 /* 5-day eligibility */
 .eligibleOk, .eligibleNo {
