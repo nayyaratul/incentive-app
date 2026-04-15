@@ -1,0 +1,36 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as AccordionStories from './Accordion.stories';
+
+<Meta of={AccordionStories} />
+
+# Accordion
+
+A vertically stacked set of collapsible sections built on Radix UI's Accordion primitive. Use it for FAQs, settings panels, or any content that benefits from progressive disclosure.
+
+<Primary />
+
+<Controls />
+
+## Variants
+
+- **default** — clean divider lines between items.
+- **bordered** — each item has a visible border for stronger visual separation.
+
+<Canvas of={AccordionStories.Default} />
+
+<Canvas of={AccordionStories.Bordered} />
+
+## Composition
+
+The component is split into four parts: `Accordion`, `AccordionItem`, `AccordionTrigger`, and `AccordionContent`. Pass an `icon` prop to `AccordionTrigger` to render a leading icon.
+
+## Accessibility
+
+- Built on `@radix-ui/react-accordion`, which manages `aria-expanded`, `aria-controls`, and keyboard navigation automatically.
+- Supports `type="single"` (one open at a time) and `type="multiple"`.
+- `collapsible` allows all items to be closed in single mode.
+- Focus moves between triggers with arrow keys; Enter and Space toggle items.
+
+## Props
+
+<ArgTypes of={AccordionStories} />

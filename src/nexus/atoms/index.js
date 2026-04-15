@@ -1,3 +1,4 @@
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './Accordion/Accordion';
 export { Button } from './Button/Button';
 export { Badge } from './Badge/Badge';
 export { Tag } from './Tag/Tag';

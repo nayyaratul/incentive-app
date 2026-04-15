@@ -1,0 +1,182 @@
+.root {
+  width: 100%;
+}
+
+/* ─── Default variant (line-separated) ─── */
+
+.default .item {
+  border-bottom: none;
+}
+
+.default .header {
+  border-bottom: none;
+}
+
+.default .content[data-state='open'] {
+  border-bottom: 1px solid var(--color-accordion-divider);
+}
+
+.default .content[data-state='open']::before {
+  content: '';
+  display: block;
+  margin: 0 var(--space-250);
+  border-bottom: 1px solid var(--color-accordion-divider);
+}
+
+.default .trigger {
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.default .trigger[data-state='open'] {
+  border-bottom: none;
+}
+
+/* ─── Bordered variant (card-style) ─── */
+
+.bordered {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-100);
+  background: var(--color-bg-elevated);
+  overflow: hidden;
+}
+
+[data-theme='dark'] .bordered {
+  /* In dark theme, use neutral grey-100 as the card background
+     so the grey-90 divider is visible against it. */
+  background: var(--color-bg-primary);
+}
+
+.bordered .item + .item {
+  border-top: 1px solid var(--color-border-default);
+}
+
+.bordered .trigger {
+  padding: var(--space-200) var(--space-250);
+
+  @media (max-width: 480px) {
+    padding: var(--space-150);
+  }
+}
+
+.bordered .contentInner {
+  padding: var(--space-150) 0 var(--space-200);
+
+  @media (max-width: 480px) {
+    padding: var(--space-150) 0 var(--space-150);
+  }
+}
+
+.bordered .content[data-state='open'] {
+  border-top: 1px solid var(--color-border-subtle);
+  margin: 0 var(--space-250);
+}
+
+/* ─── Shared parts ─── */
+
+.header {
+  margin: 0;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-100);
+  width: 100%;
+  padding: var(--space-200) var(--space-250);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: var(--font-size-300);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-300);
+  color: var(--color-text-primary);
+  text-align: left;
+  border-radius: var(--radius-050);
+  transition: background 150ms ease, color 150ms ease;
+
+  &:hover {
+    background: var(--color-interactive-hover);
+  }
+
+  &:focus-visible {
+    outline: var(--border-width-200) solid var(--color-border-focus);
+    outline-offset: 2px;
+  }
+
+  &[data-disabled] {
+    opacity: var(--opacity-048);
+    cursor: not-allowed;
+
+    &:hover {
+      background: none;
+    }
+  }
+
+  &[data-state='open'] .chevron {
+    transform: rotate(180deg);
+  }
+
+  @media (max-width: 480px) {
+    min-height: 48px;
+    font-size: var(--font-size-300);
+  }
+}
+
+.triggerContent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-125);
+  min-width: 0;
+}
+
+.icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: var(--color-text-tertiary);
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+  transition: transform 200ms ease;
+}
+
+.content {
+  overflow: hidden;
+
+  &[data-state='open'] {
+    animation: slideDown 200ms ease-out;
+  }
+
+  &[data-state='closed'] {
+    animation: slideUp 200ms ease-out;
+  }
+}
+
+.contentInner {
+  padding: var(--space-150) var(--space-250) var(--space-200);
+  font-size: var(--font-size-200);
+  line-height: var(--line-height-200);
+  color: var(--color-text-secondary);
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}

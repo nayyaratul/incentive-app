@@ -9,55 +9,18 @@ import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
 import MomentumPills from '../../../components/Molecule/MomentumPills/MomentumPills';
 import ComplianceLink from '../../../components/Molecule/ComplianceLink/ComplianceLink';
-
-// Dummy peer stores for the campaign leaderboard when the API doesn't
-// provide one. Real user's row is injected with their actual store name
-// and payout data, then all rows are ranked by achievement %.
-const DUMMY_PEERS = [
-  { storeCode: 'RR-KER-MAL-01', storeName: 'Malappuram Mall',      achievementPct: 142 },
-  { storeCode: 'RR-KER-KOC-02', storeName: 'Kochi Marine Drive',   achievementPct: 128 },
-  { storeCode: 'RR-KER-TVM-01', storeName: 'Trivandrum Central',   achievementPct: 115 },
-  { storeCode: 'RR-KER-KNR-01', storeName: 'Kannur Bayview',       achievementPct: 98 },
-];
-
-function buildFallbackLeaderboard(payout, employee, store) {
-  const selfAchievement = payout.achievementPct || 100;
-  const selfActual = payout.actualSalesValue || 0;
-  const selfPerEmp = payout.individualPayout || 0;
-  const selfName = store?.storeName || employee?.name || 'Your store';
-  const selfCode = store?.storeCode || employee?.storeCode || 'SELF';
-
-  const self = {
-    storeCode: selfCode,
-    storeName: selfName,
-    achievementPct: selfAchievement,
-    actualSalesValue: selfActual,
-    perEmpAtCurrent: selfPerEmp,
-    isSelf: true,
-  };
-
-  // Scale peer actuals/per-emp relative to self so numbers stay plausible
-  const safePct = selfAchievement > 0 ? selfAchievement : 100;
-  const peers = DUMMY_PEERS.map((p) => ({
-    ...p,
-    actualSalesValue: Math.round(selfActual * (p.achievementPct / safePct)),
-    perEmpAtCurrent: Math.round(selfPerEmp * (p.achievementPct / safePct)),
-  }));
-
-  return [...peers, self]
-    .sort((a, b) => b.achievementPct - a.achievementPct)
-    .map((row, i) => ({ ...row, rank: i + 1 }));
-}
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/nexus/atoms';
 
 export default function GroceryView({ payout, employee, store, role }) {
   const appliedRate = payout.appliedRate;
   const totalStoreIncentive = payout.totalStoreIncentive;
   const per = payout.individualPayout;
   const achievementPct = payout.achievementPct;
-
-  const leaderboard = (payout.campaignLeaderboard && payout.campaignLeaderboard.length > 0)
-    ? payout.campaignLeaderboard
-    : buildFallbackLeaderboard(payout, employee, store);
 
   return (
     <>
@@ -109,33 +72,49 @@ export default function GroceryView({ payout, employee, store, role }) {
         </HeroCard>
       </section>
 
-      {/* Slab ladder — what store needs to unlock each rate */}
+      {/* Collapsible details: payout slabs + eligible articles */}
       <section className={`${styles.pad} rise rise-3`}>
-        <div className={styles.cardDark}>
-          <div className={styles.cardHead}>
-            <span className={styles.eyebrow}>Payout slabs</span>
-          </div>
-          <div className={styles.slabGrid}>
-            {payout.projections.map((p) => (
-              <div key={p.scenario} className={styles.slabRow}>
-                <div className={styles.slabLeft}>
-                  <span className={styles.slabTitle}>{p.scenario}</span>
-                  <span className={styles.slabAt}>at {formatINR(p.atSalesValue)}</span>
-                </div>
-                <div className={styles.slabMid}>
-                  <span className={styles.slabRate}>₹{p.rate}/pc</span>
-                </div>
-                <div className={styles.slabRight}>
-                  <span className={styles.slabTotal}>{formatINR(p.estPerEmployee)}</span>
-                  <span className={styles.slabPer}>per employee</span>
-                </div>
+        <Accordion type="multiple" defaultValue={['slabs']}>
+          <AccordionItem value="slabs">
+            <AccordionTrigger>Payout slabs</AccordionTrigger>
+            <AccordionContent>
+              <div className={styles.slabGrid}>
+                {payout.projections.map((p) => (
+                  <div key={p.scenario} className={styles.slabRow}>
+                    <div className={styles.slabLeft}>
+                      <span className={styles.slabTitle}>{p.scenario}</span>
+                      <span className={styles.slabAt}>at {formatINR(p.atSalesValue)}</span>
+                    </div>
+                    <div className={styles.slabMid}>
+                      <span className={styles.slabRate}>₹{p.rate}/pc</span>
+                    </div>
+                    <div className={styles.slabRight}>
+                      <span className={styles.slabTotal}>{formatINR(p.estPerEmployee)}</span>
+                      <span className={styles.slabPer}>per employee</span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <p className={styles.slabFootnote}>
-            Higher slab rates apply to <strong>all pieces sold</strong>, not just the incremental pieces above the threshold.
-          </p>
-        </div>
+              <p className={styles.slabFootnote}>
+                Higher slab rates apply to <strong>all pieces sold</strong>, not just the incremental pieces above the threshold.
+              </p>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="articles">
+            <AccordionTrigger>
+              Eligible articles ({groceryCampaign.eligibleArticles.length})
+            </AccordionTrigger>
+            <AccordionContent>
+              <ul className={styles.artList}>
+                <li><strong>Andree</strong> Butterscotch · Dates · Plum</li>
+                <li><strong>Bakemill</strong> Chocolate · Coffee · Dates & Carrot · Jackfruit</li>
+                <li><strong>Kairali</strong> Pudding CBD</li>
+                <li><strong>Unibic</strong> Plum (Egg) · Veg Plum</li>
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </section>
 
       {/* Streak note — always positive. Falls back to sample when API data is empty */}
@@ -166,44 +145,6 @@ export default function GroceryView({ payout, employee, store, role }) {
       {/* Badges */}
       <section className={`rise rise-4`}>
         <BadgesStrip employeeId={employee.employeeId} vertical="GROCERY" />
-      </section>
-
-      {/* Campaign leaderboard — 3 Kerala stores */}
-      <section className={`${styles.pad} rise rise-4`}>
-        <div className={styles.cardLight}>
-          <div className={styles.cardHead}>
-            <span className={styles.eyebrow}>Campaign leaderboard · Kerala</span>
-          </div>
-          <div className={styles.lbList}>
-            {leaderboard.map((r) => (
-              <div key={r.storeCode} className={`${styles.lbRow} ${r.isSelf ? styles.lbSelf : ''}`}>
-                <span className={styles.lbRank}>#{r.rank}</span>
-                <div className={styles.lbBody}>
-                  <div className={styles.lbName}>{r.storeName}</div>
-                  <div className={styles.lbSub}>
-                    {formatINR(r.actualSalesValue)} · {r.achievementPct}%
-                  </div>
-                </div>
-                <span className={styles.lbPer}>{formatINR(r.perEmpAtCurrent)}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Eligible articles list */}
-      <section className={`${styles.pad} rise rise-5`}>
-        <div className={styles.cardLight}>
-          <div className={styles.cardHead}>
-            <span className={styles.eyebrow}>Eligible articles ({groceryCampaign.eligibleArticles.length})</span>
-          </div>
-          <ul className={styles.artList}>
-            <li><strong>Andree</strong> Butterscotch · Dates · Plum</li>
-            <li><strong>Bakemill</strong> Chocolate · Coffee · Dates & Carrot · Jackfruit</li>
-            <li><strong>Kairali</strong> Pudding CBD</li>
-            <li><strong>Unibic</strong> Plum (Egg) · Veg Plum</li>
-          </ul>
-        </div>
       </section>
 
       {/* Compliance — demoted to quiet inline disclosure for consistency */}

@@ -12,41 +12,11 @@
   gap: var(--space-150);
 }
 
-.topRight {
-  display: flex;
-  align-items: center;
-  gap: var(--space-100);
-}
-
 .themeToggle {
   display: flex;
   align-items: center;
   gap: var(--space-050);
   color: var(--color-text-tertiary);
-}
-
-.rankChip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-050);
-  padding: var(--space-050) var(--space-100);
-  background: var(--color-bg-tertiary);
-  border: var(--border-width-100) solid var(--color-border-default);
-  border-radius: var(--radius-full);
-  color: var(--color-text-primary);
-  font-family: var(--sans);
-  font-size: var(--font-size-200);
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
-  transition: background 120ms ease;
-
-  &:hover {
-    background: var(--color-interactive-hover);
-  }
-}
-
-.rankText {
-  font-variant-numeric: tabular-nums;
 }
 
 .greetingRow {
@@ -61,6 +31,8 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: var(--space-100);
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .namaste {
@@ -77,4 +49,38 @@
   color: var(--color-text-primary);
   line-height: 1;
   letter-spacing: var(--letter-spacing-tighter);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-100);
+  flex-shrink: 0;
+  margin-top: var(--space-050);
+}
+
+.leaderboardPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-050);
+  padding: var(--space-075) var(--space-150);
+  background: var(--color-bg-tertiary);
+  border: var(--border-width-100) solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  color: var(--color-text-primary);
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--color-interactive-hover);
+    border-color: var(--color-border-strong);
+  }
+}
+
+.leaderboardLabel {
+  font-variant-numeric: tabular-nums;
 }
