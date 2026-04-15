@@ -156,6 +156,95 @@
 .projRate { color: var(--yellow-50); font-size: 12px; font-weight: 700; }
 .projTotal { color: var(--color-text-primary); font-size: 13px; font-weight: 700; }
 
+/* ---------- Run Rate ---------- */
+.runRateGrid {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0 12px;
+}
+.runRateItem { flex: 1; text-align: center; }
+.runRateDivider {
+  width: 1px;
+  height: 36px;
+  background: var(--color-border-default);
+  flex-shrink: 0;
+}
+.runRateValue {
+  font-family: var(--sans);
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 660;
+  font-size: 20px;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.runRateGreen { color: #15803d; }
+.runRateCap {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  margin-top: 2px;
+}
+.runRateStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: #15803d;
+  background: rgba(22, 163, 74, 0.06);
+  border: 1px solid rgba(22, 163, 74, 0.15);
+
+  strong {
+    font-weight: 700;
+    color: inherit;
+  }
+}
+.runRateBehind {
+  color: #b45309;
+  background: rgba(217, 119, 6, 0.06);
+  border-color: rgba(217, 119, 6, 0.15);
+}
+
+/* ---------- What If ---------- */
+.whatIfList { display: flex; flex-direction: column; gap: 10px; }
+.whatIfRow {
+  padding: 12px 14px;
+  background: var(--color-bg-sunken);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.whatIfQuestion {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--color-text-primary);
+
+  strong { font-weight: 700; }
+}
+.whatIfDetail {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+
+  strong { font-weight: 700; color: var(--color-text-primary); }
+}
+.whatIfResult {
+  font-family: var(--sans);
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
+  font-size: 14px;
+  color: #15803d;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+
 /* ---------- Roster ---------- */
 .rosterHeader {
   display: grid;

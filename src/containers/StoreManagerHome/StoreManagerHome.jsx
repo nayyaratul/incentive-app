@@ -98,28 +98,52 @@ export default function StoreManagerHome() {
       };
 
       const storeAchPct = totalTarget > 0 ? Math.round((totalActual / totalTarget) * 100) : 0;
+      const daysElapsed = dayjs().date();
+      const daysLeft = dayjs().endOf('month').diff(dayjs(), 'day');
+      const totalDays = dayjs().daysInMonth();
+      const dailyPace = daysElapsed > 0 ? Math.round(totalActual / daysElapsed) : 0;
+      const requiredPace = daysLeft > 0 && totalTarget > totalActual
+        ? Math.round((totalTarget - totalActual) / daysLeft)
+        : 0;
+      const projectedTotal = Math.round(dailyPace * totalDays);
 
       return {
         kind: 'ELECTRONICS',
         totalTarget, totalActual, totalPayout,
         achievementPct: storeAchPct,
-        daysLeft: dayjs().endOf('month').diff(dayjs(), 'day'),
+        daysLeft,
+        daysElapsed,
+        dailyPace,
+        requiredPace,
+        projectedTotal,
         gapToTarget: totalTarget > totalActual ? totalTarget - totalActual : 0,
         departments: depts.map((d) => {
           const ach = Number(d.achievementPct) || 0;
           const target = Number(d.target) || 0;
           const actual = Number(d.actual) || 0;
+          const currentMult = findMult(ach);
           const next = findNextTier(ach);
           const gapToNext = next && target > 0 ? Math.max(0, Math.round(target * next.pct / 100 - actual)) : null;
+
+          // "What if" — estimate payout uplift if next tier is reached
+          // Use total base incentive for employees in this department's achievement bracket
+          const deptBaseTotal = emps
+            .filter((e) => Math.abs((Number(e.achievementPct) || 0) - ach) < 1)
+            .reduce((s, e) => s + (Number(e.baseIncentive) || 0), 0);
+          const currentPayout = Math.round(deptBaseTotal * currentMult);
+          const nextPayout = next ? Math.round(deptBaseTotal * (next.mult / 100)) : currentPayout;
+          const payoutUplift = nextPayout - currentPayout;
 
           return {
             department: d.department,
             actualSales: actual,
             achievementPct: ach,
             target,
-            multiplier: findMult(ach),
+            multiplier: currentMult,
             nextTier: next,
             gapToNext,
+            payoutUplift: payoutUplift > 0 ? payoutUplift : null,
+            employeesInDept: emps.filter((e) => Math.abs((Number(e.achievementPct) || 0) - ach) < 1).length,
           };
         }),
         // Find minimum achievement % needed to unlock any multiplier
@@ -357,8 +381,52 @@ export default function StoreManagerHome() {
                 </HeroCard>
               </section>
 
-              {summary.kind === 'ELECTRONICS' && (
+              {/* Daily Run Rate */}
+              {summary.dailyPace > 0 && (
                 <section className={`${styles.pad} rise rise-3`}>
+                  <div className={styles.cardLight}>
+                    <div className={styles.cardHead}>
+                      <span className={styles.eyebrow}>
+                        <TrendingUp size={12} strokeWidth={2.4} style={{ marginRight: 4 }} />
+                        Daily run rate
+                      </span>
+                      <span className={styles.headSub}>day {summary.daysElapsed} of {summary.daysElapsed + summary.daysLeft}</span>
+                    </div>
+                    <div className={styles.runRateGrid}>
+                      <div className={styles.runRateItem}>
+                        <div className={styles.runRateValue}>{formatINR(summary.dailyPace)}</div>
+                        <div className={styles.runRateCap}>current pace / day</div>
+                      </div>
+                      <div className={styles.runRateDivider} />
+                      {summary.requiredPace > 0 ? (
+                        <div className={styles.runRateItem}>
+                          <div className={styles.runRateValue}>{formatINR(summary.requiredPace)}</div>
+                          <div className={styles.runRateCap}>needed / day</div>
+                        </div>
+                      ) : (
+                        <div className={styles.runRateItem}>
+                          <div className={`${styles.runRateValue} ${styles.runRateGreen}`}>{formatINR(summary.projectedTotal)}</div>
+                          <div className={styles.runRateCap}>projected total</div>
+                        </div>
+                      )}
+                    </div>
+                    {summary.projectedTotal >= summary.totalTarget ? (
+                      <div className={styles.runRateStatus}>
+                        <TrendingUp size={13} strokeWidth={2.4} />
+                        On pace to hit <strong>{Math.round((summary.projectedTotal / summary.totalTarget) * 100)}%</strong> of target
+                      </div>
+                    ) : (
+                      <div className={`${styles.runRateStatus} ${styles.runRateBehind}`}>
+                        <Target size={13} strokeWidth={2.2} />
+                        Behind pace — need to increase daily sales by <strong>{formatINR(summary.requiredPace - summary.dailyPace)}</strong>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              )}
+
+              {summary.kind === 'ELECTRONICS' && (
+                <section className={`${styles.pad} rise rise-4`}>
                   <div className={styles.cardDark}>
                     <div className={styles.cardHead}>
                       <span className={styles.eyebrow}>Department multipliers</span>
@@ -387,6 +455,39 @@ export default function StoreManagerHome() {
                           </div>
                         );
                       })}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* What If Simulator */}
+              {summary.kind === 'ELECTRONICS' && summary.departments.some((d) => d.payoutUplift > 0) && (
+                <section className={`${styles.pad} rise rise-5`}>
+                  <div className={styles.cardLight}>
+                    <div className={styles.cardHead}>
+                      <span className={styles.eyebrow}>
+                        <Zap size={12} strokeWidth={2.4} style={{ marginRight: 4 }} />
+                        What if?
+                      </span>
+                      <span className={styles.headSub}>unlock potential</span>
+                    </div>
+                    <div className={styles.whatIfList}>
+                      {summary.departments
+                        .filter((d) => d.payoutUplift > 0 && d.nextTier && d.gapToNext > 0)
+                        .sort((a, b) => b.payoutUplift - a.payoutUplift)
+                        .map((d) => (
+                          <div key={d.department} className={styles.whatIfRow}>
+                            <div className={styles.whatIfQuestion}>
+                              If <strong>{d.department}</strong> hits {d.nextTier.pct}%
+                            </div>
+                            <div className={styles.whatIfDetail}>
+                              Sell <strong>{formatINR(d.gapToNext)}</strong> more → multiplier jumps to <strong>{d.nextTier.mult}%</strong>
+                            </div>
+                            <div className={styles.whatIfResult}>
+                              +{formatINR(d.payoutUplift)} extra payout for {d.employeesInDept} staff
+                            </div>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </section>
