@@ -1,0 +1,90 @@
+/* Medallion — coin-style badge visual.
+   Rarity variants reference --medal-fill-* + --medal-rim-* tokens added
+   in src/nexus/styles/tokens.scss. Sizes: sm 44px, md 54px, lg 96px. */
+
+.medallion {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.15),
+    inset 0 2px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.18);
+  transition: transform 150ms ease-out;
+
+  &:hover { transform: translateY(-1px); }
+  &:active { transform: translateY(0); }
+  &:focus-visible {
+    outline: 2px solid var(--color-border-focus, var(--brand-70));
+    outline-offset: 3px;
+  }
+}
+
+/* --- Sizes --- */
+.sm { width: 44px; height: 44px; font-size: 18px; }
+.md { width: 54px; height: 54px; font-size: 22px; }
+.lg {
+  width: 96px; height: 96px; font-size: 40px;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.18),
+    inset 0 3px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Rarity variants --- */
+.gold   { background: var(--medal-fill-gold);   border-color: var(--medal-rim-gold); }
+.silver { background: var(--medal-fill-silver); border-color: var(--medal-rim-silver); }
+.bronze { background: var(--medal-fill-bronze); border-color: var(--medal-rim-bronze); }
+
+/* --- Locked silhouette --- */
+.locked {
+  background: transparent;
+  border: 2px dashed var(--color-border-default);
+  color: var(--color-text-tertiary);
+  box-shadow: none;
+
+  &:hover { transform: none; }
+}
+
+/* --- Newly-unlocked pulse + flag --- */
+.new::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 0 3px rgba(189, 41, 37, 0.18);
+  animation: medallion-pulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes medallion-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(189, 41, 37, 0.12); }
+  50%      { box-shadow: 0 0 0 6px rgba(189, 41, 37, 0.22); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .new::after { animation: none; }
+  .medallion { transition: none; }
+}
+
+.newFlag {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background: var(--brand-70);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 5px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
