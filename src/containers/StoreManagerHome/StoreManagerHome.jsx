@@ -457,19 +457,21 @@ function TeamRoster({ summary, onSelectRow }) {
               onClick={() => onSelectRow && onSelectRow(e)}
             >
               <div className={styles.rosterLeft}>
-                <span className={styles.rosterRole}>{e.role}</span>
                 <span className={styles.rosterName}>{e.employeeName}</span>
-                {e.payrollStatus !== 'ACTIVE' && (
-                  <span className={styles.rosterStatus}>{e.payrollStatus.replace(/_/g, ' ')}</span>
-                )}
-                {typeof e.daysPresent === 'number' && (
-                  <span className={styles.rosterDays}>{e.daysPresent}/7 days</span>
-                )}
-                {!e.ineligible && ach > 0 && (
-                  <span className={`${styles.rosterAch} ${unlocked ? styles.rosterAchGreen : ''}`}>
-                    {ach}%{unlockPct != null && !unlocked ? ` · need ${unlockPct}%` : ''}
-                  </span>
-                )}
+                <div className={styles.rosterMeta}>
+                  <span className={styles.rosterRole}>{e.role}</span>
+                  {!e.ineligible && ach > 0 && (
+                    <span className={`${styles.rosterAch} ${unlocked ? styles.rosterAchGreen : ''}`}>
+                      {ach}%
+                    </span>
+                  )}
+                  {e.payrollStatus !== 'ACTIVE' && (
+                    <span className={styles.rosterStatus}>{e.payrollStatus.replace(/_/g, ' ')}</span>
+                  )}
+                  {typeof e.daysPresent === 'number' && (
+                    <span className={styles.rosterDays}>{e.daysPresent}/7 days</span>
+                  )}
+                </div>
               </div>
               <span className={styles.rosterPotential}>
                 {e.ineligible ? '—' : formatINR(e.potential)}

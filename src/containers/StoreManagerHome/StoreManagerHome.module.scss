@@ -218,9 +218,15 @@
 }
 .rosterLeft {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.rosterMeta {
+  display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 5px;
 }
 .rosterRole {
   font-family: var(--mono);
