@@ -22,12 +22,13 @@ export default function MomentumPills({
   const days = daysBetween(payoutAsOf, nextPayoutDate);
   const showCountdown = typeof days === 'number' && days >= 0;
 
-  const showMomentum = typeof thisPeriodAmount === 'number';
+  const showMomentum =
+    typeof thisPeriodAmount === 'number' &&
+    typeof lastPeriodAmount === 'number' &&
+    lastPeriodAmount > 0;
   let momentumKind = 'flat';
   let pctDelta = 0;
-  if (showMomentum && lastPeriodAmount === 0) {
-    momentumKind = 'first';
-  } else if (showMomentum && typeof lastPeriodAmount === 'number') {
+  if (showMomentum) {
     pctDelta = ((thisPeriodAmount - lastPeriodAmount) / lastPeriodAmount) * 100;
     momentumKind = pctDelta > 1 ? 'up' : pctDelta < -1 ? 'down' : 'flat';
   }
@@ -49,17 +50,11 @@ export default function MomentumPills({
           {momentumKind === 'up'   && <TrendingUp size={12} strokeWidth={2.4} />}
           {momentumKind === 'down' && <TrendingDown size={12} strokeWidth={2.4} />}
           {momentumKind === 'flat' && <TrendingUp size={12} strokeWidth={2.4} className={styles.iconMuted} />}
-          {momentumKind === 'first' ? (
-            <span className={styles.value}>First period</span>
-          ) : (
-            <>
-              <span className={styles.value}>
-                {momentumKind === 'up' ? '+' : ''}
-                {pctDelta.toFixed(0)}%
-              </span>
-              <Text as="span" variant="caption" className={styles.label}>vs {lastPeriodLabel}</Text>
-            </>
-          )}
+          <span className={styles.value}>
+            {momentumKind === 'up' ? '+' : ''}
+            {pctDelta.toFixed(0)}%
+          </span>
+          <Text as="span" variant="caption" className={styles.label}>vs {lastPeriodLabel}</Text>
         </span>
       )}
     </div>

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Target, CheckCircle2 } from 'lucide-react';
+import { Target, CheckCircle2, Gift } from 'lucide-react';
 import { Card } from '@/nexus/molecules';
-import { ProgressBar, Text } from '@/nexus/atoms';
+import { ProgressBar, Text, Tag } from '@/nexus/atoms';
 import styles from './QuestCard.module.scss';
 import { questsByEmployee } from '../../../data/gamification';
 
@@ -54,52 +54,51 @@ export default function QuestCard({ employeeId, vertical }) {
                 size="md"
                 className={`${styles.quest} ${done ? styles.questDone : ''}`}
               >
-                <Card.Body>
-                  <div className={styles.qHead}>
-                    <Text
-                      as="span"
-                      variant="overline"
-                      size="xs"
-                      weight="semibold"
-                      className={styles.qType}
-                    >
-                      {q.type}
-                    </Text>
-                    {done && (
-                      <span className={styles.qDoneTag}>
-                        <CheckCircle2 size={12} strokeWidth={2.4} aria-hidden="true" />
-                        <Text as="span" variant="micro" weight="semibold">Unlocked</Text>
-                      </span>
-                    )}
-                  </div>
-
-                  <Text
-                    as="div"
-                    variant="body"
-                    size="md"
-                    weight="semibold"
-                    className={styles.qTitle}
-                  >
-                    {q.title}
-                  </Text>
-
-                  <div className={styles.qProgRow}>
-                    <ProgressBar
-                      value={pctInt}
-                      max={100}
+                <div className={styles.qHead}>
+                  <Tag variant="default" size="sm">{q.type}</Tag>
+                  {done && (
+                    <Tag
+                      variant="success"
                       size="sm"
-                      variant={done ? 'success' : 'default'}
-                      className={styles.qTrack}
-                    />
-                    <span className={styles.qCount}>{formatProgress(q.progress)}</span>
-                  </div>
+                      icon={<CheckCircle2 size={12} strokeWidth={2.4} />}
+                    >
+                      Unlocked
+                    </Tag>
+                  )}
+                </div>
 
-                  <div className={styles.qReward}>
-                    <Text as="span" variant="caption" size="sm" className={styles.qRewardText}>
-                      {q.reward}
-                    </Text>
-                  </div>
-                </Card.Body>
+                <Card.Subtitle
+                  as="div"
+                  weight="semibold"
+                  color={done ? 'var(--color-text-secondary)' : 'var(--color-text-primary)'}
+                >
+                  {q.title}
+                </Card.Subtitle>
+
+                <div className={styles.qProgRow}>
+                  <ProgressBar
+                    value={pctInt}
+                    max={100}
+                    size="sm"
+                    variant={done ? 'success' : 'default'}
+                    className={styles.qTrack}
+                  />
+                  <span className={`${styles.qCount} ${done ? styles.qCountDone : ''}`}>
+                    {formatProgress(q.progress)}
+                  </span>
+                </div>
+
+                <Card.Footer align="start" className={styles.qReward}>
+                  <Gift
+                    size={12}
+                    strokeWidth={2.4}
+                    className={styles.qRewardIcon}
+                    aria-hidden="true"
+                  />
+                  <Text as="span" variant="caption" size="sm" className={styles.qRewardText}>
+                    {q.reward}
+                  </Text>
+                </Card.Footer>
               </Card>
             </li>
           );

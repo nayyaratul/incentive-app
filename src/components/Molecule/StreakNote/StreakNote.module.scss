@@ -8,11 +8,11 @@
   gap: var(--space-125);
   width: 100%;
   padding: var(--space-125) var(--space-175, 14px);
-  background: linear-gradient(135deg, var(--brand-a100) 0%, var(--brand-a50) 100%);
-  border: var(--border-width-100) solid var(--brand-a150);
+  background: var(--color-bg-secondary);
+  border: var(--border-width-100) solid var(--color-border-default);
   border-radius: var(--radius-200);
   font-family: var(--sans);
-  color: var(--brand-70);
+  color: var(--color-text-primary);
   line-height: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -45,13 +45,13 @@
   font-family: var(--sans);
   font-size: var(--font-size-300);
   font-weight: var(--font-weight-semibold);
-  color: var(--brand-70);
+  color: var(--color-text-primary);
   line-height: 1;
   flex-shrink: 0;
 }
 
 .divider {
-  color: var(--brand-a200);
+  color: var(--color-text-tertiary);
   line-height: 1;
   font-weight: 700;
   padding: 0 var(--space-025);
@@ -62,7 +62,7 @@
   font-family: var(--sans);
   font-size: 12.5px;
   font-weight: var(--font-weight-medium);
-  color: var(--brand-60);
+  color: var(--color-text-secondary);
   line-height: 1;
   min-width: 0;
   overflow: hidden;
@@ -73,10 +73,10 @@
 .longest {
   margin-left: auto;
   padding-left: var(--space-150);
-  border-left: var(--border-width-100) solid var(--brand-a150);
+  border-left: var(--border-width-100) solid var(--color-border-subtle);
   font-family: var(--mono);
   font-size: 11.5px;
-  color: var(--brand-60);
+  color: var(--color-text-tertiary);
   letter-spacing: var(--letter-spacing-wide);
   line-height: 1;
   flex-shrink: 0;

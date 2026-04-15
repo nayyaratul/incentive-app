@@ -62,12 +62,3 @@
 
 /* Flat -- stays neutral */
 .mom-flat {}
-
-/* First period -- brand tint */
-.mom-first {
-  background: var(--brand-a100);
-  border-color: var(--brand-a200);
-
-  .value { color: var(--brand-70); }
-  .label { color: var(--brand-70); opacity: 0.78; }
-}

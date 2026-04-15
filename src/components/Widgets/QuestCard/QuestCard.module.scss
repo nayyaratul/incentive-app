@@ -41,8 +41,7 @@
   }
 }
 
-/* Stack of standalone quest cards. No outer container chrome — the cards
-   themselves are the container. */
+/* Stack of standalone quest cards. Nexus Card handles bg/border/radius/spacing. */
 .list {
   list-style: none;
   padding: 0;
@@ -52,50 +51,28 @@
   gap: var(--space-125);
 }
 
-.quest {
-  /* Nexus Card provides bg + border + radius. We just tune the hover
-     and the completed variant. */
-  transition: transform 150ms ease-out, border-color 150ms ease-out;
-
-  &:hover {
+/* Quest card — hover lift only on real pointer devices (avoids sticky hover on touch) */
+@media (hover: hover) and (pointer: fine) {
+  .quest {
+    transition: transform 150ms ease-out, border-color 150ms ease-out;
+  }
+  .quest:hover {
     transform: translateY(-2px);
   }
 }
 
-/* Completed: soft success tint on the card surface, not a loud flood. */
-.questDone {
-  background: var(--color-bg-success) !important;
-  border-color: var(--color-alert-success-border) !important;
-
-  .qTitle {
-    color: var(--color-text-secondary);
-  }
+/* Completed: soft success tint. Double-class specificity avoids !important. */
+.quest.questDone {
+  background: var(--color-bg-success);
+  border-color: var(--color-alert-success-border);
 }
 
+/* Header row — two tags side-by-side (Card is column; this overrides within the card) */
 .qHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-100);
-  margin-bottom: var(--space-075);
-}
-
-.qType {
-  color: var(--color-text-tertiary);
-}
-
-.qDoneTag {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-050);
-  color: var(--color-text-success);
-}
-
-.qTitle {
-  line-height: 1.35;
-  margin-bottom: var(--space-150);
-  letter-spacing: var(--letter-spacing-tight);
-  color: var(--color-text-primary);
 }
 
 .qProgRow {
@@ -103,7 +80,6 @@
   grid-template-columns: 1fr auto;
   gap: var(--space-125);
   align-items: center;
-  margin-bottom: var(--space-125);
 }
 
 .qTrack {
@@ -122,21 +98,26 @@
   white-space: nowrap;
 }
 
-/* Reward: quiet footer strip — slight top divider, no bg box. */
+.qCountDone {
+  color: var(--color-text-success);
+}
+
+/* Reward footer — quiet divider + icon + copy, left-aligned */
 .qReward {
   padding-top: var(--space-100);
   border-top: var(--border-width-100) solid var(--color-border-subtle);
 }
 
-.qRewardText {
-  color: var(--color-text-secondary);
-  line-height: 1.4;
-}
-
-.questDone .qReward {
+.quest.questDone .qReward {
   border-top-color: var(--color-alert-success-border);
 }
 
-.questDone .qRewardText {
+.qRewardIcon {
   color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.qRewardText {
+  color: var(--color-text-secondary);
+  line-height: 1.4;
 }

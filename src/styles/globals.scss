@@ -53,8 +53,8 @@ body {
 .rise-7 { animation-delay: 590ms; }
 
 @keyframes flame-pulse {
-  0%, 100% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 6px color-mix(in srgb, var(--brand-50) 45%, transparent)); }
-  50%      { transform: scale(1.08) rotate(2deg); filter: drop-shadow(0 0 14px color-mix(in srgb, var(--brand-50) 65%, transparent)); }
+  0%, 100% { transform: scale(1) rotate(-2deg); filter: drop-shadow(0 0 4px color-mix(in srgb, var(--brand-50) 25%, transparent)); }
+  50%      { transform: scale(1.08) rotate(2deg); filter: drop-shadow(0 0 10px color-mix(in srgb, var(--brand-50) 40%, transparent)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
