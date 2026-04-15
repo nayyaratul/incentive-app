@@ -137,9 +137,10 @@ function Figures({ children, dense = false }) {
   );
 }
 
-function Figure({ value, cap, sub }) {
+function Figure({ label, value, cap, sub }) {
   return (
     <div className={styles.figure}>
+      {label && <div className={styles.figLabel}>{label}</div>}
       <div className={styles.figValue}>{value}</div>
       {cap && <div className={styles.figCap}>{cap}</div>}
       {sub && <div className={styles.figSub}>{sub}</div>}
