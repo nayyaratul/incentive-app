@@ -9,7 +9,7 @@ import {
   groceryCampaign,
   fnlWeeklyRules,
 } from '../../data/configs';
-import { formatINR } from '../../utils/format';
+import { formatINR, formatDateRange } from '../../utils/format';
 
 const VERTICAL_LABELS = {
   [VERTICALS.ELECTRONICS]: 'Electronics',
@@ -158,7 +158,7 @@ function GroceryRules() {
           <div className={styles.campaignHead}>
             <div className={styles.ruleFamily}>{c.campaignName}</div>
             <div className={styles.ruleBrands}>
-              {c.campaignStart} → {c.campaignEnd} · {c.geography} · {c.channel}
+              {formatDateRange(c.campaignStart, c.campaignEnd)} · {c.geography} · {c.channel}
             </div>
           </div>
           <p className={styles.lede}>

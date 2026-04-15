@@ -2,7 +2,7 @@ import React from 'react';
 import { Calendar, Users } from 'lucide-react';
 import styles from './VerticalViews.module.scss';
 import { groceryCampaign } from '../../../data/configs';
-import { formatINR } from '../../../utils/format';
+import { formatINR, formatDateRange } from '../../../utils/format';
 import HeroCard from '../../../components/Molecule/HeroCard/HeroCard';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
@@ -34,7 +34,7 @@ export default function GroceryView({ payout, employee, store, role }) {
           <HeroCard.Title>{groceryCampaign.campaignName}</HeroCard.Title>
           <HeroCard.Meta>
             <Calendar size={11} strokeWidth={2.2} />
-            <span>{groceryCampaign.campaignStart} → {groceryCampaign.campaignEnd}</span>
+            <span>{formatDateRange(groceryCampaign.campaignStart, groceryCampaign.campaignEnd)}</span>
             <HeroCard.MetaDot />
             <span>{groceryCampaign.geography}</span>
             <HeroCard.MetaDot />
@@ -42,12 +42,12 @@ export default function GroceryView({ payout, employee, store, role }) {
           </HeroCard.Meta>
 
           <HeroCard.Amount suffix="%">{achievementPct}</HeroCard.Amount>
-          <HeroCard.AmountCap>of store target</HeroCard.AmountCap>
+          <HeroCard.AmountCap>of {formatINR(payout.targetSalesValue)} store target</HeroCard.AmountCap>
 
           <HeroCard.Figures>
             <HeroCard.Figure
               value={formatINR(payout.actualSalesValue)}
-              cap={`of ${formatINR(payout.targetSalesValue)}`}
+              cap={salesCapText(achievementPct, payout.actualSalesValue, payout.targetSalesValue)}
               sub={`${payout.piecesSoldTotal} pieces sold`}
             />
             <HeroCard.FigureDivider />
@@ -169,4 +169,18 @@ export default function GroceryView({ payout, employee, store, role }) {
       </section>
     </>
   );
+}
+
+// Cap line for the sales figure. Target value is already shown in the amount
+// cap up top ("of ₹67,000 store target") and achievement % is the big number,
+// so this cap only carries the gap-to-target or over-target delta — never
+// repeats the target value or the percentage.
+function salesCapText(achievementPct, actualSalesValue, targetSalesValue) {
+  if (achievementPct < 100) {
+    const gap = targetSalesValue - actualSalesValue;
+    return `${formatINR(gap)} to clear`;
+  }
+  const over = actualSalesValue - targetSalesValue;
+  if (over > 0) return `+${formatINR(over)} over`;
+  return 'target cleared';
 }

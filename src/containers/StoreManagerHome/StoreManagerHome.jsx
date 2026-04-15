@@ -13,7 +13,7 @@ import StoreTransactions from '../screens/StoreTransactions';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
-import { formatINR } from '../../utils/format';
+import { formatINR, formatDateRange } from '../../utils/format';
 
 export default function StoreManagerHome() {
   const [tab, setTab] = useState('home');
@@ -234,7 +234,7 @@ export default function StoreManagerHome() {
                   <HeroCard.EyebrowRow>
                     <HeroCard.Eyebrow withDot>
                       {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
-                      {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${summary.campaign.campaignStart} → ${summary.campaign.campaignEnd}`}
+                      {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${formatDateRange(summary.campaign.campaignStart, summary.campaign.campaignEnd)}`}
                       {summary.kind === 'FNL' && `Week · ${summary.week.start} → ${summary.week.end}`}
                     </HeroCard.Eyebrow>
                   </HeroCard.EyebrowRow>
