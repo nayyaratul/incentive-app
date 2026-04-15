@@ -1,0 +1,34 @@
+.track {
+  position: relative;
+  overflow: hidden;
+  width: 680px;
+  max-width: 100%;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-full);
+}
+
+/* ─── Sizes ─── */
+.track-xs { height: var(--space-025); }
+.track-sm { height: var(--space-050); }
+.track-md { height: var(--space-100); }
+.track-lg { height: var(--space-150); }
+
+/* ─── Fill ─── */
+.fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 300ms ease;
+}
+
+/* ─── Variants ─── */
+.default { background: var(--color-action-primary); }
+.success { background: var(--color-text-success); }
+.warning { background: var(--color-text-warning); }
+.error   { background: var(--color-text-error); }
+
+.trackSubtle {
+  background: color-mix(in srgb, var(--grey-0) calc(var(--opacity-032) * 100%), transparent);
+}
+.subtle {
+  background: color-mix(in srgb, var(--grey-0) calc(var(--opacity-080) * 100%), transparent);
+}

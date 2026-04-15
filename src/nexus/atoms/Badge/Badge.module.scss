@@ -1,0 +1,76 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* ─── Sizes ─── */
+.sm {
+  padding: var(--space-025) var(--space-075);
+  font-size: var(--font-size-100);
+  line-height: var(--line-height-100);
+}
+
+.md {
+  padding: var(--space-025) var(--space-100);
+  font-size: var(--font-size-200);
+  line-height: var(--line-height-200);
+}
+
+.lg {
+  padding: var(--space-050) var(--space-150);
+  font-size: var(--font-size-300);
+  line-height: var(--line-height-300);
+}
+
+/* ─── Count badge (circular) ─── */
+.count {
+  min-width: 1.5em;
+  padding-left: var(--space-050);
+  padding-right: var(--space-050);
+}
+
+/* ─── Variants ─── */
+.default {
+  background: var(--color-badge-default-bg);
+  color: var(--color-text-primary);
+}
+
+.success {
+  background: var(--color-badge-success-bg);
+  color: var(--color-text-success);
+}
+
+.error {
+  background: var(--color-badge-error-bg);
+  color: var(--color-text-error);
+}
+
+.warning {
+  background: var(--color-badge-warning-bg);
+  color: var(--color-text-warning);
+}
+
+.info {
+  background: var(--color-badge-info-bg);
+  color: var(--color-text-info);
+}
+
+/* ─── Dot indicator ─── */
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.dot-default { background: var(--color-text-tertiary); }
+.dot-success { background: var(--color-text-success); }
+.dot-error   { background: var(--color-text-error); }
+.dot-warning { background: var(--color-text-warning); }
+.dot-info    { background: var(--color-text-info); }

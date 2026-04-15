@@ -1,0 +1,40 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as SwitchStories from './Switch.stories';
+
+<Meta of={SwitchStories} />
+
+# Switch
+
+A toggle control for binary on/off settings. Built on Radix UI, it supports both controlled and uncontrolled usage.
+
+<Primary />
+
+<Controls />
+
+## Sizes
+
+Three sizes are available: `sm`, `md` (default), and `lg`. Choose based on the surrounding UI density.
+
+<Canvas of={SwitchStories.Sizes} />
+
+## States
+
+The switch can be unchecked, checked, disabled, or checked and disabled.
+
+<Canvas of={SwitchStories.States} />
+
+## Interactive Example
+
+Pair the switch with a `<label>` using matching `id` and `htmlFor` attributes for a clickable label.
+
+<Canvas of={SwitchStories.Interactive} />
+
+## Accessibility
+
+- Built on `@radix-ui/react-switch`, which renders `role="switch"` with correct `aria-checked` state.
+- Always associate a visible `<label>` or provide `aria-label` for screen readers.
+- Keyboard: `Space` toggles the switch.
+
+## Props
+
+<ArgTypes of={SwitchStories} />

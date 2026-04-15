@@ -1,0 +1,212 @@
+/* ─── Root ─── */
+
+.root {
+  width: 100%;
+}
+
+.root--vertical {
+  display: flex;
+  gap: var(--space-200);
+}
+
+.root--vertical .list {
+  flex-direction: column;
+  border-bottom: none;
+  border-right: var(--border-width-100) solid var(--color-border-default);
+  overflow-x: visible;
+  overflow-y: auto;
+}
+
+/* ─── List ─── */
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-050);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* List — variant styles */
+
+.list--default {
+  border-bottom: var(--border-width-100) solid var(--color-border-default);
+}
+
+.list--underline {
+  border-bottom: var(--border-width-100) solid var(--color-border-default);
+  gap: var(--space-100);
+}
+
+.list--pills {
+  gap: var(--space-075);
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-100);
+  padding: var(--space-050);
+}
+
+/* List — size styles */
+
+.list--sm {
+  height: 32px;
+}
+
+.list--md {
+  height: 36px;
+}
+
+.list--lg {
+  height: 44px;
+}
+
+/* ─── Trigger ─── */
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-075);
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  white-space: nowrap;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+  position: relative;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    outline: var(--border-width-200) solid var(--color-border-focus);
+    outline-offset: 2px;
+  }
+
+  &[data-disabled] {
+    opacity: var(--opacity-048);
+    cursor: not-allowed;
+
+    &:hover {
+      color: var(--color-text-secondary);
+      background: none;
+    }
+  }
+}
+
+/* Trigger — variant: default */
+
+.trigger--default {
+  padding: 0 var(--space-150);
+  border-radius: var(--radius-050) var(--radius-050) 0 0;
+  height: 100%;
+
+  &:hover {
+    background: var(--color-interactive-hover);
+  }
+
+  &[data-state='active'] {
+    color: var(--color-text-primary);
+    background: var(--color-bg-elevated);
+    box-shadow: inset 0 -2px 0 0 var(--color-action-primary);
+  }
+}
+
+/* Trigger — variant: underline */
+
+.trigger--underline {
+  padding: 0 var(--space-125);
+  height: 100%;
+  background: none;
+  border-radius: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: transparent;
+    transition: background 150ms ease;
+  }
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+
+  &[data-state='active'] {
+    color: var(--color-action-primary);
+
+    &::after {
+      background: var(--color-action-primary);
+    }
+  }
+}
+
+/* Trigger — variant: pills */
+
+.trigger--pills {
+  padding: 0 var(--space-150);
+  border-radius: var(--radius-full);
+  height: calc(100% - var(--space-050) * 2);
+
+  &:hover {
+    background: var(--color-interactive-hover);
+  }
+
+  &[data-state='active'] {
+    color: var(--color-text-on-action);
+    background: var(--color-action-primary);
+  }
+}
+
+/* Trigger — sizes */
+
+.trigger--sm {
+  font-size: var(--font-size-100);
+  line-height: var(--line-height-100);
+}
+
+.trigger--md {
+  font-size: var(--font-size-200);
+  line-height: var(--line-height-200);
+}
+
+.trigger--lg {
+  font-size: var(--font-size-300);
+  line-height: var(--line-height-300);
+}
+
+/* ─── Trigger icon ─── */
+
+.triggerIcon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ─── Content ─── */
+
+.content {
+  padding-top: var(--space-200);
+  font-size: var(--font-size-200);
+  line-height: var(--line-height-200);
+  color: var(--color-text-primary);
+
+  &:focus-visible {
+    outline: var(--border-width-200) solid var(--color-border-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-050);
+  }
+}

@@ -1,0 +1,51 @@
+/* ─── Spin variant ─── */
+.spinner {
+  display: inline-flex;
+  animation: spin 0.8s linear infinite;
+}
+
+.track {
+  stroke: var(--color-border-subtle);
+}
+
+.arc {
+  stroke: var(--color-action-primary);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Dots variant ─── */
+.dots {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-050);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-action-primary);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.dotDelay1 {
+  animation-delay: 0.2s;
+}
+
+.dotDelay2 {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 80%, 100% {
+    opacity: var(--opacity-024);
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: var(--opacity-100);
+    transform: scale(1);
+  }
+}

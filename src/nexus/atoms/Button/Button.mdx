@@ -1,0 +1,75 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as ButtonStories from './Button.stories';
+
+<Meta of={ButtonStories} />
+
+# Button
+
+Buttons trigger actions or navigation. They communicate what will happen when the user interacts with them.
+
+<Primary />
+
+<Controls />
+
+## Variants
+
+Use variants to communicate the importance and intent of an action.
+
+- **Primary** — high-emphasis actions like "Enrol Now" or "Save". One per section.
+- **Secondary** — medium-emphasis alternatives like "Cancel" or "Back".
+- **Destructive** — irreversible actions like "Delete" or "Remove".
+- **Ghost** — low-emphasis actions, inline links, or toolbar buttons.
+
+<Canvas of={ButtonStories.Variants} />
+
+## Sizes
+
+Three sizes cover most use cases. Use `sm` for dense UIs (tables, toolbars), `md` as the default, and `lg` for prominent CTAs.
+
+| Size | Height | Use case |
+|------|--------|----------|
+| `sm` | 32 px | Tables, inline actions, toolbars |
+| `md` | 40 px | Default for forms and dialogs |
+| `lg` | 48 px | Hero sections, primary CTAs |
+
+<Canvas of={ButtonStories.Sizes} />
+
+## Shapes
+
+Control border-radius with the `shape` prop. Works across all variants.
+
+- **default** — standard radius from design tokens
+- **rounded** — larger radius for softer appearance
+- **pill** — fully rounded ends
+
+<Canvas of={ButtonStories.Shapes} />
+
+## With Icons
+
+Use `iconLeft` or `iconRight` to pair an icon with a label. Icons reinforce meaning — don't use them purely for decoration.
+
+<Canvas of={ButtonStories.WithIcons} />
+
+## States
+
+<Canvas of={ButtonStories.States} />
+
+- **Disabled** — the button is non-interactive. Avoid hiding buttons; disable them instead so users know the action exists.
+- **Loading** — a spinner replaces the content while keeping the button's width stable. The button is also disabled during loading to prevent double-submissions.
+
+## Full Width
+
+Set `fullWidth` to stretch the button to its container. Useful in narrow card layouts or mobile forms.
+
+<Canvas of={ButtonStories.FullWidth} />
+
+## Accessibility
+
+- Renders a native `<button>` element.
+- `aria-busy` is set during loading state.
+- Focus ring uses `var(--color-border-focus)` with a 2 px offset.
+- Disabled buttons remain in the DOM (not hidden) so assistive tech can announce them.
+
+## Props
+
+<ArgTypes of={ButtonStories} />

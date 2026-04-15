@@ -1,0 +1,45 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as SkeletonStories from './Skeleton.stories';
+
+<Meta of={SkeletonStories} />
+
+# Skeleton
+
+A placeholder shimmer that indicates content is loading. Use skeletons to preserve layout and reduce perceived wait time.
+
+<Primary />
+
+<Controls />
+
+## Text Block
+
+Use the `count` prop to render multiple skeleton lines, useful for paragraph placeholders.
+
+<Canvas of={SkeletonStories.TextBlock} />
+
+## Circle
+
+Set `circle` to create round placeholders for avatars or icons.
+
+<Canvas of={SkeletonStories.Circle} />
+
+## Card Composition
+
+Combine different skeleton shapes to mirror a real content layout while it loads.
+
+<Canvas of={SkeletonStories.Card} />
+
+## Custom Shapes
+
+Use `width`, `height`, and `borderRadius` to match any content dimensions.
+
+<Canvas of={SkeletonStories.Shapes} />
+
+## Accessibility
+
+- Renders with `aria-hidden="true"` so screen readers skip decorative loading placeholders.
+- Pair with a live region or loading announcement elsewhere in the page for assistive technology users.
+
+## Props
+
+<ArgTypes of={SkeletonStories} />

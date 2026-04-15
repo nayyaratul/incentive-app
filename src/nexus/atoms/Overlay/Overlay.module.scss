@@ -1,0 +1,15 @@
+/* ─── Full-screen dimmed backdrop ─── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--color-bg-overlay);
+  pointer-events: auto;
+  transition: opacity 150ms ease, visibility 150ms ease;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}

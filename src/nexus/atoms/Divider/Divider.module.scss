@@ -1,0 +1,90 @@
+/* ─── Base (horizontal) ─── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+/* ─── Orientation ─── */
+.vertical {
+  display: inline-block;
+  border: none;
+  border-left: 1px solid var(--color-border-subtle);
+  height: 100%;
+  width: 0;
+}
+
+/* ─── Border styles ─── */
+.solid {
+  border-top-style: solid;
+}
+
+.dashed {
+  border-top-style: dashed;
+}
+
+.dotted {
+  border-top-style: dotted;
+}
+
+.vertical.solid {
+  border-top-style: none;
+  border-left-style: solid;
+}
+
+.vertical.dashed {
+  border-top-style: none;
+  border-left-style: dashed;
+}
+
+.vertical.dotted {
+  border-top-style: none;
+  border-left-style: dotted;
+}
+
+/* ─── Horizontal spacing ─── */
+.spacingSm {
+  margin: 8px 0;
+}
+
+.spacingMd {
+  margin: 16px 0;
+}
+
+.spacingLg {
+  margin: 24px 0;
+}
+
+/* ─── Vertical spacing ─── */
+.verticalSpacingSm {
+  margin: 0 8px;
+}
+
+.verticalSpacingMd {
+  margin: 0 16px;
+}
+
+.verticalSpacingLg {
+  margin: 0 24px;
+}
+
+/* ─── Labeled divider ─── */
+.labeled {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+}
+
+.labeledLine {
+  flex: 1;
+  height: 0;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.labelText {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}

@@ -1,0 +1,58 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as TabsStories from './Tabs.stories';
+
+<Meta of={TabsStories} />
+
+# Tabs
+
+Organises content into switchable panels. Built on Radix UI's Tabs primitive with three visual variants, three sizes, icon support, and vertical orientation. Compose with `Tabs`, `TabsList`, `TabsTrigger`, and `TabsContent`.
+
+<Primary />
+
+<Controls />
+
+## Underline Variant
+
+Use `variant="underline"` for a minimal style with an active indicator line beneath the selected tab. Works well in page headers and settings views.
+
+<Canvas of={TabsStories.Underline} />
+
+## Pills Variant
+
+Use `variant="pills"` for enclosed, filled tab triggers. Suitable for filters and segmented controls.
+
+<Canvas of={TabsStories.Pills} />
+
+## Sizes
+
+Three sizes are available: `sm`, `md` (default), and `lg`.
+
+<Canvas of={TabsStories.Sizes} />
+
+## With Icons
+
+Pass a Lucide icon component to the `icon` prop on `TabsTrigger`. Icon size automatically scales with the tab size.
+
+<Canvas of={TabsStories.WithIcons} />
+
+## Disabled Tab
+
+Individual triggers can be disabled. The disabled tab is skipped during keyboard navigation.
+
+<Canvas of={TabsStories.Disabled} />
+
+## Vertical Orientation
+
+Set `orientation="vertical"` to stack the tab list and content side by side. Useful for settings pages with many sections.
+
+<Canvas of={TabsStories.Vertical} />
+
+## Accessibility
+
+- Built on Radix Tabs, which provides `role="tablist"`, `role="tab"`, and `role="tabpanel"` with proper `aria-selected` and `aria-controls` associations.
+- Keyboard: `Arrow Left / Right` (horizontal) or `Arrow Up / Down` (vertical) moves focus between tabs; `Enter` or `Space` activates.
+- Disabled tabs are excluded from the keyboard navigation order via `aria-disabled`.
+
+## Props
+
+<ArgTypes of={TabsStories} />

@@ -1,0 +1,51 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as BadgeStories from './Badge.stories';
+
+<Meta of={BadgeStories} />
+
+# Badge
+
+Compact labels for status, categories, or notification counts. Badges are non-interactive — use them to surface metadata at a glance.
+
+<Primary />
+
+<Controls />
+
+## Status Pills
+
+Use semantic variants to communicate state clearly.
+
+- **success** — Approved, complete, active
+- **warning** — Pending, needs attention
+- **error** — Rejected, failed, overdue
+- **info** — In review, informational
+- **default** — Neutral or draft states
+
+<Canvas of={BadgeStories.StatusPills} />
+
+## Count Badges
+
+Pass a `count` prop for notification-style badges. Counts above 99 are capped to "99+".
+
+<Canvas of={BadgeStories.CountBadges} />
+
+## Dot Indicators
+
+Enable `dot` for a minimal status indicator without text, ideal next to labels or usernames.
+
+<Canvas of={BadgeStories.DotIndicators} />
+
+## Sizes
+
+Three sizes for different density contexts.
+
+<Canvas of={BadgeStories.Sizes} />
+
+## Accessibility
+
+- Dot badges include `role="status"` for live announcements.
+- Pair count badges with visually hidden text when the number alone lacks context (e.g., "3 unread notifications").
+
+## Props
+
+<ArgTypes of={BadgeStories} />

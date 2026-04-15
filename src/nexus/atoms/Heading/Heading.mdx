@@ -1,0 +1,34 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as HeadingStories from './Heading.stories';
+
+<Meta of={HeadingStories} />
+
+# Heading
+
+Semantic heading element for page and section titles. The `level` prop controls both the rendered HTML tag and the typographic style.
+
+<Primary />
+
+<Controls />
+
+## All Levels
+
+Six levels map to a clear type hierarchy from display headings down to small labels.
+
+<Canvas of={HeadingStories.AllLevels} />
+
+## Truncated
+
+Set `truncate` to clip long headings with an ellipsis. Useful in constrained layouts like cards or sidebars.
+
+<Canvas of={HeadingStories.Truncated} />
+
+## Accessibility
+
+- Renders semantic `<h1>`–`<h6>` elements by default based on `level`.
+- Use the `as` prop to override the rendered tag when the visual style and document outline need to diverge (e.g., an `<h2>` styled as `level={4}`).
+- Maintain a logical heading hierarchy — don't skip levels.
+
+## Props
+
+<ArgTypes of={HeadingStories} />

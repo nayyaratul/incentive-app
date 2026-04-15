@@ -1,0 +1,50 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as ProgressBarStories from './ProgressBar.stories';
+
+<Meta of={ProgressBarStories} />
+
+# ProgressBar
+
+A linear progress indicator built on Radix UI's Progress primitive. Use it for determinate progress like file uploads, course completion, or loading states.
+
+<Primary />
+
+<Controls />
+
+## Sizes
+
+Four track heights: `xs` (2 px), `sm` (4 px), `md` (8 px), and `lg` (12 px).
+
+<Canvas of={ProgressBarStories.Sizes} />
+
+## Variants
+
+Semantic colour variants communicate status at a glance.
+
+- **default** — neutral progress.
+- **success** — completed or positive outcome.
+- **warning** — caution state.
+- **error** — failure or critical threshold.
+- **subtle** — low-contrast, suitable for dark backgrounds.
+
+<Canvas of={ProgressBarStories.Variants} />
+
+## Subtle on dark
+
+The `subtle` variant pairs well with dark container backgrounds.
+
+<Canvas of={ProgressBarStories.SubtleOnDark} />
+
+## Animated
+
+The fill transitions smoothly when `value` changes, making it suitable for real-time updates.
+
+<Canvas of={ProgressBarStories.Animated} />
+
+## Accessibility
+
+- Built on `@radix-ui/react-progress`, which provides `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax` automatically.
+
+## Props
+
+<ArgTypes of={ProgressBarStories} />

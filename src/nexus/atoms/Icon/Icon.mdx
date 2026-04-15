@@ -1,0 +1,42 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as IconStories from './Icon.stories';
+
+<Meta of={IconStories} />
+
+# Icon
+
+Renders any [Lucide](https://lucide.dev) icon by name. Icons are decorative by default; pass `aria-label` to make them meaningful to assistive technology.
+
+<Primary />
+
+<Controls />
+
+## Sizes
+
+Five sizes map to fixed pixel values so icons stay crisp on the grid.
+
+| Size | Pixels | Use case |
+|------|--------|----------|
+| `xs` | 12 px | Inline indicators |
+| `sm` | 16 px | Buttons, badges |
+| `md` | 20 px | Default |
+| `lg` | 24 px | Navigation, cards |
+| `xl` | 32 px | Empty states, heroes |
+
+<Canvas of={IconStories.Sizes} />
+
+## Common Icons
+
+A sampling of frequently used icons across the system.
+
+<Canvas of={IconStories.CommonIcons} />
+
+## Accessibility
+
+- When no `aria-label` is provided, the icon is marked `aria-hidden="true"` with `role="presentation"`.
+- When `aria-label` is provided, the icon receives `role="img"` so screen readers announce it.
+- Ensure meaningful icons always carry an `aria-label`.
+
+## Props
+
+<ArgTypes of={IconStories} />

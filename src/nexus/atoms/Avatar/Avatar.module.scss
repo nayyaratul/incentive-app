@@ -1,0 +1,76 @@
+.avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  font-family: var(--sans);
+  font-weight: var(--font-weight-medium);
+  flex-shrink: 0;
+}
+
+/* ─── Sizes ─── */
+.xs {
+  width: 24px;
+  height: 24px;
+  font-size: var(--font-size-100);
+}
+
+.sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--font-size-200);
+}
+
+.md {
+  width: 40px;
+  height: 40px;
+  font-size: var(--font-size-300);
+}
+
+.lg {
+  width: 48px;
+  height: 48px;
+  font-size: var(--font-size-400);
+}
+
+.xl {
+  width: 64px;
+  height: 64px;
+  font-size: var(--font-size-500);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-full);
+}
+
+.initials {
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* ─── Online indicator ─── */
+.indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25%;
+  height: 25%;
+  min-width: 8px;
+  min-height: 8px;
+  border-radius: var(--radius-full);
+  border: var(--border-width-200) solid var(--color-bg-primary);
+}
+
+.online {
+  background: var(--color-text-success);
+}
+
+.offline {
+  background: var(--color-text-tertiary);
+}

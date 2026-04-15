@@ -1,0 +1,53 @@
+.heading {
+  color: var(--color-text-primary);
+  font-family: var(--sans);
+  margin: 0;
+}
+
+.h1 {
+  font-size: var(--font-size-900);
+  line-height: var(--line-height-900);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+.h2 {
+  font-size: var(--font-size-800);
+  line-height: var(--line-height-800);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+.h3 {
+  font-size: var(--font-size-700);
+  line-height: var(--line-height-700);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.h4 {
+  font-size: var(--font-size-600);
+  line-height: var(--line-height-600);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.h5 {
+  font-size: var(--font-size-500);
+  line-height: var(--line-height-500);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.h6 {
+  font-size: var(--font-size-400);
+  line-height: var(--line-height-400);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

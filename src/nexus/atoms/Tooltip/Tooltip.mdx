@@ -1,0 +1,35 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as TooltipStories from './Tooltip.stories';
+
+<Meta of={TooltipStories} />
+
+# Tooltip
+
+A small popup that displays supplementary information on hover or focus. Built on Radix UI, it requires a `TooltipProvider` ancestor to coordinate delay timing.
+
+<Primary />
+
+<Controls />
+
+## Placement
+
+Use the `side` prop on `TooltipContent` to position the tooltip relative to its trigger: `top` (default), `right`, `bottom`, or `left`.
+
+<Canvas of={TooltipStories.Sides} />
+
+## Long Content
+
+Tooltip content automatically wraps within a max-width constraint. Keep text concise — tooltips are for brief hints, not detailed help.
+
+<Canvas of={TooltipStories.LongContent} />
+
+## Accessibility
+
+- Built on `@radix-ui/react-tooltip`, which manages `aria-describedby` linking.
+- Appears on hover and keyboard focus; dismissed with `Escape`.
+- Use `asChild` on `TooltipTrigger` to avoid nesting interactive elements.
+- Do not place essential information only in a tooltip — it should supplement visible UI.
+
+## Props
+
+<ArgTypes of={TooltipStories} />

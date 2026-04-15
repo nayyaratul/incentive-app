@@ -1,0 +1,41 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as SpinnerStories from './Spinner.stories';
+
+<Meta of={SpinnerStories} />
+
+# Spinner
+
+Indicates that content is loading or a process is in progress. Available as a circular spinner or animated dots.
+
+<Primary />
+
+<Controls />
+
+## Sizes
+
+Match the spinner size to its context — `xs`/`sm` for inline or button use, `md` as default, `lg`/`xl` for page-level loading states.
+
+| Size | Pixels |
+|------|--------|
+| `xs` | 14 px |
+| `sm` | 18 px |
+| `md` | 24 px |
+| `lg` | 32 px |
+| `xl` | 48 px |
+
+<Canvas of={SpinnerStories.Sizes} />
+
+## Dots Variant
+
+Use the `dots` variant for a softer loading indicator, such as chat typing indicators or inline content placeholders.
+
+<Canvas of={SpinnerStories.Dots} />
+
+## Accessibility
+
+- Uses `role="status"` so screen readers announce the loading state.
+- Defaults to `aria-label="Loading"` — override with a more specific label when context requires it (e.g., "Submitting form").
+
+## Props
+
+<ArgTypes of={SpinnerStories} />

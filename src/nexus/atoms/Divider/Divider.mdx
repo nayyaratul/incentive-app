@@ -1,0 +1,46 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as DividerStories from './Divider.stories';
+
+<Meta of={DividerStories} />
+
+# Divider
+
+A visual separator between sections of content. Supports horizontal and vertical orientations, line style variants, optional labels, and configurable spacing.
+
+<Primary />
+
+<Controls />
+
+## Variants
+
+Three line styles: `solid` (default), `dashed`, and `dotted`.
+
+<Canvas of={DividerStories.Variants} />
+
+## With Label
+
+Horizontal dividers can include a centered text label, useful for "or" separators and section headings.
+
+<Canvas of={DividerStories.WithLabel} />
+
+## Vertical
+
+Set `orientation="vertical"` to separate inline elements. The divider stretches to fill its parent height.
+
+<Canvas of={DividerStories.Vertical} />
+
+## Spacing
+
+Control surrounding whitespace with the `spacing` prop: `sm`, `md` (default), or `lg`.
+
+<Canvas of={DividerStories.Spacing} />
+
+## Accessibility
+
+- Renders with `role="separator"`.
+- Vertical dividers include `aria-orientation="vertical"`.
+- Horizontal dividers use a semantic `<hr>` element (unless labeled).
+
+## Props
+
+<ArgTypes of={DividerStories} />

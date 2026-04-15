@@ -1,0 +1,40 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as ToastStories from './Toast.stories';
+
+<Meta of={ToastStories} />
+
+# Toast
+
+Temporary, non-blocking notifications that appear at the edge of the viewport. Built on Radix UI, it requires wrapping your app with `ToastProvider` and placing a `ToastViewport`.
+
+<Primary />
+
+<Controls />
+
+## Variants
+
+Each variant conveys a different level of urgency.
+
+- **Default** — general notifications.
+- **Success** — confirms a completed action.
+- **Error** — something failed.
+- **Warning** — caution or advisory information.
+
+<Canvas of={ToastStories.Variants} />
+
+## With Action
+
+Include a `ToastAction` to let users act on the notification, such as undoing a destructive operation. The `altText` prop describes the action for screen readers.
+
+<Canvas of={ToastStories.WithAction} />
+
+## Accessibility
+
+- Built on `@radix-ui/react-toast`, which manages focus and announces content to screen readers.
+- Close button includes `aria-label="Close"`.
+- `ToastAction` requires an `altText` prop for assistive technology.
+- Supports swipe-to-dismiss on touch devices.
+
+## Props
+
+<ArgTypes of={ToastStories} />

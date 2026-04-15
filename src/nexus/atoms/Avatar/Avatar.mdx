@@ -1,0 +1,46 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as AvatarStories from './Avatar.stories';
+
+<Meta of={AvatarStories} />
+
+# Avatar
+
+Represents a user with an image, initials, or a generic icon fallback. Supports an online/offline status indicator.
+
+<Primary />
+
+<Controls />
+
+## With Image
+
+When a `src` is provided, the avatar displays the photo. If the image fails to load, it gracefully falls back to initials or the default icon.
+
+<Canvas of={AvatarStories.WithImage} />
+
+## Sizes
+
+Five sizes cover use cases from compact lists to profile headers.
+
+<Canvas of={AvatarStories.Sizes} />
+
+## Online Status
+
+Pass `online={true}` or `online={false}` to show a presence indicator. Omit the prop entirely to hide the indicator.
+
+<Canvas of={AvatarStories.OnlineStatus} />
+
+## Fallback
+
+When an image URL is broken, the avatar falls back to colour-coded initials derived from the `name` prop. If no name is provided, a generic user icon is shown.
+
+<Canvas of={AvatarStories.Fallback} />
+
+## Accessibility
+
+- Uses `role="img"` with an `aria-label` defaulting to `name` or `alt`.
+- The online/offline indicator carries its own `aria-label`.
+- Initials colours are deterministic per name, ensuring consistent identification.
+
+## Props
+
+<ArgTypes of={AvatarStories} />

@@ -1,0 +1,53 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as ToggleGroupStories from './ToggleGroup.stories';
+
+<Meta of={ToggleGroupStories} />
+
+# ToggleGroup
+
+A set of related toggles where one or many can be active at a time. Built on Radix UI's Toggle Group primitive. Use it for toolbars, tab-like filters, or segmented controls.
+
+<Primary />
+
+<Controls />
+
+## Single select
+
+Only one item can be active. Behaves like a radio group.
+
+<Canvas of={ToggleGroupStories.SingleSelect} />
+
+## Multi select
+
+Multiple items can be active simultaneously. Behaves like a checkbox group.
+
+<Canvas of={ToggleGroupStories.MultiSelect} />
+
+## Variants
+
+- **outline** — bordered items (default).
+- **pill** — rounded, tag-like items for filter bars.
+
+<Canvas of={ToggleGroupStories.Outline} />
+
+<Canvas of={ToggleGroupStories.Pill} />
+
+## Vertical orientation
+
+<Canvas of={ToggleGroupStories.Vertical} />
+
+## With icons
+
+Icon-only items should include `aria-label` on each `ToggleGroupItem`.
+
+<Canvas of={ToggleGroupStories.WithIcons} />
+
+## Accessibility
+
+- Built on `@radix-ui/react-toggle-group`, which provides `role="group"` and manages `aria-pressed` per item.
+- Supports keyboard navigation with arrow keys.
+- Provide `aria-label` for icon-only items.
+
+## Props
+
+<ArgTypes of={ToggleGroupStories} />

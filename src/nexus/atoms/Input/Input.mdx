@@ -1,0 +1,47 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as InputStories from './Input.stories';
+
+<Meta of={InputStories} />
+
+# Input
+
+Single-line text input for forms. Wraps a native `<input>` element with consistent sizing, error styling, and focus states.
+
+<Primary />
+
+<Controls />
+
+## Sizes
+
+Three sizes to match surrounding UI density.
+
+| Size | Use case |
+|------|----------|
+| `sm` | Dense UIs, tables, filters |
+| `md` | Default for forms and dialogs |
+| `lg` | Prominent inputs, onboarding flows |
+
+<Canvas of={InputStories.Sizes} />
+
+## States
+
+The `error` prop applies a red border and sets `aria-invalid`. The `disabled` prop prevents interaction.
+
+<Canvas of={InputStories.States} />
+
+## Types
+
+Supports standard HTML input types. The browser applies native behaviour for each type (e.g., number spinners, password masking).
+
+<Canvas of={InputStories.Types} />
+
+## Accessibility
+
+- Renders a native `<input>` element with full keyboard support.
+- Sets `aria-invalid` when `error` is true.
+- Always pair with a `<Label>` using matching `htmlFor`/`id` attributes.
+- Focus ring uses the design system's standard `var(--color-border-focus)` token.
+
+## Props
+
+<ArgTypes of={InputStories} />

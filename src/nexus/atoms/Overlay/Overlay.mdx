@@ -1,0 +1,33 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as OverlayStories from './Overlay.stories';
+
+<Meta of={OverlayStories} />
+
+# Overlay
+
+A full-coverage dimming layer used behind modals, drawers, and other elevated content. It blocks interaction with the page beneath.
+
+<Primary />
+
+<Controls />
+
+## With onClick
+
+Pass an `onClick` handler to let users dismiss content by clicking the overlay. Common for modal and drawer patterns.
+
+<Canvas of={OverlayStories.WithOnClick} />
+
+## Hidden
+
+Set `visible={false}` to keep the overlay in the DOM without rendering it visually. Content beneath becomes fully interactive.
+
+<Canvas of={OverlayStories.Hidden} />
+
+## Accessibility
+
+- Renders with `role="presentation"` and `aria-hidden="true"` since it is purely decorative.
+- Focus management should be handled by the parent modal or drawer component.
+
+## Props
+
+<ArgTypes of={OverlayStories} />

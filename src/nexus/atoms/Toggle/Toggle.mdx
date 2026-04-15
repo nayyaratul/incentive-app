@@ -1,0 +1,49 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Primary } from '@storybook/addon-docs/blocks';
+import * as ToggleStories from './Toggle.stories';
+
+<Meta of={ToggleStories} />
+
+# Toggle
+
+A two-state button built on Radix UI's Toggle primitive. Use it when users need to switch a single option on or off, such as bold formatting or a filter.
+
+<Primary />
+
+<Controls />
+
+## Variants
+
+- **default** — subtle background change on press.
+- **outline** — bordered style, good for toolbar buttons.
+- **pill** — rounded, tag-like appearance for filter chips.
+
+<Canvas of={ToggleStories.Default} />
+
+<Canvas of={ToggleStories.Outline} />
+
+<Canvas of={ToggleStories.Pill} />
+
+## Sizes
+
+Three sizes: `sm`, `md`, and `lg`.
+
+<Canvas of={ToggleStories.Sizes} />
+
+## With icon
+
+Icon-only toggles should always include an `aria-label`.
+
+<Canvas of={ToggleStories.WithIcon} />
+
+## Disabled
+
+<Canvas of={ToggleStories.Disabled} />
+
+## Accessibility
+
+- Built on `@radix-ui/react-toggle`, which manages `aria-pressed` automatically.
+- Provide `aria-label` for icon-only toggles.
+
+## Props
+
+<ArgTypes of={ToggleStories} />
