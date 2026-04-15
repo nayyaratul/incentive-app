@@ -4,8 +4,18 @@ import { Text } from '@/nexus/atoms';
 import styles from './BadgesStrip.module.scss';
 import { badgesByEmployee } from '../../../data/gamification';
 
-export default function BadgesStrip({ employeeId }) {
-  const badges = badgesByEmployee[employeeId] || [];
+// Sample employee per vertical — used when the API-fetched employeeId
+// isn't in the gamification mock data, so every user sees example badges.
+const VERTICAL_SAMPLE_ID = {
+  ELECTRONICS: 'EMP-0041',
+  GROCERY: 'GRC-2203',
+  FNL: 'FNL-3103',
+};
+
+export default function BadgesStrip({ employeeId, vertical }) {
+  const direct = badgesByEmployee[employeeId];
+  const fallbackId = VERTICAL_SAMPLE_ID[vertical];
+  const badges = direct || (fallbackId ? badgesByEmployee[fallbackId] : null) || [];
   if (badges.length === 0) return null;
 
   const unlocked = badges.filter((b) => b.unlockedAt).length;

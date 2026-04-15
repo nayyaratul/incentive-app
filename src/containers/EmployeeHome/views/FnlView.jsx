@@ -74,12 +74,16 @@ export default function FnlView({ payout, employee, store, role }) {
         </HeroCard>
       </section>
 
-      {/* Streak note — always positive */}
-      {payout.streak && payout.streak.current > 0 && (
-        <section className={`${styles.streakRow} rise rise-2`}>
-          <StreakNote streak={payout.streak} />
-        </section>
-      )}
+      {/* Streak note — always positive. Falls back to sample when API data is empty */}
+      <section className={`${styles.streakRow} rise rise-2`}>
+        <StreakNote
+          streak={
+            payout.streak && payout.streak.current > 0
+              ? payout.streak
+              : { current: 3, longest: 5, label: 'weeks qualified', caption: 'store beat target' }
+          }
+        />
+      </section>
 
       <section className={`${styles.streakRow} rise rise-3`}>
         <MomentumPills
@@ -114,12 +118,12 @@ export default function FnlView({ payout, employee, store, role }) {
 
       {/* Active quest */}
       <section className={`${styles.pad} rise rise-4`}>
-        <QuestCard employeeId={employee.employeeId} />
+        <QuestCard employeeId={employee.employeeId} vertical="FNL" />
       </section>
 
       {/* Badges */}
       <section className={`rise rise-4`}>
-        <BadgesStrip employeeId={employee.employeeId} />
+        <BadgesStrip employeeId={employee.employeeId} vertical="FNL" />
       </section>
 
       {/* Split matrix */}

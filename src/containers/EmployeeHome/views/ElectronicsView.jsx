@@ -65,11 +65,15 @@ export default function ElectronicsView({ payout, employee, store, role }) {
         />
       </section>
 
-      {payout.streak && payout.streak.current > 0 && (
-        <section className={`${styles.streakRow} rise rise-2`}>
-          <StreakNote streak={payout.streak} />
-        </section>
-      )}
+      <section className={`${styles.streakRow} rise rise-2`}>
+        <StreakNote
+          streak={
+            payout.streak && payout.streak.current > 0
+              ? payout.streak
+              : { current: 7, longest: 12, label: 'working days', caption: 'present + selling' }
+          }
+        />
+      </section>
 
       <section className={`${styles.streakRow} rise rise-3`}>
         <MomentumPills
@@ -85,11 +89,11 @@ export default function ElectronicsView({ payout, employee, store, role }) {
       </section>
 
       <section className={`${styles.pad} rise rise-4`}>
-        <QuestCard employeeId={employee.employeeId} />
+        <QuestCard employeeId={employee.employeeId} vertical="ELECTRONICS" />
       </section>
 
       <section className={`rise rise-5`}>
-        <BadgesStrip employeeId={employee.employeeId} />
+        <BadgesStrip employeeId={employee.employeeId} vertical="ELECTRONICS" />
       </section>
 
       <section className={`${styles.pad} rise rise-5`}>

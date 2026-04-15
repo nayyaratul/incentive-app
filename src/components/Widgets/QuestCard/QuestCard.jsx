@@ -5,13 +5,23 @@ import { Badge, ProgressBar, Text } from '@/nexus/atoms';
 import styles from './QuestCard.module.scss';
 import { questsByEmployee } from '../../../data/gamification';
 
+// Sample employee per vertical — used when the API-fetched employeeId
+// isn't in the gamification mock data, so every user sees example quests.
+const VERTICAL_SAMPLE_ID = {
+  ELECTRONICS: 'EMP-0041',
+  GROCERY: 'GRC-2203',
+  FNL: 'FNL-3103',
+};
+
 /**
  * Brief-aligned quests only. Each quest tracks progress toward a gate/mechanic
  * defined in the vendor brief. Rewards quote the brief's own payout — no
  * invented bonuses.
  */
-export default function QuestCard({ employeeId }) {
-  const quests = questsByEmployee[employeeId] || [];
+export default function QuestCard({ employeeId, vertical }) {
+  const direct = questsByEmployee[employeeId];
+  const fallbackId = VERTICAL_SAMPLE_ID[vertical];
+  const quests = direct || (fallbackId ? questsByEmployee[fallbackId] : null) || [];
   if (quests.length === 0) return null;
 
   const activeCount = quests.filter((q) => q.status === 'active').length;

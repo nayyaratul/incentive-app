@@ -10,11 +10,54 @@ import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
 import MomentumPills from '../../../components/Molecule/MomentumPills/MomentumPills';
 import ComplianceLink from '../../../components/Molecule/ComplianceLink/ComplianceLink';
 
+// Dummy peer stores for the campaign leaderboard when the API doesn't
+// provide one. Real user's row is injected with their actual store name
+// and payout data, then all rows are ranked by achievement %.
+const DUMMY_PEERS = [
+  { storeCode: 'RR-KER-MAL-01', storeName: 'Malappuram Mall',      achievementPct: 142 },
+  { storeCode: 'RR-KER-KOC-02', storeName: 'Kochi Marine Drive',   achievementPct: 128 },
+  { storeCode: 'RR-KER-TVM-01', storeName: 'Trivandrum Central',   achievementPct: 115 },
+  { storeCode: 'RR-KER-KNR-01', storeName: 'Kannur Bayview',       achievementPct: 98 },
+];
+
+function buildFallbackLeaderboard(payout, employee, store) {
+  const selfAchievement = payout.achievementPct || 100;
+  const selfActual = payout.actualSalesValue || 0;
+  const selfPerEmp = payout.individualPayout || 0;
+  const selfName = store?.storeName || employee?.name || 'Your store';
+  const selfCode = store?.storeCode || employee?.storeCode || 'SELF';
+
+  const self = {
+    storeCode: selfCode,
+    storeName: selfName,
+    achievementPct: selfAchievement,
+    actualSalesValue: selfActual,
+    perEmpAtCurrent: selfPerEmp,
+    isSelf: true,
+  };
+
+  // Scale peer actuals/per-emp relative to self so numbers stay plausible
+  const safePct = selfAchievement > 0 ? selfAchievement : 100;
+  const peers = DUMMY_PEERS.map((p) => ({
+    ...p,
+    actualSalesValue: Math.round(selfActual * (p.achievementPct / safePct)),
+    perEmpAtCurrent: Math.round(selfPerEmp * (p.achievementPct / safePct)),
+  }));
+
+  return [...peers, self]
+    .sort((a, b) => b.achievementPct - a.achievementPct)
+    .map((row, i) => ({ ...row, rank: i + 1 }));
+}
+
 export default function GroceryView({ payout, employee, store, role }) {
   const appliedRate = payout.appliedRate;
   const totalStoreIncentive = payout.totalStoreIncentive;
   const per = payout.individualPayout;
   const achievementPct = payout.achievementPct;
+
+  const leaderboard = (payout.campaignLeaderboard && payout.campaignLeaderboard.length > 0)
+    ? payout.campaignLeaderboard
+    : buildFallbackLeaderboard(payout, employee, store);
 
   return (
     <>
@@ -95,12 +138,16 @@ export default function GroceryView({ payout, employee, store, role }) {
         </div>
       </section>
 
-      {/* Streak note — always positive */}
-      {payout.streak && payout.streak.current > 0 && (
-        <section className={`${styles.streakRow} rise rise-2`}>
-          <StreakNote streak={payout.streak} />
-        </section>
-      )}
+      {/* Streak note — always positive. Falls back to sample when API data is empty */}
+      <section className={`${styles.streakRow} rise rise-2`}>
+        <StreakNote
+          streak={
+            payout.streak && payout.streak.current > 0
+              ? payout.streak
+              : { current: 5, longest: 9, label: 'working days', caption: 'present + selling' }
+          }
+        />
+      </section>
 
       <section className={`${styles.streakRow} rise rise-3`}>
         <MomentumPills
@@ -113,12 +160,12 @@ export default function GroceryView({ payout, employee, store, role }) {
 
       {/* Active quest */}
       <section className={`${styles.pad} rise rise-3`}>
-        <QuestCard employeeId={employee.employeeId} />
+        <QuestCard employeeId={employee.employeeId} vertical="GROCERY" />
       </section>
 
       {/* Badges */}
       <section className={`rise rise-4`}>
-        <BadgesStrip employeeId={employee.employeeId} />
+        <BadgesStrip employeeId={employee.employeeId} vertical="GROCERY" />
       </section>
 
       {/* Campaign leaderboard — 3 Kerala stores */}
@@ -128,7 +175,7 @@ export default function GroceryView({ payout, employee, store, role }) {
             <span className={styles.eyebrow}>Campaign leaderboard · Kerala</span>
           </div>
           <div className={styles.lbList}>
-            {payout.campaignLeaderboard.map((r) => (
+            {leaderboard.map((r) => (
               <div key={r.storeCode} className={`${styles.lbRow} ${r.isSelf ? styles.lbSelf : ''}`}>
                 <span className={styles.lbRank}>#{r.rank}</span>
                 <div className={styles.lbBody}>
