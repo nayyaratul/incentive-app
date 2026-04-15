@@ -14,16 +14,6 @@
   padding: var(--space-150) 0;
 }
 
-.name {
-  margin: 0;
-  font-family: var(--sans);
-  font-size: var(--font-size-500);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-tighter);
-  color: var(--color-text-primary);
-  text-align: center;
-}
-
 .chips {
   display: inline-flex;
   gap: var(--space-075);
@@ -71,15 +61,3 @@
   color: var(--color-text-tertiary);
 }
 
-.howTo {
-  margin-top: var(--space-100);
-  padding: var(--space-125) var(--space-150);
-  background: var(--color-bg-sunken);
-  border: 1px dashed var(--color-border-default);
-  border-radius: var(--radius-200);
-  font-family: var(--sans);
-  font-size: var(--font-size-200);
-  color: var(--color-text-secondary);
-  text-align: center;
-  max-width: 32ch;
-}

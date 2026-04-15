@@ -52,15 +52,9 @@ export default function BadgeDetailDrawer({ badge, open, onClose }) {
 
         <p className={styles.note}>{badge.note}</p>
 
-        {locked ? (
-          <div className={styles.howTo}>
-            <strong>How to earn:</strong> {badge.note}
-          </div>
-        ) : (
-          <div className={styles.unlockLine}>
-            Unlocked {formatDate(badge.unlockedAt)}
-          </div>
-        )}
+        <div className={styles.unlockLine}>
+          {locked ? 'Locked — earn to unlock' : `Unlocked ${formatDate(badge.unlockedAt)}`}
+        </div>
       </div>
     </Drawer>
   );

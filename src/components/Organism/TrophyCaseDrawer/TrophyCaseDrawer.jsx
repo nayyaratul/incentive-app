@@ -43,13 +43,12 @@ export default function TrophyCaseDrawer({ badges, open, onClose, onSelectBadge 
           </div>
         </div>
 
-        <div className={styles.tabs} role="tablist">
+        <div className={styles.tabs} aria-label="Filter badges by category">
           {TABS.map((t) => (
             <button
               key={t.id}
               type="button"
-              role="tab"
-              aria-selected={activeTab === t.id}
+              aria-pressed={activeTab === t.id}
               className={`${styles.tab} ${activeTab === t.id ? styles.tabActive : ''}`}
               onClick={() => setActiveTab(t.id)}
             >
