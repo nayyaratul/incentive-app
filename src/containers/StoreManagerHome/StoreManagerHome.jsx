@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { Users, TrendingUp, AlertTriangle, Target, Zap, Clock } from 'lucide-react';
+import { Users, TrendingUp, AlertTriangle, Target, Zap, Clock, Trophy, Medal } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
@@ -269,6 +269,19 @@ export default function StoreManagerHome() {
             </>
           )}
 
+          {tab === 'board' && (
+            <>
+              <div className={`${styles.datemark} rise rise-1`}>
+                <span>Leaderboard · {store.storeName}</span>
+                <span className={styles.line} />
+                <span>by earned</span>
+              </div>
+              <section className={`${styles.pad} rise rise-2`}>
+                <StoreLeaderboard employees={summary.employees} storeName={store.storeName} />
+              </section>
+            </>
+          )}
+
           {tab === 'tx' && (
             <StoreTransactions
               storeCode={store.storeCode}
@@ -482,6 +495,65 @@ function TeamRoster({ summary, onSelectRow }) {
             </button>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+function StoreLeaderboard({ employees, storeName }) {
+  const ranked = [...employees]
+    .sort((a, b) => b.earned - a.earned)
+    .map((e, i) => ({ ...e, rank: i + 1 }));
+
+  const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
+
+  return (
+    <div className={styles.cardLight}>
+      <div className={styles.cardHead}>
+        <span className={styles.eyebrow}>
+          <Trophy size={12} strokeWidth={2.4} style={{ marginRight: 4 }} />
+          Store ranking
+        </span>
+        <span className={styles.headSub}>{storeName}</span>
+      </div>
+
+      {/* Podium — top 3 */}
+      {ranked.length >= 3 && (
+        <div className={styles.podium}>
+          {[ranked[1], ranked[0], ranked[2]].map((e, i) => {
+            const pos = [2, 1, 3][i];
+            return (
+              <div key={e.employeeId} className={`${styles.podiumSlot} ${pos === 1 ? styles.podiumFirst : ''}`}>
+                <div className={styles.podiumMedal} style={{ color: medalColors[pos - 1] }}>
+                  <Medal size={pos === 1 ? 28 : 22} strokeWidth={2} />
+                </div>
+                <div className={styles.podiumName}>{e.employeeName.split(' ')[0]}</div>
+                <div className={styles.podiumAmount}>{formatINR(e.earned)}</div>
+                <div className={styles.podiumRank}>#{pos}</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Full list */}
+      <div className={styles.boardList}>
+        {ranked.map((e) => (
+          <div key={e.employeeId} className={`${styles.boardRow} ${e.rank <= 3 ? styles.boardTop3 : ''}`}>
+            <span className={styles.boardRank}>
+              {e.rank <= 3 ? (
+                <Medal size={14} strokeWidth={2.2} style={{ color: medalColors[e.rank - 1] }} />
+              ) : (
+                e.rank
+              )}
+            </span>
+            <div className={styles.boardInfo}>
+              <span className={styles.boardName}>{e.employeeName}</span>
+              <span className={styles.rosterRole}>{e.role}</span>
+            </div>
+            <span className={styles.boardEarned}>{formatINR(e.earned)}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -296,6 +296,105 @@
   text-align: right;
 }
 
+/* ---------- Leaderboard ---------- */
+.podium {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 16px 8px 20px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin-bottom: 8px;
+}
+.podiumSlot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  max-width: 100px;
+}
+.podiumFirst {
+  transform: translateY(-8px);
+}
+.podiumMedal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.podiumName {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+}
+.podiumAmount {
+  font-family: var(--sans);
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
+  font-size: 13px;
+  color: var(--accent-deep);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.podiumRank {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary);
+}
+.boardList { display: flex; flex-direction: column; }
+.boardRow {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--color-border-subtle);
+
+  &:last-child { border-bottom: none; }
+}
+.boardTop3 {
+  background: rgba(37, 99, 235, 0.03);
+}
+.boardRank {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.boardInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.boardName {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.boardEarned {
+  font-family: var(--sans);
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
+  font-size: 14px;
+  color: var(--accent-deep);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Notice */
 .notice {
   display: flex;
