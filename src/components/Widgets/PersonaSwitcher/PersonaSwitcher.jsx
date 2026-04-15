@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { UserCircle2, X, Check } from 'lucide-react';
+import { UserCircle2, Check } from 'lucide-react';
+import { Modal } from '@/nexus/molecules';
+import { Badge, Text } from '@/nexus/atoms';
 import styles from './PersonaSwitcher.module.scss';
 import { usePersona } from '../../../context/PersonaContext';
 
@@ -59,65 +61,74 @@ export function PersonaPill() {
 export function PersonaModal() {
   const { personas, active, isSwitcherOpen, closeSwitcher, switchTo } = usePersona();
 
-  useEffect(() => {
-    if (!isSwitcherOpen) return;
-    const onKey = (e) => { if (e.key === 'Escape') closeSwitcher(); };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [isSwitcherOpen, closeSwitcher]);
-
   if (!isSwitcherOpen) return null;
 
   const groups = groupPersonas(personas);
 
+  const handleOpenChange = (isOpen) => {
+    if (!isOpen) closeSwitcher();
+  };
+
   return (
-    <div className={styles.overlay} onClick={closeSwitcher}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Switch persona">
-        <header className={styles.modalHead}>
-          <div>
-            <div className={styles.eyebrow}>POC Demo · Switch persona</div>
-            <h2 className={styles.title}>Who are we showing next?</h2>
-            <p className={styles.sub}>Re-renders the app end-to-end with the selected persona's data, role, and vertical rules applied.</p>
-          </div>
-          <button type="button" className={styles.close} onClick={closeSwitcher} aria-label="Close">
-            <X size={18} strokeWidth={2.2} />
-          </button>
-        </header>
-
-        <div className={styles.body}>
-          {Object.entries(groups).map(([groupName, arr]) => (
-            <section key={groupName} className={styles.group}>
-              <h3 className={styles.groupTitle}>{groupName}</h3>
-              <div className={styles.grid}>
-                {arr
-                  .sort((a, b) => roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role))
-                  .map((p) => {
-                    const isActive = p.id === active.id;
-                    return (
-                      <button
-                        key={p.id}
-                        type="button"
-                        className={`${styles.card} ${styles[`color-${p.color}`]} ${isActive ? styles.cardActive : ''}`}
-                        onClick={() => switchTo(p.id)}
-                      >
-                        <div className={styles.cardHead}>
-                          <span className={styles.badge}>{p.badge}</span>
-                          {isActive && <Check size={14} strokeWidth={2.6} className={styles.checkMark} />}
-                        </div>
-                        <div className={styles.name}>{p.employeeName}</div>
-                        <div className={styles.tagline}>{p.tagline}</div>
-                      </button>
-                    );
-                  })}
-              </div>
-            </section>
-          ))}
-        </div>
-
-        <footer className={styles.footer}>
-          <span className={styles.footnote}>Persona is visible only during POC · ESC to close</span>
-        </footer>
+    <Modal
+      open={isSwitcherOpen}
+      onOpenChange={handleOpenChange}
+      title="Who are we showing next?"
+      description="Re-renders the app end-to-end with the selected persona's data, role, and vertical rules applied."
+      size="lg"
+      variant="default"
+      placement="center"
+      showCloseButton
+      dismissible
+      closeOnOverlayClick
+      closeOnEsc
+      icon={<Text variant="overline" size="xs" color="var(--color-action-primary)">POC Demo · Switch persona</Text>}
+      footer={
+        <Text variant="overline" size="xs" color="var(--color-text-tertiary)" className={styles.footnote}>
+          Persona is visible only during POC · ESC to close
+        </Text>
+      }
+    >
+      <div className={styles.body}>
+        {Object.entries(groups).map(([groupName, arr]) => (
+          <section key={groupName} className={styles.group}>
+            <div className={styles.groupTitle}>
+              <Text variant="overline" size="xs" weight="semibold" color="var(--color-text-tertiary)">
+                {groupName}
+              </Text>
+              <span className={styles.groupLine} />
+            </div>
+            <div className={styles.grid}>
+              {arr
+                .sort((a, b) => roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role))
+                .map((p) => {
+                  const isActive = p.id === active.id;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      className={`${styles.card} ${styles[`color-${p.color}`]} ${isActive ? styles.cardActive : ''}`}
+                      onClick={() => switchTo(p.id)}
+                    >
+                      <div className={styles.cardHead}>
+                        <Badge variant="default" size="sm" className={styles.badge}>
+                          {p.badge}
+                        </Badge>
+                        {isActive && <Check size={14} strokeWidth={2.6} className={styles.checkMark} />}
+                      </div>
+                      <Text variant="body" size="md" weight="semibold" className={styles.name}>
+                        {p.employeeName}
+                      </Text>
+                      <Text variant="caption" size="sm" color="var(--color-text-secondary)" className={styles.tagline}>
+                        {p.tagline}
+                      </Text>
+                    </button>
+                  );
+                })}
+            </div>
+          </section>
+        ))}
       </div>
-    </div>
+    </Modal>
   );
 }

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Target, CheckCircle2 } from 'lucide-react';
+import { Card } from '@/nexus/molecules';
+import { Badge, ProgressBar, Text } from '@/nexus/atoms';
 import styles from './QuestCard.module.scss';
 import { questsByEmployee } from '../../../data/gamification';
 
@@ -15,48 +17,66 @@ export default function QuestCard({ employeeId }) {
   const activeCount = quests.filter((q) => q.status === 'active').length;
 
   return (
-    <section className={styles.card}>
-      <header className={styles.head}>
-        <span className={styles.eyebrow}>
-          <Target size={13} strokeWidth={2.4} />
-          Active quests
-        </span>
-        <span className={styles.counter}>{activeCount} live</span>
-      </header>
+    <Card as="section" variant="outlined" size="md">
+      <Card.Header>
+        <div className={styles.head}>
+          <Card.Eyebrow className={styles.eyebrow}>
+            <Target size={13} strokeWidth={2.4} className={styles.iconBrand} />
+            Active quests
+          </Card.Eyebrow>
+          <Badge variant="default" size="sm" className={styles.counter}>{activeCount} live</Badge>
+        </div>
+      </Card.Header>
 
-      <div className={styles.list}>
-        {quests.map((q) => {
-          const pctRaw = q.progress.target > 0 ? q.progress.current / q.progress.target : 0;
-          const pctInt = Math.min(100, Math.round(pctRaw * 100));
-          const done = q.status === 'completed';
-          return (
-            <div key={q.id} className={`${styles.quest} ${done ? styles.questDone : ''}`}>
-              <div className={styles.qHead}>
-                <span className={styles.qType}>{q.type}</span>
-                {done && (
-                  <span className={styles.qDoneTag}>
-                    <CheckCircle2 size={12} strokeWidth={2.4} />
-                    Unlocked
-                  </span>
-                )}
-              </div>
-              <div className={styles.qTitle}>{q.title}</div>
-
-              <div className={styles.qProgRow}>
-                <div className={styles.qTrack}>
-                  <div className={styles.qFill} style={{ width: `${pctInt}%` }} />
+      <Card.Body>
+        <div className={styles.list}>
+          {quests.map((q) => {
+            const pctRaw = q.progress.target > 0 ? q.progress.current / q.progress.target : 0;
+            const pctInt = Math.min(100, Math.round(pctRaw * 100));
+            const done = q.status === 'completed';
+            return (
+              <div key={q.id} className={`${styles.quest} ${done ? styles.questDone : ''}`}>
+                <div className={styles.qHead}>
+                  <Text variant="overline" size="xs" weight="semibold" color="var(--color-text-tertiary)" as="span">
+                    {q.type}
+                  </Text>
+                  {done && (
+                    <span className={styles.qDoneTag}>
+                      <CheckCircle2 size={12} strokeWidth={2.4} />
+                      <Text variant="micro" as="span" color="var(--color-text-success)" weight="semibold">
+                        Unlocked
+                      </Text>
+                    </span>
+                  )}
                 </div>
-                <span className={styles.qCount}>
-                  {formatProgress(q.progress)}
-                </span>
-              </div>
+                <Text variant="body" size="md" weight="semibold" className={styles.qTitle}>
+                  {q.title}
+                </Text>
 
-              <div className={styles.qReward}>{q.reward}</div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
+                <div className={styles.qProgRow}>
+                  <ProgressBar
+                    value={pctInt}
+                    max={100}
+                    size="sm"
+                    variant={done ? 'success' : 'default'}
+                    className={styles.qTrack}
+                  />
+                  <Text variant="micro" as="span" weight="semibold" color="var(--color-text-primary)" className={styles.qCount}>
+                    {formatProgress(q.progress)}
+                  </Text>
+                </div>
+
+                <div className={styles.qReward}>
+                  <Text variant="caption" size="sm" color="var(--color-text-secondary)">
+                    {q.reward}
+                  </Text>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card.Body>
+    </Card>
   );
 }
 
