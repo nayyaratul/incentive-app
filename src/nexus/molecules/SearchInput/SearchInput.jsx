@@ -1,8 +1,8 @@
 import { forwardRef, useState, useRef, useCallback } from 'react';
 import cx from 'classnames';
-import { Input } from '../atoms/Input/Input';
-import { Icon } from '../atoms/Icon/Icon';
-import { Spinner } from '../atoms/Spinner/Spinner';
+import { Input } from '../../atoms/Input/Input';
+import { Icon } from '../../atoms/Icon/Icon';
+import { Spinner } from '../../atoms/Spinner/Spinner';
 import styles from './SearchInput.module.scss';
 
 export const SearchInput = forwardRef(function SearchInput(

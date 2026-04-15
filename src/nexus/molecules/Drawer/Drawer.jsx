@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import cx from 'classnames';
 import { X } from 'lucide-react';
-import { Overlay } from '../atoms/Overlay/Overlay';
-import { Heading } from '../atoms/Heading/Heading';
-import { Text } from '../atoms/Text/Text';
+import { Overlay } from '../../atoms/Overlay/Overlay';
+import { Heading } from '../../atoms/Heading/Heading';
+import { Text } from '../../atoms/Text/Text';
 import styles from './Drawer.module.scss';
 
 const FOCUSABLE_SELECTORS = [

@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import cx from 'classnames';
-import { Heading } from '../atoms/Heading/Heading';
-import { Text } from '../atoms/Text/Text';
+import { Heading } from '../../atoms/Heading/Heading';
+import { Text } from '../../atoms/Text/Text';
 import styles from './Card.module.scss';
 
 export const Card = forwardRef(function Card(

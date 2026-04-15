@@ -1,7 +1,7 @@
-import { Icon } from '../atoms/Icon/Icon';
-import { Heading } from '../atoms/Heading/Heading';
-import { Text } from '../atoms/Text/Text';
-import { Button } from '../atoms/Button/Button';
+import { Icon } from '../../atoms/Icon/Icon';
+import { Heading } from '../../atoms/Heading/Heading';
+import { Text } from '../../atoms/Text/Text';
+import { Button } from '../../atoms/Button/Button';
 import styles from './EmptyState.module.scss';
 import cx from 'classnames';
 
