@@ -4,23 +4,23 @@
 
 .screenHead {
   padding: 12px 0 14px;
-  border-bottom: 1px solid var(--divider);
+  border-bottom: 1px solid var(--color-border-subtle);
   margin-bottom: 12px;
 }
 .title {
   margin: 0 0 4px;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 144, 'SOFT' 40, 'wght' 620;
   font-size: 30px;
   line-height: 1;
   letter-spacing: -0.025em;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 .sub {
   margin: 0;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   line-height: 1.45;
 }
 
@@ -39,31 +39,31 @@
   flex: 0 0 auto;
   padding: 9px 16px;
   border-radius: 999px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  font-family: 'Instrument Sans', sans-serif;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  font-family: var(--sans);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.005em;
   cursor: pointer;
-  transition: all var(--dur-fast) var(--ease-out);
+  transition: all 120ms ease-out;
   white-space: nowrap;
 
   &:hover {
-    color: var(--text-primary);
-    border-color: var(--text-primary);
+    color: var(--color-text-primary);
+    border-color: var(--color-text-primary);
   }
 }
 .tabActive {
-  background: var(--text-primary);
-  color: var(--brand-contrast);
-  border-color: var(--text-primary);
+  background: var(--color-text-primary);
+  color: var(--color-text-on-action);
+  border-color: var(--color-text-primary);
 
   &:hover {
-    color: var(--brand-contrast);
-    background: var(--text-primary);
-    border-color: var(--text-primary);
+    color: var(--color-text-on-action);
+    background: var(--color-text-primary);
+    border-color: var(--color-text-primary);
   }
 }
 
@@ -80,22 +80,22 @@
 .section { display: flex; flex-direction: column; gap: 10px; }
 .sectionTitle {
   margin: 0;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 580;
   font-size: 18px;
   line-height: 1.15;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.02em;
 }
 .lede {
   margin: 0;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   line-height: 1.5;
 
   strong {
-    color: var(--text-primary);
+    color: var(--color-text-primary);
     font-weight: 600;
   }
 }
@@ -103,8 +103,8 @@
 /* ---------- Rule card (per family) ---------- */
 .ruleCard {
   padding: 12px 14px 14px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 12px;
 }
 .ruleCardHead {
@@ -112,20 +112,20 @@
   flex-direction: column;
   gap: 4px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--divider);
+  border-bottom: 1px solid var(--color-border-subtle);
   margin-bottom: 10px;
 }
 .ruleFamily {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 14px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
 }
 .ruleBrands {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   letter-spacing: 0.02em;
 }
 
@@ -138,27 +138,27 @@
   padding: 8px 0;
 }
 .slabTableHead {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--divider);
+  color: var(--color-text-tertiary);
+  border-bottom: 1px solid var(--color-border-subtle);
   padding-top: 0;
 }
 .slabTableRow {
-  border-bottom: 1px solid var(--divider);
-  font-family: 'Instrument Sans', sans-serif;
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-family: var(--sans);
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 
   &:last-child { border-bottom: none; }
 }
 .slabAmount {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 620;
   font-size: 16px;
-  color: var(--brand-deep);
+  color: var(--brand-70);
   letter-spacing: -0.02em;
 }
 
@@ -170,30 +170,30 @@
   gap: 12px;
   align-items: center;
   padding: 11px 14px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 10px;
   margin-bottom: 6px;
 
   &:last-child { margin-bottom: 0; }
 }
 .multBand {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12.5px;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
   font-weight: 600;
 }
 .multValue {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
   font-size: 16px;
-  color: var(--brand);
+  color: var(--color-action-primary);
   letter-spacing: -0.02em;
 }
 .multZero {
-  color: var(--error);
-  font-family: 'Geist Mono', monospace;
+  color: var(--color-text-error);
+  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -207,21 +207,21 @@
   align-items: flex-start;
   gap: 8px;
   padding: 10px 12px;
-  background: var(--surface-sunken);
+  background: var(--color-bg-sunken);
   border-radius: 10px;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   line-height: 1.45;
 
   > svg {
     flex-shrink: 0;
-    color: var(--brand);
+    color: var(--color-action-primary);
     margin-top: 2px;
   }
 
   strong {
-    color: var(--text-primary);
+    color: var(--color-text-primary);
     font-weight: 700;
   }
 }
@@ -232,20 +232,20 @@
   flex-direction: column;
   gap: 0;
   padding: 14px 16px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 12px;
 
   > div {
     padding: 9px 0;
-    border-bottom: 1px solid var(--divider);
+    border-bottom: 1px solid var(--color-border-subtle);
     font-size: 13.5px;
-    color: var(--text-secondary);
+    color: var(--color-text-secondary);
 
     &:last-child { border-bottom: none; }
 
     strong {
-      color: var(--text-primary);
+      color: var(--color-text-primary);
       font-weight: 700;
       margin-right: 6px;
     }
@@ -260,22 +260,22 @@
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 10px;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   letter-spacing: -0.01em;
 }
 .splitHead {
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  background: var(--surface-sunken);
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-sunken);
 }
-.splitRow span:first-child { color: var(--text-primary); font-weight: 700; }
+.splitRow span:first-child { color: var(--color-text-primary); font-weight: 700; }
 
 /* ---------- Campaign head ---------- */
 .campaignHead {
@@ -283,7 +283,7 @@
   flex-direction: column;
   gap: 4px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--divider);
+  border-bottom: 1px solid var(--color-border-subtle);
   margin-bottom: 10px;
 }
 
@@ -294,36 +294,36 @@
   gap: 10px;
   align-items: center;
   padding: 14px 16px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 12px;
   margin-bottom: 14px;
 }
-.summaryDiv { height: 40px; width: 1px; background: var(--divider); }
+.summaryDiv { height: 40px; width: 1px; background: var(--color-border-subtle); }
 .summaryVal {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
   font-size: 20px;
   line-height: 1;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 .summaryCap {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   margin-top: 4px;
 }
 
 .empty {
   padding: 40px 20px;
   text-align: center;
-  color: var(--text-muted);
-  background: var(--surface-card);
-  border: 1px dashed var(--border);
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-elevated);
+  border: 1px dashed var(--color-border-default);
   border-radius: 12px;
 
   svg { display: block; margin: 0 auto 10px; }
@@ -333,19 +333,19 @@
 .emptyReset {
   margin-top: 14px;
   padding: 8px 14px;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border-default);
   border-radius: 999px;
   cursor: pointer;
 
   &:hover {
-    background: var(--text-primary);
-    color: var(--brand-contrast);
-    border-color: var(--text-primary);
+    background: var(--color-text-primary);
+    color: var(--color-text-on-action);
+    border-color: var(--color-text-primary);
   }
 }
 
@@ -363,24 +363,24 @@
 .searchIcon {
   position: absolute;
   left: 12px;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   pointer-events: none;
 }
 
 .searchInput {
   width: 100%;
   padding: 10px 34px 10px 34px;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 13.5px;
-  color: var(--text-primary);
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  color: var(--color-text-primary);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 12px;
   outline: none;
   -webkit-appearance: none;
 
-  &::placeholder { color: var(--text-muted); }
-  &:focus { border-color: var(--text-primary); }
+  &::placeholder { color: var(--color-text-tertiary); }
+  &:focus { border-color: var(--color-text-primary); }
 }
 
 .searchClear {
@@ -392,12 +392,12 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--surface-sunken);
-  color: var(--text-secondary);
+  background: var(--color-bg-sunken);
+  color: var(--color-text-secondary);
   border: none;
   cursor: pointer;
 
-  &:hover { background: var(--text-primary); color: var(--brand-contrast); }
+  &:hover { background: var(--color-text-primary); color: var(--color-text-on-action); }
 }
 
 /* ---------- Filter chips ---------- */
@@ -415,26 +415,26 @@
 .chip {
   flex: 0 0 auto;
   padding: 7px 12px;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--text-secondary);
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 999px;
   cursor: pointer;
   white-space: nowrap;
-  transition: all var(--dur-fast) var(--ease-out);
+  transition: all 120ms ease-out;
 
-  &:hover { border-color: var(--text-primary); color: var(--text-primary); }
+  &:hover { border-color: var(--color-text-primary); color: var(--color-text-primary); }
 }
 
 .chipActive {
-  background: var(--brand-deep);
-  border-color: var(--brand-deep);
+  background: var(--brand-70);
+  border-color: var(--brand-70);
   color: #FFFFFF;
 
-  &:hover { background: var(--brand-deep); color: #FFFFFF; border-color: var(--brand-deep); }
+  &:hover { background: var(--brand-70); color: #FFFFFF; border-color: var(--brand-70); }
 }
 
 /* ---------- Grouped transaction list ---------- */
@@ -458,8 +458,8 @@
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-primary);
-  border-bottom: 1px solid var(--divider);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-subtle);
   letter-spacing: -0.005em;
 }
 
@@ -467,7 +467,7 @@
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -479,16 +479,16 @@
   gap: 12px;
   align-items: center;
   padding: 12px 14px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 12px;
   cursor: pointer;
   text-align: left;
-  transition: all var(--dur-fast) var(--ease-out);
+  transition: all 120ms ease-out;
   width: 100%;
 
   &:hover {
-    border-color: var(--text-primary);
+    border-color: var(--color-text-primary);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(10, 22, 40, 0.06);
   }
@@ -510,14 +510,14 @@
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 14px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
 }
 
 .txArticleCode {
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   letter-spacing: -0.005em;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -530,7 +530,7 @@
   flex-wrap: wrap;
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 11.5px;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   letter-spacing: 0.02em;
   align-items: center;
 }
@@ -549,7 +549,7 @@
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
@@ -558,18 +558,18 @@
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   font-weight: 700;
-  color: var(--brand-deep);
+  color: var(--brand-70);
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
 
-.txZero { color: var(--text-muted); }
+.txZero { color: var(--color-text-tertiary); }
 
 .txList { display: flex; flex-direction: column; gap: 10px; }
 .txCard {
   padding: 14px 14px 12px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 12px;
 }
 .txHead {
@@ -578,19 +578,19 @@
   align-items: baseline;
   margin-bottom: 10px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--divider);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 .txDate {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 580;
   font-size: 14px;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
 }
 .txId {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   letter-spacing: 0.04em;
 }
 .txBody { margin-bottom: 10px; }
@@ -601,30 +601,30 @@
   margin-bottom: 4px;
 }
 .txBrand {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 14.5px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 .txArticleCode {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   letter-spacing: -0.01em;
 }
 .txMeta {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   letter-spacing: 0.02em;
 }
 .txTypeTag {
   padding: 2px 8px;
   background: rgba(193, 75, 0, 0.1);
-  color: var(--warn);
+  color: var(--color-text-warning);
   border: 1px solid rgba(193, 75, 0, 0.24);
   border-radius: 999px;
   font-weight: 700;
@@ -651,29 +651,29 @@
 .txAmounts > div:last-child { text-align: right; }
 
 .txLabel {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
 }
 .txVal {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
 }
-.txEarn { color: var(--brand-deep); }
-.txZero { color: var(--text-muted); }
+.txEarn { color: var(--brand-70); }
+.txZero { color: var(--color-text-tertiary); }
 
 .txNote {
   margin-top: 2px;
   padding: 7px 10px;
-  background: var(--surface-sunken);
+  background: var(--color-bg-sunken);
   border-radius: 8px;
   font-size: 11.5px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   line-height: 1.35;
   font-style: italic;
 }
@@ -685,8 +685,8 @@
   gap: 8px;
   align-items: center;
   padding: 12px 14px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 12px;
   margin-bottom: 14px;
 }
@@ -698,18 +698,18 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 1px 6px;
-  background: var(--surface-sunken);
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
+  background: var(--color-bg-sunken);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-default);
   border-radius: 4px;
   font-weight: 700;
 }
 
 /* ---------- Loading bar ---------- */
 .loadingBar {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   padding: 6px 0 2px;
   text-align: center;
   opacity: 0.7;
