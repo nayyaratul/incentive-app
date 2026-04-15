@@ -14,6 +14,12 @@ import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceL
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
 import { formatINR, formatDateRange } from '../../utils/format';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/nexus/atoms';
 
 export default function StoreManagerHome() {
   const [tab, setTab] = useState('home');

@@ -99,10 +99,10 @@ export default function ElectronicsView({ payout, employee, store, role }) {
       {/* Unified quiet disclosure — Floor intelligence, Your department, and
           Eligibility & exclusions all live in the same Nexus accordion shape
           used by GroceryView, so the role's reference sections read as one
-          coherent footer block instead of three competing cards. Floor
-          intelligence opens by default since it's the actionable one. */}
+          coherent footer block instead of three competing cards. All items
+          closed by default — the user opens what they need. */}
       <section className={`${styles.pad} ${styles.compactAccordion} rise rise-5`}>
-        <Accordion variant="default" type="multiple" defaultValue={['floor-intelligence']}>
+        <Accordion variant="default" type="multiple">
           <AccordionItem value="floor-intelligence">
             <AccordionTrigger>
               Floor intelligence &mdash; push these now ({electronicsOpportunities.length})
