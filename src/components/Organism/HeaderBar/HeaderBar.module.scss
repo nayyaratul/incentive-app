@@ -1,95 +1,80 @@
 .header {
-  padding: 18px 20px 6px;
+  padding: var(--space-250) var(--space-250) var(--space-075);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  position: relative;
-}
-
-/* Crimson signature stripe at top edge — echoes Reliance's footer red bar */
-.brandStrip {
-  position: absolute;
-  top: 0;
-  left: 20px;
-  right: 20px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--brand) 0%, var(--brand-deep) 100%);
-  border-radius: 0 0 2px 2px;
-
-  &::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 32px;
-    height: 100%;
-    background: linear-gradient(90deg, var(--brand-deep) 0%, var(--secondary) 100%);
-    border-radius: 0 0 2px 2px;
-  }
+  gap: var(--space-200);
 }
 
 .top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding-top: 8px;
+  gap: var(--space-150);
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-100);
+}
+
+.themeToggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-050);
+  color: var(--color-text-tertiary);
+}
+
+.rankChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-050);
+  padding: var(--space-050) var(--space-100);
+  background: var(--color-bg-tertiary);
+  border: var(--border-width-100) solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  color: var(--color-text-primary);
+  font-family: var(--sans);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background 120ms ease;
+
+  &:hover {
+    background: var(--color-interactive-hover);
+  }
+}
+
+.rankText {
+  font-variant-numeric: tabular-nums;
 }
 
 .greetingRow {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-}
-
-.logout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  margin-top: 6px;
-  border: none;
-  border-radius: var(--radius-button, 12px);
-  background: var(--surface-sunken, #f2f2f2);
-  color: var(--text-muted, #595959);
-  cursor: pointer;
-  transition: background var(--dur-fast, 120ms) ease, color var(--dur-fast, 120ms) ease;
-
-  &:active {
-    background: var(--brand-soft, #f5d4d1);
-    color: var(--brand, #bd2925);
-  }
+  gap: var(--space-150);
 }
 
 .greeting {
-  font-family: 'Fraunces', Georgia, serif;
-  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 380;
-  font-size: 36px;
-  line-height: 1;
-  color: var(--text-primary);
-  letter-spacing: -0.025em;
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-100);
 }
 
 .namaste {
+  font-size: var(--font-size-900);
+  font-weight: var(--font-weight-regular);
   font-style: italic;
-  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 360;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
+  line-height: 1;
 }
 
 .name {
-  font-variation-settings: 'opsz' 144, 'SOFT' 20, 'wght' 620;
-  color: var(--text-primary);
-}
-
-.period {
-  color: var(--brand);
-  font-weight: 700;
-  transform: translateX(-4px);
+  font-size: var(--font-size-900);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: 1;
+  letter-spacing: var(--letter-spacing-tighter);
 }
