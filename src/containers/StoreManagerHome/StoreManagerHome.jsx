@@ -368,12 +368,20 @@ function TeamRoster({ summary, onSelectRow }) {
           Tap a row for detail
         </span>
       </div>
+
+      {/* Column headers */}
+      <div className={styles.rosterHeader}>
+        <span>Employee</span>
+        <span className={styles.rosterHeaderRight}>Eligible</span>
+        <span className={styles.rosterHeaderRight}>Earned</span>
+      </div>
+
       <div className={styles.rosterList}>
         {summary.employees.map((e) => (
           <button
             key={e.employeeId}
             type="button"
-            className={`${styles.rosterRow} ${styles.rosterRowBtn} ${e.ineligible ? styles.rosterInelig : ''}`}
+            className={`${styles.rosterRow3Col} ${styles.rosterRowBtn} ${e.ineligible ? styles.rosterInelig : ''}`}
             onClick={() => onSelectRow && onSelectRow(e)}
           >
             <div className={styles.rosterLeft}>
@@ -386,17 +394,12 @@ function TeamRoster({ summary, onSelectRow }) {
                 <span className={styles.rosterDays}>{e.daysPresent}/7 days</span>
               )}
             </div>
-            <div className={styles.rosterPayoutWrap}>
-              {!e.ineligible && <span className={styles.rosterPayoutLabel}>Earned</span>}
-              <span className={styles.rosterPayout}>
-                {e.ineligible ? '—' : formatINR(e.total)}
-              </span>
-              {!e.ineligible && e.eligible > 0 && (
-                <span className={styles.rosterEligible}>
-                  Eligible {formatINR(e.eligible)}
-                </span>
-              )}
-            </div>
+            <span className={styles.rosterEligible}>
+              {e.ineligible ? '—' : formatINR(e.eligible)}
+            </span>
+            <span className={styles.rosterPayout}>
+              {e.ineligible ? '—' : formatINR(e.total)}
+            </span>
           </button>
         ))}
       </div>
