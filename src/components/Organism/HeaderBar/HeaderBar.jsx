@@ -14,7 +14,7 @@ const TIER_ICON = {
   default: Trophy,
 };
 
-export default function HeaderBar({ employeeName, rank, deltaRank, onOpenLeaderboard }) {
+export default function HeaderBar({ employeeName, storeName, rank, deltaRank, onOpenLeaderboard }) {
   const { logout, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
@@ -53,6 +53,7 @@ export default function HeaderBar({ employeeName, rank, deltaRank, onOpenLeaderb
           <div className={styles.greeting}>
             <Text variant="body" className={styles.namaste}>Namaste,</Text>
             <Heading level={2} className={styles.name}>{employeeName}</Heading>
+            {storeName && <Text variant="caption" className={styles.storeName}>{storeName}</Text>}
           </div>
           <div className={styles.actions}>
             {hasRank && onOpenLeaderboard && (

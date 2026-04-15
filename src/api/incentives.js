@@ -23,3 +23,7 @@ export async function fetchCityIncentives(vertical) {
 export async function fetchAllStoreIncentives(vertical) {
   return api.get('/incentives/stores', { params: { vertical } });
 }
+
+export async function fetchLeaderboard(storeCode, scope = 'store') {
+  return api.get('/leaderboard', { params: { storeCode, scope } });
+}

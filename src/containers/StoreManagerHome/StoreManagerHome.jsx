@@ -5,7 +5,7 @@ import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
 import useAsync from '../../hooks/useAsync';
-import { fetchStoreIncentive } from '../../api/incentives';
+import { fetchStoreIncentive, fetchLeaderboard } from '../../api/incentives';
 import { fetchEmployees } from '../../api/employees';
 import { fetchRules } from '../../api/rules';
 import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
@@ -57,6 +57,11 @@ export default function StoreManagerHome() {
   const rulesResult = useAsync(
     () => active?.vertical ? fetchRules(active.vertical) : Promise.resolve([]),
     [active?.vertical],
+  );
+
+  const leaderboardResult = useAsync(
+    () => store?.storeCode ? fetchLeaderboard(store.storeCode, 'store') : Promise.resolve(null),
+    [store?.storeCode],
   );
 
   const storeTeam = useMemo(() => employeesResult.data || [], [employeesResult.data]);
@@ -251,6 +256,7 @@ export default function StoreManagerHome() {
       <div className={styles.layout}>
         <HeaderBar
           employeeName={tab === 'home' ? firstName : null}
+          storeName={tab === 'home' ? store.storeName : null}
           streak={0}
           showStreak={false}
         />
@@ -274,10 +280,14 @@ export default function StoreManagerHome() {
               <div className={`${styles.datemark} rise rise-1`}>
                 <span>Leaderboard · {store.storeName}</span>
                 <span className={styles.line} />
-                <span>by earned</span>
+                <span>by sales</span>
               </div>
               <section className={`${styles.pad} rise rise-2`}>
-                <StoreLeaderboard employees={summary.employees} storeName={store.storeName} />
+                <StoreLeaderboard
+                  leaderboardData={leaderboardResult.data}
+                  loading={leaderboardResult.loading}
+                  storeName={store.storeName}
+                />
               </section>
             </>
           )}
@@ -500,12 +510,25 @@ function TeamRoster({ summary, onSelectRow }) {
   );
 }
 
-function StoreLeaderboard({ employees, storeName }) {
-  const ranked = [...employees]
-    .sort((a, b) => b.earned - a.earned)
-    .map((e, i) => ({ ...e, rank: i + 1 }));
-
+function StoreLeaderboard({ leaderboardData, loading, storeName }) {
   const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
+
+  if (loading) {
+    return <div className={styles.cardLight}><div className={styles.loading}>Loading leaderboard...</div></div>;
+  }
+
+  const ranked = leaderboardData?.leaderboard || [];
+
+  if (ranked.length === 0) {
+    return (
+      <div className={styles.cardLight}>
+        <div className={styles.cardHead}>
+          <span className={styles.eyebrow}><Trophy size={12} strokeWidth={2.4} style={{ marginRight: 4 }} /> Store ranking</span>
+        </div>
+        <div className={styles.loading}>No sales data yet this month</div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.cardLight}>
@@ -528,13 +551,20 @@ function StoreLeaderboard({ employees, storeName }) {
                   <Medal size={pos === 1 ? 28 : 22} strokeWidth={2} />
                 </div>
                 <div className={styles.podiumName}>{e.employeeName.split(' ')[0]}</div>
-                <div className={styles.podiumAmount}>{formatINR(e.earned)}</div>
+                <div className={styles.podiumAmount}>{formatINR(e.totalSales)}</div>
                 <div className={styles.podiumRank}>#{pos}</div>
               </div>
             );
           })}
         </div>
       )}
+
+      {/* Column header */}
+      <div className={styles.boardHeader}>
+        <span>#</span>
+        <span>Employee</span>
+        <span style={{ textAlign: 'right' }}>Sales</span>
+      </div>
 
       {/* Full list */}
       <div className={styles.boardList}>
@@ -551,7 +581,7 @@ function StoreLeaderboard({ employees, storeName }) {
               <span className={styles.boardName}>{e.employeeName}</span>
               <span className={styles.rosterRole}>{e.role}</span>
             </div>
-            <span className={styles.boardEarned}>{formatINR(e.earned)}</span>
+            <span className={styles.boardEarned}>{formatINR(e.totalSales)}</span>
           </div>
         ))}
       </div>
