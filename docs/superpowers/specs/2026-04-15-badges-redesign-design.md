@@ -67,7 +67,12 @@ Every badge gets a `rarity` field: `'bronze' | 'silver' | 'gold'`. No grey "defa
 | Silver | Mid-difficulty / recurring milestones (department at 120%, premium-band sale) | radial gradient `#FBFBFD → #E5E7EB → #9CA3AF`, border `#C9CFD9` |
 | Gold | Streaks, elite achievements, "all X" completion badges | radial gradient `#FFE999 → #F7D973 → #B58400`, border `#E6B820` |
 
-These exact hex values already live in `src/nexus/styles/base.css` as `--medal-gold / silver / bronze` (currently only referenced by the leaderboard podium). The redesign reuses those tokens — no new ones.
+The single-color tokens `--medal-gold`, `--medal-silver`, `--medal-bronze` already live in `src/nexus/styles/tokens.scss` and are used by the leaderboard podium / header pill as accent colors. The coin fill needs a three-stop radial gradient per tier plus a rim color, which the current tokens don't express. The implementation adds two new composite tokens per tier (six total) that sit alongside the existing accents:
+
+- `--medal-fill-gold` / `--medal-fill-silver` / `--medal-fill-bronze` — the radial-gradient coin fill
+- `--medal-rim-gold` / `--medal-rim-silver` / `--medal-rim-bronze` — the 2px border color
+
+The existing single-color accent tokens are left untouched. This follows the project's "tokenize first" rule — no ad-hoc hex values in the component.
 
 ### Shape & finish
 
