@@ -149,6 +149,10 @@ export function PersonaProvider({ children }) {
       storeCode: u.storeCode,
       storeName: u.storeName || '',
       vertical: u.vertical || '',
+      storeFormat: u.storeFormat || '',
+      state: u.state || '',
+      city: u.city || '',
+      storeStatus: u.storeStatus || 'ACTIVE',
     }] : []);
     setActiveId(persona.id);
     setLoading(false);
