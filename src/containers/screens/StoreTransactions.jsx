@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Info, Search, X, Users } from 'lucide-react';
 import styles from './SharedScreens.module.scss';
-import { employees } from '../../data/masters';
-import { getStoreTransactions } from '../../data/transactions';
+import { fetchSales } from '../../api/sales';
+import { fetchEmployees } from '../../api/employees';
 import { formatINR } from '../../utils/format';
 import TransactionDetailSheet from '../../components/Organism/TransactionDetailSheet/TransactionDetailSheet';
 
@@ -45,15 +45,39 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
   const [empFilter, setEmpFilter] = useState(initialEmployeeFilter);
   const [selectedTx, setSelectedTx] = useState(null);
 
+  // API state
+  const [allTx, setAllTx] = useState([]);
+  const [storeTeam, setStoreTeam] = useState([]);
+  const [dataLoading, setDataLoading] = useState(true);
+
   // If parent forwards a different initial filter (e.g. user drilled in from
   // another roster row), respect it.
-  React.useEffect(() => {
+  useEffect(() => {
     setEmpFilter(initialEmployeeFilter);
   }, [initialEmployeeFilter]);
 
-  const today = '2026-04-13';
-  const storeTeam = useMemo(() => employees.filter((e) => e.storeCode === storeCode), [storeCode]);
-  const allTx = useMemo(() => getStoreTransactions(storeCode, storeTeam), [storeCode, storeTeam]);
+  // Fetch store transactions and employees from API
+  useEffect(() => {
+    if (!storeCode) return;
+    let cancelled = false;
+    setDataLoading(true);
+
+    Promise.all([
+      fetchSales({ storeCode }).catch(() => []),
+      fetchEmployees(storeCode).catch(() => []),
+    ])
+      .then(([txRows, emps]) => {
+        if (cancelled) return;
+        setAllTx(txRows || []);
+        setStoreTeam(emps || []);
+      })
+      .finally(() => { if (!cancelled) setDataLoading(false); });
+
+    return () => { cancelled = true; };
+  }, [storeCode]);
+
+  const today = new Date().toISOString().slice(0, 10);
+
   const empLookup = useMemo(() => {
     const m = {};
     storeTeam.forEach((e) => { m[e.employeeId] = e; });
@@ -68,17 +92,17 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       list = list.filter((tx) =>
-        [tx.transactionId, tx.articleCode, tx.brand, tx.employeeId, empLookup[tx.employeeId]?.employeeName, tx.department, tx.productFamily]
+        [tx.transactionId, tx.articleCode, tx.brand, tx.employeeId, empLookup[tx.employeeId]?.employeeName, tx.department]
           .filter(Boolean)
           .some((f) => f.toLowerCase().includes(q))
       );
     }
     return list;
-  }, [allTx, period, txType, empFilter, query, empLookup]);
+  }, [allTx, period, txType, empFilter, query, empLookup, today]);
 
   const txCount     = filtered.length;
-  const grossTotal  = filtered.reduce((s, tx) => s + tx.grossAmount, 0);
-  const finalTotal  = filtered.reduce((s, tx) => s + (tx.finalIncentive || 0), 0);
+  const grossTotal  = filtered.reduce((s, tx) => s + (Number(tx.grossAmount) || 0), 0);
+  const finalTotal  = filtered.reduce((s, tx) => s + (Number(tx.incentiveAmount) || 0), 0);
   const excludedCount = filtered.filter((tx) => tx.transactionType !== 'NORMAL').length;
 
   const grouped = useMemo(() => {
@@ -92,6 +116,10 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
   }, [filtered]);
 
   const anyFilterActive = txType !== 'ALL' || empFilter !== 'ALL' || query.trim();
+
+  if (dataLoading) {
+    return <div className={styles.screen}><p style={{ padding: 24, textAlign: 'center', color: 'var(--color-text-tertiary)' }}>Loading transactions…</p></div>;
+  }
 
   return (
     <div className={styles.screen}>
@@ -220,7 +248,7 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
             <section key={day} className={styles.dayGroup}>
               <div className={styles.dayHead}>
                 <span>{dayHeading(day, today)}</span>
-                <span className={styles.dayMeta}>{txs.length} tx · {formatINR(txs.reduce((s, t) => s + (t.finalIncentive || 0), 0))}</span>
+                <span className={styles.dayMeta}>{txs.length} tx · {formatINR(txs.reduce((s, t) => s + (Number(t.incentiveAmount) || 0), 0))}</span>
               </div>
               <div className={styles.txList}>
                 {txs.map((tx) => (
@@ -238,7 +266,7 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
       )}
 
       <TransactionDetailSheet
-        tx={selectedTx}
+        tx={selectedTx ? { ...selectedTx, finalIncentive: selectedTx.incentiveAmount ?? 0 } : null}
         open={!!selectedTx}
         onClose={() => setSelectedTx(null)}
       />
@@ -247,12 +275,12 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
 }
 
 function StoreTxRow({ tx, employee, onSelect }) {
-  const earned = typeof tx.finalIncentive === 'number' ? tx.finalIncentive : null;
+  const earned = typeof tx.incentiveAmount === 'number' ? tx.incentiveAmount : null;
   return (
     <button type="button" className={styles.txCardBtn} onClick={onSelect}>
       <div className={styles.txLeft}>
         <div className={styles.txArticle}>
-          {tx.brand && <span className={styles.txBrand}>{tx.brand}</span>}
+          {tx.brand && tx.brand !== '—' && <span className={styles.txBrand}>{tx.brand}</span>}
           <span className={styles.txArticleCode}>{tx.articleCode}</span>
         </div>
         <div className={styles.txMeta}>
@@ -262,8 +290,8 @@ function StoreTxRow({ tx, employee, onSelect }) {
               <span>{employee.employeeName.split(' ')[0]}</span>
             </>
           )}
-          {tx.department && <span className={styles.metaDiv}>·</span>}
-          {tx.department && <span>{tx.department}</span>}
+          {tx.department && tx.department !== '—' && <span className={styles.metaDiv}>·</span>}
+          {tx.department && tx.department !== '—' && <span>{tx.department}</span>}
           {tx.transactionType !== 'NORMAL' && (
             <span className={styles.txTypeTag}>{tx.transactionType}</span>
           )}

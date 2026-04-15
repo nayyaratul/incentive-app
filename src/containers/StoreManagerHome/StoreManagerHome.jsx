@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import dayjs from 'dayjs';
 import { Users, TrendingUp, AlertTriangle } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
@@ -40,8 +41,11 @@ export default function StoreManagerHome() {
   const firstName = employee?.employeeName?.split(' ')[0] ?? '';
 
   /* ---- API data ---- */
+  const periodStart = dayjs().startOf('month').format('YYYY-MM-DD');
+  const periodEnd = dayjs().endOf('month').format('YYYY-MM-DD');
+
   const storeDetailResult = useAsync(
-    () => store?.storeCode ? fetchStoreIncentive(store.storeCode, active?.vertical) : Promise.resolve(null),
+    () => store?.storeCode ? fetchStoreIncentive(store.storeCode, active?.vertical, periodStart, periodEnd) : Promise.resolve(null),
     [store?.storeCode, active?.vertical],
   );
 
