@@ -18,14 +18,17 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
   const { logout, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
+  // Only render the pill when we have a real, positive rank.
+  // F&L has no individual leaderboard (transformer returns myRank: null),
+  // and a rank of 0 means the API didn't find the user in the peer set.
+  const hasRank = typeof rank === 'number' && rank > 0;
+
   const rankTier =
-    typeof rank !== 'number'
-      ? 'default'
-      : rank === 1 ? 'gold'
-      : rank === 2 ? 'silver'
-      : rank === 3 ? 'bronze'
-      : rank <= 10 ? 'brand'
-      : 'default';
+    rank === 1 ? 'gold'
+    : rank === 2 ? 'silver'
+    : rank === 3 ? 'bronze'
+    : rank <= 10 ? 'brand'
+    : 'default';
 
   const TierIcon = TIER_ICON[rankTier];
 
@@ -52,31 +55,21 @@ export default function HeaderBar({ employeeName, rank, onOpenLeaderboard }) {
             <Heading level={2} className={styles.name}>{employeeName}</Heading>
           </div>
           <div className={styles.actions}>
-            {onOpenLeaderboard && (
+            {hasRank && onOpenLeaderboard && (
               <button
                 type="button"
                 className={styles.leaderboardPill}
                 data-rank-tier={rankTier}
                 onClick={onOpenLeaderboard}
-                aria-label={
-                  typeof rank === 'number'
-                    ? `Rank ${rank} — tap to see leaderboard`
-                    : 'Open leaderboard'
-                }
+                aria-label={`Rank ${rank} — tap to see leaderboard`}
               >
                 <span className={styles.pillShine} aria-hidden="true" />
                 <span className={styles.pillIcon} aria-hidden="true">
                   <TierIcon size={15} strokeWidth={2.2} />
                 </span>
                 <span className={styles.leaderboardLabel}>
-                  {typeof rank === 'number' ? (
-                    <>
-                      <span className={styles.hash} aria-hidden="true">#</span>
-                      <span className={styles.num}>{rank}</span>
-                    </>
-                  ) : (
-                    'Leaderboard'
-                  )}
+                  <span className={styles.hash} aria-hidden="true">#</span>
+                  <span className={styles.num}>{rank}</span>
                 </span>
               </button>
             )}

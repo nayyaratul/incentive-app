@@ -262,54 +262,6 @@ details[open] .tierSummary::before { content: '–  '; }
   strong { color: var(--yellow-50); font-weight: 600; }
 }
 
-/* Campaign leaderboard rows */
-.lbList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.lbRow {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  background: var(--color-bg-sunken);
-  border-radius: 10px;
-}
-.lbSelf {
-  background: rgba(200, 32, 46, 0.08);
-  border: 1px solid rgba(200, 32, 46, 0.28);
-}
-.lbRank {
-  font-family: var(--sans);
-  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
-  font-size: 20px;
-  color: var(--color-text-primary);
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-.lbName {
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-.lbSub {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  margin-top: 2px;
-  letter-spacing: -0.01em;
-}
-.lbPer {
-  font-family: var(--mono);
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--accent-deep);
-  letter-spacing: -0.01em;
-}
-
 /* Article list */
 .artList {
   list-style: none;
