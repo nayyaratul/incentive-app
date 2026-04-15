@@ -26,6 +26,53 @@ function buildStreakShape(salesRows) {
 }
 
 // ---------------------------------------------------------------------------
+// Leaderboard synthesis (mock) — peers and ranks are fabricated from the
+// current user's individual payout since the API doesn't yet return peers.
+// ---------------------------------------------------------------------------
+
+const GROCERY_PEER_NAMES = [
+  'Meena Joshi',
+  'Sneha Iyer',
+  'Rahul Kulkarni',
+  'Anjali Nair',
+  'Vivek Menon',
+];
+
+function buildGroceryMyRank(individualPayout, selfName) {
+  const myEarned = Math.max(0, Math.round(Number(individualPayout) || 0));
+
+  // Synthesise 4 peer earnings around the user's payout (two above, two below),
+  // then sort desc and assign ranks. If individualPayout is 0, put the user last.
+  const peerDeltas = [0.32, 0.12, -0.15, -0.28]; // fractional adjustments
+  const fallbackBase = myEarned > 0 ? myEarned : 800;
+  const peers = GROCERY_PEER_NAMES.slice(0, 4).map((name, i) => ({
+    name,
+    earned: Math.max(0, Math.round(fallbackBase * (1 + peerDeltas[i]))),
+    isSelf: false,
+  }));
+
+  const selfEntry = { name: selfName || 'You', earned: myEarned, isSelf: true };
+
+  const sorted = [...peers, selfEntry]
+    .sort((a, b) => b.earned - a.earned)
+    .map((e, i) => ({ ...e, rank: i + 1 }));
+
+  const self = sorted.find((e) => e.isSelf);
+  const selfIdx = sorted.findIndex((e) => e.isSelf);
+  const deltaAbove =
+    selfIdx > 0 ? sorted[selfIdx - 1].earned - self.earned : 0;
+
+  return {
+    rank: self.rank,
+    deltaAbove,
+    scope: 'store',
+    scopeNote: 'by money earned',
+    unitLabel: 'earned',
+    top: sorted,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Main transformer
 // ---------------------------------------------------------------------------
 
@@ -82,7 +129,10 @@ export function transformGroceryPayout(detail, campaignConfig, salesRows) {
     lastCampaignPayoutPerEmp: 0, // not available yet
     nextPayoutDate: nextPayoutDate(),
     streak: buildStreakShape(salesRows),
-    myRank: null, // not available yet
+    myRank: buildGroceryMyRank(
+      Number(cs.yourPayout) || 0,
+      employee.employeeName || employee.employeeId || 'You',
+    ),
     projections,
     campaignLeaderboard: [], // not available yet
   };
