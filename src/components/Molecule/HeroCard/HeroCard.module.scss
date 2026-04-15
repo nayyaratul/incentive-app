@@ -85,8 +85,9 @@
   align-items: center;
   gap: var(--space-100);
 
+  /* Mirror: 80 ↔ 20 */
   [data-theme="dark"] & {
-    color: var(--brand-30);
+    color: var(--brand-20);
   }
 }
 
@@ -146,18 +147,24 @@
   border: var(--border-width-100) solid var(--color-border-subtle);
 }
 /* Brand tone — solid step tokens (not alpha tints) so contrast is
-   predictable regardless of what hero gradient sits behind.
-   Light: brand-10 pastel bg + brand-80 near-black-red text (~12:1).
-   Dark: brand-80 deep bg + brand-10 pastel text (~10:1). */
+   predictable regardless of what hero gradient sits behind. Follows
+   Nexus's N ↔ (100 − N) mirror principle:
+     bg:     10 ↔ 90
+     text:   80 ↔ 20
+     border: 20 ↔ 80
+   Note on the bg choice: Nexus default tag convention is 0 ↔ 100, but
+   step 0 is near-white and would blend into the hero's brand-tinted
+   gradient. Stepping up one notch (10 ↔ 90) keeps the tag visually
+   distinct while still respecting the mirror. */
 .tone-brand {
   background: var(--brand-10);
   color: var(--brand-80);
   border: var(--border-width-100) solid var(--brand-20);
 
   [data-theme="dark"] & {
-    background: var(--brand-80);
-    color: var(--brand-10);
-    border-color: var(--brand-60);
+    background: var(--brand-90);
+    color: var(--brand-20);
+    border-color: var(--brand-80);
   }
 }
 
@@ -319,6 +326,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-025);
+}
+
+.figLabel {
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-025);
 }
 
 .figValue {
