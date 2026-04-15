@@ -4,10 +4,10 @@
   align-items: center;
   justify-content: center;
   min-height: 60vh;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 13px;
   letter-spacing: 0.06em;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
 }
 .layout { max-width: 480px; margin: 0 auto; }
 .main {
@@ -22,13 +22,13 @@
   align-items: center;
   gap: 8px;
   padding: 0 24px;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
 
-  .line { flex: 1; height: 1px; background: var(--border); }
+  .line { flex: 1; height: 1px; background: var(--color-border-default); }
 }
 
 .pad { padding: 0 20px; }
@@ -37,16 +37,16 @@
 .cardDark {
   padding: 16px 18px 18px;
   border-radius: 16px;
-  background: var(--surface-card);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 .cardLight {
   padding: 16px 18px;
   border-radius: 16px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
 }
 .cardHead {
   display: flex;
@@ -56,24 +56,24 @@
   gap: 8px;
 }
 .eyebrow {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-weight: 600;
 
-  .cardDark & { color: var(--text-secondary); }
+  .cardDark & { color: var(--color-text-secondary); }
 }
 .headSub {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
 }
 
 /* ---------- Electronics department rows ---------- */
@@ -84,40 +84,40 @@
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  background: var(--surface-sunken);
-  border: 1px solid var(--divider);
+  background: var(--color-bg-sunken);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 10px;
 }
 .deptName {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 .deptSub {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   margin-top: 2px;
 }
 .deptAch {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
 }
 .deptMult {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
   font-size: 15px;
-  color: var(--accent);
+  color: var(--yellow-50);
   letter-spacing: -0.02em;
 }
 .multZero {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: var(--error);
+  color: var(--color-text-error);
   background: rgba(182, 30, 30, 0.16);
   padding: 3px 6px;
   border-radius: 4px;
@@ -131,14 +131,14 @@
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  background: var(--surface-sunken);
-  border: 1px solid var(--divider);
+  background: var(--color-bg-sunken);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 10px;
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
 }
-.projName { color: var(--text-primary); font-size: 12px; font-weight: 600; }
-.projRate { color: var(--accent); font-size: 12px; font-weight: 700; }
-.projTotal { color: var(--text-primary); font-size: 13px; font-weight: 700; }
+.projName { color: var(--color-text-primary); font-size: 12px; font-weight: 600; }
+.projRate { color: var(--yellow-50); font-size: 12px; font-weight: 700; }
+.projTotal { color: var(--color-text-primary); font-size: 13px; font-weight: 700; }
 
 /* ---------- Roster ---------- */
 .rosterList { display: flex; flex-direction: column; }
@@ -148,7 +148,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 0;
-  border-bottom: 1px solid var(--divider);
+  border-bottom: 1px solid var(--color-border-subtle);
 
   &:last-child { border-bottom: none; }
 }
@@ -165,17 +165,17 @@
   padding: 10px 8px;
   margin: 0 -8px;
   border-radius: 8px;
-  border-bottom: 1px solid var(--divider);
-  transition: background var(--dur-fast) var(--ease-out);
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: background 120ms ease-out;
 
-  &:hover { background: var(--surface-sunken); }
-  &:active { background: var(--brand-soft); }
+  &:hover { background: var(--color-bg-sunken); }
+  &:active { background: var(--brand-a100); }
   &:last-child { border-bottom: none; }
 }
 
 .rosterInelig {
   opacity: 0.55;
-  .rosterPayout { color: var(--text-muted); }
+  .rosterPayout { color: var(--color-text-tertiary); }
 }
 .rosterLeft {
   display: flex;
@@ -184,42 +184,42 @@
   gap: 6px;
 }
 .rosterRole {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 2px 6px;
-  background: var(--surface-sunken);
-  color: var(--text-secondary);
+  background: var(--color-bg-sunken);
+  color: var(--color-text-secondary);
   border-radius: 4px;
   font-weight: 700;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border-default);
 }
 .rosterName {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--sans);
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 .rosterStatus {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 2px 6px;
   background: rgba(193, 75, 0, 0.08);
-  color: var(--warn);
+  color: var(--color-text-warning);
   border-radius: 4px;
   border: 1px solid rgba(193, 75, 0, 0.2);
 }
 .rosterDays {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--color-text-tertiary);
   letter-spacing: 0.02em;
 }
 .rosterPayout {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 640;
   font-size: 16px;
   color: var(--accent-deep);
@@ -244,16 +244,16 @@
 /* Compliance */
 .complianceCard {
   padding: 12px 14px 14px;
-  background: var(--surface-sunken);
-  border: 1px solid var(--border);
+  background: var(--color-bg-sunken);
+  border: 1px solid var(--color-border-default);
   border-radius: 12px;
 }
 .complianceHead {
-  font-family: 'Geist Mono', monospace;
+  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-weight: 600;
   margin-bottom: 8px;
 }
@@ -263,30 +263,30 @@
   grid-template-columns: 32px 1fr;
   gap: 14px;
   padding: 16px 18px;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
   border-radius: 14px;
 
   > svg {
-    color: var(--brand);
+    color: var(--color-action-primary);
     margin-top: 2px;
   }
 }
 .txTitle {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--sans);
   font-variation-settings: 'opsz' 72, 'SOFT' 40, 'wght' 600;
   font-size: 18px;
-  color: var(--text-primary);
+  color: var(--color-text-primary);
   letter-spacing: -0.02em;
   margin-bottom: 8px;
 }
 .txBody {
   margin: 0 0 8px;
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   line-height: 1.5;
 
-  strong { color: var(--text-primary); font-weight: 700; }
+  strong { color: var(--color-text-primary); font-weight: 700; }
 
   &:last-child { margin-bottom: 0; }
 }
@@ -296,15 +296,15 @@
   display: flex;
   justify-content: space-between;
   padding: 6px 0;
-  border-bottom: 1px solid var(--divider);
+  border-bottom: 1px solid var(--color-border-subtle);
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 
   &:last-child { border-bottom: none; }
 
   strong {
-    color: var(--text-primary);
-    font-family: 'Geist Mono', monospace;
+    color: var(--color-text-primary);
+    font-family: var(--mono);
     font-weight: 600;
     letter-spacing: -0.01em;
   }
