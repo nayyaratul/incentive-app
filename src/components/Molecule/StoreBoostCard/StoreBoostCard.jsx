@@ -1,11 +1,13 @@
 import React from 'react';
 import { Users, Sparkles } from 'lucide-react';
+import { Text } from '@/nexus/atoms';
+import { Card } from '@/nexus/molecules';
 import styles from './StoreBoostCard.module.scss';
 import { formatINR } from '../../../utils/format';
 
 function formatCr(rupees) {
-  if (rupees >= 1e7) return `₹${(rupees / 1e7).toFixed(2)} Cr`;
-  if (rupees >= 1e5) return `₹${(rupees / 1e5).toFixed(2)} L`;
+  if (rupees >= 1e7) return `\u20B9${(rupees / 1e7).toFixed(2)} Cr`;
+  if (rupees >= 1e5) return `\u20B9${(rupees / 1e5).toFixed(2)} L`;
   return formatINR(rupees);
 }
 
@@ -22,15 +24,19 @@ export default function StoreBoostCard({ storeBoost }) {
   const pctInt = Math.round(pct * 100);
 
   return (
-    <article className={styles.card}>
+    <Card as="article" variant="flat" className={styles.card}>
       <header className={styles.head}>
         <div className={styles.eyebrowWrap}>
           <span className={styles.icon}><Users size={11} strokeWidth={2.4} /></span>
-          <span className={styles.eyebrow}>Store boost · {period}</span>
+          <Text as="span" variant="overline" className={styles.eyebrow}>
+            Store boost &middot; {period}
+          </Text>
         </div>
         <span className={styles.currentTier}>
-          <span className={styles.multiplier}>{currentTier.multiplier.toFixed(1)}×</span>
-          <span className={styles.tierLabel}>{currentTier.label}</span>
+          <span className={styles.multiplier}>{currentTier.multiplier.toFixed(1)}&times;</span>
+          <Text as="span" variant="caption" className={styles.tierLabel}>
+            {currentTier.label}
+          </Text>
         </span>
       </header>
 
@@ -39,12 +45,14 @@ export default function StoreBoostCard({ storeBoost }) {
       <div className={styles.headline}>
         <div className={styles.pctCol}>
           <span className={styles.pctValue}>{pctInt}<span className={styles.pctSign}>%</span></span>
-          <span className={styles.pctCaption}>of store target hit</span>
+          <Text as="span" variant="micro" className={styles.pctCaption}>of store target hit</Text>
         </div>
         <div className={styles.divider} aria-hidden="true" />
         <div className={styles.figCol}>
           <span className={styles.figValue}>{formatCr(achieved)}</span>
-          <span className={styles.figCaption}>of {formatCr(target)}</span>
+          <Text as="span" variant="caption" className={styles.figCaption}>
+            of {formatCr(target)}
+          </Text>
         </div>
       </div>
 
@@ -58,7 +66,7 @@ export default function StoreBoostCard({ storeBoost }) {
               className={`${styles.tick} ${pct >= t.gate ? styles.tickHit : ''} ${i === currentIdx ? styles.tickCurrent : ''}`}
               style={{ left: `${t.gate * 100}%` }}
             >
-              <span className={styles.tickMult}>{t.multiplier}×</span>
+              <span className={styles.tickMult}>{t.multiplier}&times;</span>
               <span className={styles.tickGate}>{Math.round(t.gate * 100)}%</span>
             </span>
           ))}
@@ -71,15 +79,15 @@ export default function StoreBoostCard({ storeBoost }) {
           <span>
             Clear <strong>{Math.round(nextTier.gate * 100)}%</strong>
             &nbsp;(<span className={styles.gap}>+{formatCr(toNextRupees)}</span> to go)
-            &nbsp;→ <strong className={styles.mult}>{nextTier.multiplier}×</strong> on your incentives
+            &nbsp;&rarr; <strong className={styles.mult}>{nextTier.multiplier}&times;</strong> on your incentives
           </span>
         </footer>
       ) : (
         <footer className={styles.footer}>
           <Sparkles size={12} strokeWidth={2.2} className={styles.sparkle} />
-          <span>Max tier locked in — full <strong className={styles.mult}>{currentTier.multiplier}×</strong> boost applies.</span>
+          <span>Max tier locked in &mdash; full <strong className={styles.mult}>{currentTier.multiplier}&times;</strong> boost applies.</span>
         </footer>
       )}
-    </article>
+    </Card>
   );
 }

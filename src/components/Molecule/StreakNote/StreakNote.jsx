@@ -1,5 +1,6 @@
 import React from 'react';
 import { Flame } from 'lucide-react';
+import { Text, Tag } from '@/nexus/atoms';
 import styles from './StreakNote.module.scss';
 
 /**
@@ -22,12 +23,12 @@ export default function StreakNote({ streak }) {
       <span className={styles.iconWrap} aria-hidden="true">
         <Flame size={14} strokeWidth={2.4} fill="currentColor" />
       </span>
-      <span className={styles.count}>{streak.current}</span>
-      <span className={styles.label}>{streak.label}</span>
-      <span className={styles.divider} aria-hidden="true">·</span>
-      <span className={styles.caption}>{streak.caption}</span>
+      <Text as="span" variant="body" className={styles.count}>{streak.current}</Text>
+      <Text as="span" variant="body" className={styles.label}>{streak.label}</Text>
+      <span className={styles.divider} aria-hidden="true">&middot;</span>
+      <Text as="span" variant="caption" className={styles.caption}>{streak.caption}</Text>
       {streak.longest > streak.current && (
-        <span className={styles.longest}>best: {streak.longest}</span>
+        <Text as="span" variant="micro" className={styles.longest}>best: {streak.longest}</Text>
       )}
     </div>
   );

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { ChevronDown, Sparkles } from 'lucide-react';
+import { Text, Badge } from '@/nexus/atoms';
 import styles from './DeptMultiplierCompact.module.scss';
 import { electronicsMultiplierTiers } from '../../../data/configs';
 import TierCelebration from '../../Organism/TierCelebration/TierCelebration';
 
 /**
- * Compact display of the department multiplier — shows only the user's
+ * Compact display of the department multiplier -- shows only the user's
  * primary department by default. Additional departments (and the full tier
  * reference) are revealed on tap. Low visual weight per product guidance.
  */
@@ -28,14 +29,18 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
     <section className={styles.card}>
       <button type="button" className={styles.head} onClick={() => setOpen(!open)} aria-expanded={open}>
         <div className={styles.headLeft}>
-          <span className={styles.eyebrow}>Your department</span>
-          <span className={styles.dept}>{primary.department}</span>
+          <Text as="span" variant="overline" className={styles.eyebrow}>Your department</Text>
+          <Text as="span" variant="body" className={styles.dept}>{primary.department}</Text>
         </div>
         <div className={styles.headRight}>
-          <span className={styles.achieve}>{primary.achievementPct}%</span>
-          <span className={`${styles.multPill} ${isZero ? styles.multZero : ''}`}>
+          <Text as="span" variant="caption" className={styles.achieve}>{primary.achievementPct}%</Text>
+          <Badge
+            variant={isZero ? 'error' : 'default'}
+            size="sm"
+            className={`${styles.multPill} ${isZero ? styles.multZero : ''}`}
+          >
             {isZero ? 'No payout' : `${Math.round(primary.multiplier * 100)}%`}
-          </span>
+          </Badge>
           <ChevronDown
             size={14}
             strokeWidth={2.2}
@@ -55,14 +60,14 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
         <div className={styles.panel}>
           {others.length > 0 && (
             <div className={styles.section}>
-              <div className={styles.sectionTitle}>Other departments you've sold in</div>
+              <Text as="div" variant="overline" className={styles.sectionTitle}>Other departments you've sold in</Text>
               <div className={styles.deptList}>
                 {others.map((d) => {
                   const z = d.multiplier === 0;
                   return (
                     <div key={d.department} className={`${styles.deptRow} ${z ? styles.deptRowZero : ''}`}>
-                      <span className={styles.deptName}>{d.department}</span>
-                      <span className={styles.deptAchieve}>{d.achievementPct}%</span>
+                      <Text as="span" variant="body" className={styles.deptName}>{d.department}</Text>
+                      <Text as="span" variant="caption" className={styles.deptAchieve}>{d.achievementPct}%</Text>
                       <span className={`${styles.deptMult} ${z ? styles.multZero : ''}`}>
                         {z ? '0%' : `${Math.round(d.multiplier * 100)}%`}
                       </span>
@@ -75,7 +80,7 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
 
           <div className={styles.section}>
             <div className={styles.sectionTitleRow}>
-              <span className={styles.sectionTitle}>How the multiplier works</span>
+              <Text as="span" variant="overline" className={styles.sectionTitle}>How the multiplier works</Text>
               <span className={styles.demoHint}>
                 <Sparkles size={11} strokeWidth={2.4} />
                 Tap any tier to preview
@@ -93,7 +98,7 @@ export default function DeptMultiplierCompact({ primaryDepartment, allDepartment
                     aria-label={`Preview celebration for ${t.multiplier === 0 ? 'no payout' : Math.round(t.multiplier * 100) + '%'} tier`}
                   >
                     <span className={styles.tierBand}>
-                      {t.gateFromPct}–{t.gateToPct === Infinity ? '∞' : t.gateToPct}%
+                      {t.gateFromPct}&ndash;{t.gateToPct === Infinity ? '\u221E' : t.gateToPct}%
                     </span>
                     <span className={`${styles.tierMult} ${t.multiplier === 0 ? styles.multZero : ''}`}>
                       {t.multiplier === 0 ? 'No pay' : `${Math.round(t.multiplier * 100)}%`}
@@ -143,12 +148,12 @@ function framingFor(targetMult, currentMult, dept) {
   if (targetMult === 1.10) {
     return { kind: 'top', intensity: 4,
       eyebrow: 'Bonus tier', title: 'Above target', multiplier: '110%', dept,
-      note: `${dept} is over target. Your incentive scales by 1.10×.` };
+      note: `${dept} is over target. Your incentive scales by 1.10\u00D7.` };
   }
   if (targetMult === 1.20) {
     return { kind: 'top', intensity: 5,
-      eyebrow: 'Top tier', title: 'Legendary · above 120%', multiplier: '120%', dept,
-      note: `${dept} is at the top tier. Your incentive scales by 1.20× — the highest band.` };
+      eyebrow: 'Top tier', title: 'Legendary \u00B7 above 120%', multiplier: '120%', dept,
+      note: `${dept} is at the top tier. Your incentive scales by 1.20\u00D7 \u2014 the highest band.` };
   }
   return { kind: 'up', intensity: 1,
     eyebrow: 'Tier change', title: 'New band', multiplier: `${targetPct}%`, dept, note: '' };
