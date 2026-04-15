@@ -6,6 +6,7 @@ coverage/
 # PWA / Superpowers
 .superpowers/
 .claude/
+.worktrees/
 
 # Env
 .env
