@@ -93,9 +93,11 @@ export default function EarningsHero({
       {/* ── Normal state captions ── */}
       {!isZeroState && (
         <HeroCard.Caption>
-          <strong>{pct}%</strong>
-          <span>· of monthly goal ·</span>
-          <em>{formatINR(remaining)} to go</em>
+          <strong>{deptAchPct || 0}%</strong>
+          <span>· dept achievement ·</span>
+          {multiplierPct > 0
+            ? <em>{multiplierPct}% multiplier active</em>
+            : <em>{formatINR(remaining)} to go</em>}
         </HeroCard.Caption>
       )}
 
@@ -108,18 +110,8 @@ export default function EarningsHero({
       )}
 
       <HeroCard.Progress
-        pct={isZeroState ? deptAchPct || 0 : pct}
-        scale={
-          isZeroState
-            ? ['0%', '25%', '50%', '75%', '100%']
-            : [
-                '0',
-                formatINR(goal.target / 4),
-                formatINR(goal.target / 2),
-                formatINR((goal.target * 3) / 4),
-                formatINR(goal.target),
-              ]
-        }
+        pct={Math.round(((deptAchPct || 0) / 120) * 100)}
+        scale={['0%', '85%', '100%', '120%']}
       />
 
       {/* Milestone countdown nudge */}
