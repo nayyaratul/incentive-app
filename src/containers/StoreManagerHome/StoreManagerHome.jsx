@@ -371,8 +371,8 @@ export default function StoreManagerHome() {
   const eligible5Day = Number.isFinite(myDaysPresent) && myDaysPresent >= minWorkingDays;
   const cycleMeta = buildCycleMeta(active?.vertical, employee, storeDetailResult.data, summary);
 
-  // Derive period-aware FNL data from the period selector
-  const fnlActive = useMemo(() => {
+  // Derive period-aware FNL data from the period selector (plain derivation, not a hook)
+  const fnlActive = (() => {
     if (summary?.kind !== 'FNL' || !summary.weekPayouts?.length) return null;
     const sel = fnlPeriod || (() => {
       const today = dayjs();
@@ -387,7 +387,7 @@ export default function StoreManagerHome() {
     const idx = parseInt(sel.replace('w', ''), 10);
     const wp = summary.weekPayouts[idx];
     return wp ? { ...wp, isMonthView: false } : null;
-  }, [summary, fnlPeriod]);
+  })();
 
   // Look up the full master record for the selected roster row (drawer needs it)
   const selectedEmployee = selectedRow
