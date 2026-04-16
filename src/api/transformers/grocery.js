@@ -87,8 +87,8 @@ export function transformGroceryPayout(detail, campaignConfig, salesRows) {
   const slabs = detail?.payoutSlabs ?? [];
   const employee = detail?.employee ?? {};
 
-  const storeTarget = Number(cs.storeTarget) || 0;
-  const storeActual = Number(cs.storeActual) || 0;
+  const storeTarget = Number(cs.campaignTarget) || Number(cs.storeTarget) || 0;
+  const storeActual = Number(cs.campaignActual) || Number(cs.storeActual) || 0;
   const achievementPct = Number(cs.achievementPct) || 0;
   const staffCount = Number(cs.employeeCount) || 1;
 

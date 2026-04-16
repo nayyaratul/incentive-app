@@ -86,7 +86,7 @@ export default function GroceryView({ payout, employee }) {
 
       {/* Active quest — component owns its own horizontal padding (matches BadgesStrip) */}
       <section className={`rise rise-3`}>
-        <QuestCard employeeId={employee.employeeId} vertical="GROCERY" />
+        <QuestCard employeeId={employee.employeeId} vertical="GROCERY" payout={payout} />
       </section>
 
       {/* Badges */}

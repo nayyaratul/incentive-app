@@ -14,6 +14,53 @@ const VERTICAL_SAMPLE_ID = {
 };
 
 /**
+ * Build grocery quests dynamically from live payout data so that quest
+ * progress matches the hero card (same achievement %, same target).
+ */
+function buildGroceryQuests(payout) {
+  if (!payout) return null;
+  const ach = Math.round(Number(payout.achievementPct) || 0);
+  const target = payout.targetSalesValue || 0;
+  const fmtTarget = target >= 1e5
+    ? `₹${(target / 1e5).toFixed(2)}L`
+    : `₹${target.toLocaleString('en-IN')}`;
+
+  const quests = [];
+
+  // Gate quest: reach 100%
+  quests.push({
+    id: 'q-store-100',
+    type: 'Store gate',
+    title: `Get store to 100% of ${fmtTarget} target`,
+    progress: { current: Math.min(ach, 100), target: 100, unit: '%' },
+    reward: '₹2 per piece across all eligible articles sold',
+    status: ach >= 100 ? 'completed' : 'active',
+  });
+
+  // Stretch: 120%
+  quests.push({
+    id: 'q-store-120',
+    type: 'Store gate',
+    title: 'Stretch — Store at 120%',
+    progress: { current: Math.min(ach, 120), target: 120, unit: '%' },
+    reward: '₹3 per piece — applies to every piece, not just above 120%',
+    status: ach >= 120 ? 'completed' : 'active',
+  });
+
+  // Stretch: 130%
+  quests.push({
+    id: 'q-store-130',
+    type: 'Store gate',
+    title: 'Stretch — Store at 130%',
+    progress: { current: Math.min(ach, 130), target: 130, unit: '%' },
+    reward: '₹4 per piece; top slab; applies to all pieces',
+    status: ach >= 130 ? 'completed' : 'active',
+  });
+
+  return quests;
+}
+
+/**
  * Brief-aligned quests only. Each quest tracks progress toward a gate/mechanic
  * defined in the vendor brief. Rewards quote the brief's own payout — no
  * invented bonuses.
@@ -21,10 +68,14 @@ const VERTICAL_SAMPLE_ID = {
  * Layout: section header (title + live counter) followed by a stack of
  * standalone Nexus Cards, one per quest. No outer card wrapping the stack.
  */
-export default function QuestCard({ employeeId, vertical }) {
+export default function QuestCard({ employeeId, vertical, payout }) {
+  // For Grocery, prefer dynamic quests built from the live payout data so
+  // quest progress always matches the hero card achievement.
+  const dynamicGrocery = vertical === 'GROCERY' ? buildGroceryQuests(payout) : null;
+
   const direct = questsByEmployee[employeeId];
   const fallbackId = VERTICAL_SAMPLE_ID[vertical];
-  const quests = direct || (fallbackId ? questsByEmployee[fallbackId] : null) || [];
+  const quests = dynamicGrocery || direct || (fallbackId ? questsByEmployee[fallbackId] : null) || [];
 
   const activeCount = quests.filter((q) => q.status === 'active').length;
 
