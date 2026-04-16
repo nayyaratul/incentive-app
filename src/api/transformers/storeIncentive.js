@@ -65,5 +65,24 @@ export function transformStoreIncentive(response, vertical) {
   const totalPiecesSold = employees.reduce((s, e) => s + (e.piecesSold || 0), 0) || undefined;
   const summary = { totalIncentive, ...(totalPiecesSold && { totalPiecesSold }) };
 
-  return { departments, employees, summary };
+  // ---- FNL week payouts (pass-through from backend) ----
+  const weekPayouts = response.weekPayouts || [];
+  let monthAggregate = null;
+
+  if (weekPayouts.length > 0) {
+    monthAggregate = {
+      isMonthView: true,
+      weekStart: weekPayouts[0].weekStart,
+      weekEnd: weekPayouts[weekPayouts.length - 1].weekEnd,
+      weeklySalesTarget: weekPayouts.reduce((s, w) => s + (Number(w.weeklySalesTarget) || 0), 0),
+      actualWeeklyGrossSales: weekPayouts.reduce((s, w) => s + (Number(w.actualWeeklyGrossSales) || 0), 0),
+      storeQualifies: weekPayouts.some((w) => w.storeQualifies),
+      weeksQualified: weekPayouts.filter((w) => w.storeQualifies).length,
+      weeksTotal: weekPayouts.length,
+      totalStoreIncentive: weekPayouts.reduce((s, w) => s + (Number(w.totalStoreIncentive) || 0), 0),
+      myPayout: weekPayouts.reduce((s, w) => s + (Number(w.myPayout) || 0), 0),
+    };
+  }
+
+  return { departments, employees, summary, weekPayouts, monthAggregate };
 }

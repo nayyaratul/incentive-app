@@ -296,12 +296,14 @@ export default function StoreManagerHome() {
       const totalTarget = depts.reduce((s, d) => s + (Number(d.target) || 0), 0);
       const totalActual = depts.reduce((s, d) => s + (Number(d.actual) || 0), 0);
       const totalPayout = emps.reduce((s, e) => s + (Number(e.finalIncentive) || 0), 0);
-      const weekStart = storeDetail?.summary?.weekStart || (useMock ? fnlPayoutTRN0241.weekStart : null);
-      const weekEnd = storeDetail?.summary?.weekEnd || (useMock ? fnlPayoutTRN0241.weekEnd : null);
-
       // Week payouts from API/transformer for the period selector
       const weekPayouts = storeDetail?.weekPayouts || (useMock ? fnlPayoutTRN0241.weekPayouts : null) || [];
       const monthAggregate = storeDetail?.monthAggregate || (useMock ? fnlPayoutTRN0241.monthAggregate : null) || null;
+
+      // Derive current week start/end from weekPayouts or summary
+      const lastWeek = weekPayouts.length > 0 ? weekPayouts[weekPayouts.length - 1] : null;
+      const weekStart = lastWeek?.weekStart || storeDetail?.summary?.weekStart || (useMock ? fnlPayoutTRN0241.weekStart : null);
+      const weekEnd = lastWeek?.weekEnd || storeDetail?.summary?.weekEnd || (useMock ? fnlPayoutTRN0241.weekEnd : null);
 
       return {
         kind: 'FNL',
