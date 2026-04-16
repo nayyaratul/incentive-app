@@ -330,8 +330,8 @@ export default function StoreManagerHome() {
   const storeRank = active?.vertical && store?.storeCode
     ? buildStoreLeaderboard(active.vertical, store.storeCode)
     : null;
-  const selfPayout = summary.employees.find((e) => e.employeeId === employee?.employeeId)?.total || 0;
   const selfRow = summary.employees.find((e) => e.employeeId === employee?.employeeId) || null;
+  const selfPayout = selfRow?.earned || selfRow?.total || 0;
   const myDaysPresent = Number(selfRow?.daysPresent);
   const minWorkingDays = Number(fnlWeeklyRules.minWorkingDays || 5);
   const eligible5Day = Number.isFinite(myDaysPresent) && myDaysPresent >= minWorkingDays;
@@ -972,7 +972,8 @@ function buildCycleMeta(vertical, employee, storeDetail, summary) {
 
   // Comparison appears only after first cycle. If no backend last-cycle figure
   // exists yet, derive a gentle baseline from current payout for tenured staff.
-  const selfPayout = summary?.employees?.find((e) => e.employeeId === employee?.employeeId)?.total || 0;
+  const selfRow2 = summary?.employees?.find((e) => e.employeeId === employee?.employeeId);
+  const selfPayout = selfRow2?.earned || selfRow2?.total || 0;
   const derivedLast = tenureDays >= 30 && selfPayout > 0 ? Math.round(selfPayout * 0.9) : 0;
 
   return {
