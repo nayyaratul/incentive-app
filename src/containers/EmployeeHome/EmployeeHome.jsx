@@ -1,21 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import PullToRefresh from 'pulltorefreshjs';
+import { RefreshCw } from 'lucide-react';
 import styles from './EmployeeHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
 import useElectronicsData from '../../hooks/useElectronicsData';
 import useGroceryData from '../../hooks/useGroceryData';
 import useFnlData from '../../hooks/useFnlData';
-import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
+import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
 import ElectronicsView from './views/ElectronicsView';
 import GroceryView from './views/GroceryView';
 import FnlView from './views/FnlView';
+import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
 import HistoryScreen from '../screens/HistoryScreen';
 
 export default function EmployeeHome() {
   const [tab, setTab] = useState('home');
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const mainRef = useRef(null);
   const { active, employee, store } = usePersona();
 
   const firstName = employee?.employeeName?.split(' ')[0] ?? '';
@@ -32,7 +37,33 @@ export default function EmployeeHome() {
   const activeDataReady = isElec ? !!elec.payout : isGroc ? !!groc.payout : isFnl ? !!fnl.payout : false;
   const myPayout = isElec ? elec.payout : isGroc ? groc.payout : isFnl ? fnl.payout : null;
 
-  const myRank = myPayout?.myRank;
+  const storeRank = active?.vertical && store?.storeCode
+    ? buildStoreLeaderboard(active.vertical, store.storeCode)
+    : null;
+
+  /* Pull-to-refresh — triggers a re-render that reloads data hooks */
+  const handleRefresh = useCallback(() => {
+    return new Promise((resolve) => {
+      setRefreshKey((k) => k + 1);
+      setTimeout(resolve, 800); // short delay for visual feedback
+    });
+  }, []);
+
+  useEffect(() => {
+    const ptr = PullToRefresh.init({
+      mainElement: 'main',
+      triggerElement: 'main',
+      onRefresh: handleRefresh,
+      instructionsPullToRefresh: 'Pull down to refresh',
+      instructionsReleaseToRefresh: 'Release to refresh',
+      instructionsRefreshing: 'Refreshing...',
+      distThreshold: 60,
+      distMax: 80,
+      distReload: 50,
+      resistanceFunction: (t) => Math.min(1, t / 2.5),
+    });
+    return () => PullToRefresh.destroyAll();
+  }, [handleRefresh]);
 
   if (!active || !employee || activeDataLoading || !activeDataReady) {
     return <div className={styles.loading}>Loading...</div>;
@@ -45,21 +76,21 @@ export default function EmployeeHome() {
       <LeaderboardDrawer
         open={leaderboardOpen}
         onClose={() => setLeaderboardOpen(false)}
-        myRank={myRank}
+        myRank={storeRank}
       />
 
       <div className={styles.layout}>
-        {tab === 'home' && (
-          <HeaderBar
-            employeeName={firstName}
-            rank={myRank?.rank}
-            onOpenLeaderboard={() => setLeaderboardOpen(true)}
-          />
-        )}
+        <HeaderBar />
 
-        <main className={styles.main}>
+        <main className={styles.main} ref={mainRef}>
           {tab === 'home' && (
             <>
+              <HeaderGreeting
+                employeeName={firstName}
+                storeName={store ? `${store.storeFormat || store.storeName} — ${store.city}, ${store.state}` : undefined}
+                rank={storeRank?.rank}
+                onOpenLeaderboard={() => setLeaderboardOpen(true)}
+              />
               {active.vertical === VERTICALS.ELECTRONICS && (
                 <ElectronicsView payout={myPayout} employee={employee} store={store} role={active.role} />
               )}

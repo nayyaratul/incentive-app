@@ -3,11 +3,18 @@ import { Crown, Trophy } from 'lucide-react';
 import styles from './LeaderboardPodium.module.scss';
 
 function formatEarn(val, unitLabel) {
+  if (unitLabel === 'achievement') return `${val}%`;
   if (unitLabel === 'pieces' || unitLabel === 'units') return `${val}`;
   return `₹${val.toLocaleString('en-IN')}`;
 }
 
-function initials(name) {
+function initials(name, isStore) {
+  if (isStore) {
+    // For stores: use format prefix (e.g., "RD" from "Reliance Digital, Andheri")
+    const parts = (name || '').split(',')[0].split(' ').filter(Boolean);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (parts[0] || '??').slice(0, 2).toUpperCase();
+  }
   return (name || '')
     .split(' ')
     .filter(Boolean)
@@ -20,7 +27,7 @@ function initials(name) {
 // Requested visual order: #2 left, #1 center, #3 right.
 const PODIUM_ORDER = [2, 1, 3];
 
-export default function LeaderboardPodium({ entries, unitLabel = 'earned' }) {
+export default function LeaderboardPodium({ entries, unitLabel = 'earned', isStoreScope = false }) {
   if (!Array.isArray(entries) || entries.length === 0) return null;
 
   const byRank = new Map(entries.map((e) => [e.rank, e]));
@@ -50,7 +57,7 @@ export default function LeaderboardPodium({ entries, unitLabel = 'earned' }) {
                   </div>
                 )}
                 <div className={styles.avatar} aria-hidden="true">
-                  {initials(entry.name)}
+                  {initials(entry.name, isStoreScope)}
                 </div>
               </div>
 
@@ -59,7 +66,9 @@ export default function LeaderboardPodium({ entries, unitLabel = 'earned' }) {
                   {entry.rank}
                 </span>
                 <div className={styles.name} title={entry.name}>
-                  {entry.isSelf ? `${entry.name} (You)` : entry.name}
+                  {entry.isSelf
+                    ? `${entry.name} ${isStoreScope ? '(Your store)' : '(You)'}`
+                    : entry.name}
                 </div>
                 <div className={styles.earn}>{formatEarn(entry.earned, unitLabel)}</div>
               </div>

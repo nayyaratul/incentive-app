@@ -1,14 +1,16 @@
 import React, { useState, useMemo } from 'react';
-import { Users, TrendingUp, AlertTriangle, Calendar, Check, X as XIcon } from 'lucide-react';
+import dayjs from 'dayjs';
+import { Users, TrendingUp, AlertTriangle, Calendar, Check, X as XIcon, Target, Zap, Clock, Trophy, Medal } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
 import useAsync from '../../hooks/useAsync';
-import { fetchStoreIncentive } from '../../api/incentives';
+import { fetchStoreIncentive, fetchLeaderboard } from '../../api/incentives';
 import { fetchEmployees } from '../../api/employees';
 import { fetchRules } from '../../api/rules';
-import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
+import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
+import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
 import StoreTransactions from '../screens/StoreTransactions';
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
@@ -61,11 +63,14 @@ export default function StoreManagerHome() {
   const firstName = employee?.employeeName?.split(' ')[0] ?? '';
 
   /* ---- API data ---- */
+  const periodStart = dayjs().startOf('month').format('YYYY-MM-DD');
+  const periodEnd = dayjs().endOf('month').format('YYYY-MM-DD');
+
   const storeDetailResult = useAsync(
     () => {
       if (!store?.storeCode || !active?.vertical) return Promise.resolve(null);
       if (useMock) return Promise.resolve(buildMockStoreDetail(active.vertical, store.storeCode));
-      return fetchStoreIncentive(store.storeCode, active.vertical);
+      return fetchStoreIncentive(store.storeCode, active.vertical, periodStart, periodEnd);
     },
     [store?.storeCode, active?.vertical],
   );
@@ -88,6 +93,15 @@ export default function StoreManagerHome() {
       return fetchRules(active.vertical);
     },
     [active?.vertical],
+  );
+
+  const leaderboardResult = useAsync(
+    () => {
+      if (!store?.storeCode) return Promise.resolve(null);
+      if (useMock) return Promise.resolve(null);
+      return fetchLeaderboard(store.storeCode, 'store');
+    },
+    [store?.storeCode],
   );
 
   const storeTeam = useMemo(() => employeesResult.data || [], [employeesResult.data]);
@@ -113,17 +127,69 @@ export default function StoreManagerHome() {
         return t ? Number(t.multiplierPct) / 100 : 0;
       };
 
+      // Sort tiers by achievementFrom ascending for "next tier" logic
+      const sortedTiers = [...tiers].sort((a, b) => Number(a.achievementFrom) - Number(b.achievementFrom));
+
+      const findNextTier = (pct) => {
+        for (const t of sortedTiers) {
+          if (pct < Number(t.achievementFrom)) return { pct: Number(t.achievementFrom), mult: Number(t.multiplierPct) };
+        }
+        return null;
+      };
+
+      const storeAchPct = totalTarget > 0 ? Math.round((totalActual / totalTarget) * 100) : 0;
+      const daysElapsed = dayjs().date();
+      const daysLeft = dayjs().endOf('month').diff(dayjs(), 'day');
+      const totalDays = dayjs().daysInMonth();
+      const dailyPace = daysElapsed > 0 ? Math.round(totalActual / daysElapsed) : 0;
+      const requiredPace = daysLeft > 0 && totalTarget > totalActual
+        ? Math.round((totalTarget - totalActual) / daysLeft)
+        : 0;
+      const projectedTotal = Math.round(dailyPace * totalDays);
+
       return {
         kind: 'ELECTRONICS',
         totalTarget, totalActual, totalPayout,
-        achievementPct: totalTarget > 0 ? Math.round((totalActual / totalTarget) * 100) : 0,
-        departments: depts.map((d) => ({
-          department: d.department,
-          actualSales: Number(d.actual) || 0,
-          achievementPct: Number(d.achievementPct) || 0,
-          target: Number(d.target) || 0,
-          multiplier: findMult(Number(d.achievementPct) || 0),
-        })),
+        achievementPct: storeAchPct,
+        daysLeft,
+        daysElapsed,
+        dailyPace,
+        requiredPace,
+        projectedTotal,
+        gapToTarget: totalTarget > totalActual ? totalTarget - totalActual : 0,
+        departments: depts.map((d) => {
+          const ach = Number(d.achievementPct) || 0;
+          const target = Number(d.target) || 0;
+          const actual = Number(d.actual) || 0;
+          const currentMult = findMult(ach);
+          const next = findNextTier(ach);
+          const gapToNext = next && target > 0 ? Math.max(0, Math.round(target * next.pct / 100 - actual)) : null;
+
+          // "What if" — estimate payout uplift if next tier is reached
+          // Use total base incentive for employees in this department's achievement bracket
+          const deptBaseTotal = emps
+            .filter((e) => Math.abs((Number(e.achievementPct) || 0) - ach) < 1)
+            .reduce((s, e) => s + (Number(e.baseIncentive) || 0), 0);
+          const currentPayout = Math.round(deptBaseTotal * currentMult);
+          const nextPayout = next ? Math.round(deptBaseTotal * (next.mult / 100)) : currentPayout;
+          const payoutUplift = nextPayout - currentPayout;
+
+          return {
+            department: d.department,
+            actualSales: actual,
+            achievementPct: ach,
+            target,
+            multiplier: currentMult,
+            nextTier: next,
+            gapToNext,
+            payoutUplift: payoutUplift > 0 ? payoutUplift : null,
+            employeesInDept: emps.filter((e) => Math.abs((Number(e.achievementPct) || 0) - ach) < 1).length,
+          };
+        }),
+        // Find minimum achievement % needed to unlock any multiplier
+        unlockPct: tiers.length > 0
+          ? Math.min(...tiers.map((t) => Number(t.achievementFrom)))
+          : null,
         employees: emps.map((emp) => {
           const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
           return {
@@ -131,7 +197,9 @@ export default function StoreManagerHome() {
             employeeName: emp.employeeName || master?.employeeName || emp.employeeId,
             role: emp.role || master?.role || '—',
             payrollStatus: master?.payrollStatus || 'ACTIVE',
-            total: Number(emp.finalIncentive) || 0,
+            achievementPct: Number(emp.achievementPct) || 0,
+            potential: Number(emp.baseIncentive) || 0,
+            earned: Number(emp.finalIncentive) || 0,
             ineligible: master?.payrollStatus && master.payrollStatus !== 'ACTIVE',
           };
         }),
@@ -184,6 +252,9 @@ export default function StoreManagerHome() {
         piecesSoldTotal: piecesSold,
         appliedRate: currentRate,
         splitPerEmployee: perEmp,
+        daysLeft: dayjs().endOf('month').diff(dayjs(), 'day'),
+        gapToTarget: deptTarget > deptActual ? deptTarget - deptActual : 0,
+        unlockPct: 100, // Grocery requires 100% store achievement
         employees: emps.map((emp) => {
           const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
           return {
@@ -191,7 +262,9 @@ export default function StoreManagerHome() {
             employeeName: emp.employeeName || master?.employeeName || emp.employeeId,
             role: emp.role || master?.role || '—',
             payrollStatus: master?.payrollStatus || 'ACTIVE',
-            total: perEmp,
+            achievementPct: achPct, // store-level for grocery
+            potential: Number(emp.baseIncentive) || perEmp,
+            earned: perEmp,
             ineligible: false,
           };
         }),
@@ -222,6 +295,9 @@ export default function StoreManagerHome() {
         totalPayout,
         achievementPct: totalTarget > 0 ? Math.round((totalActual / totalTarget) * 100) : 0,
         storeQualifies: totalActual >= totalTarget,
+        daysLeft: 7 - dayjs().day(), // days left in week
+        gapToTarget: totalTarget > totalActual ? totalTarget - totalActual : 0,
+        unlockPct: 100,
         employees: emps.map((emp) => {
           const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
           return {
@@ -232,6 +308,9 @@ export default function StoreManagerHome() {
             daysPresent: Number(emp.daysPresent),
             eligible: Number(emp.daysPresent) >= Number(fnlWeeklyRules.minWorkingDays || 5),
             total: Number(emp.finalIncentive) || 0,
+            achievementPct: Number(emp.achievementPct) || 0,
+            potential: Number(emp.baseIncentive) || 0,
+            earned: Number(emp.finalIncentive) || 0,
             ineligible: false,
           };
         }),
@@ -248,7 +327,9 @@ export default function StoreManagerHome() {
 
   if (!summary) return null;
 
-  const myRank = buildMyRankFromSummary(summary, employee?.employeeId);
+  const storeRank = active?.vertical && store?.storeCode
+    ? buildStoreLeaderboard(active.vertical, store.storeCode)
+    : null;
   const selfPayout = summary.employees.find((e) => e.employeeId === employee?.employeeId)?.total || 0;
   const selfRow = summary.employees.find((e) => e.employeeId === employee?.employeeId) || null;
   const myDaysPresent = Number(selfRow?.daysPresent);
@@ -268,7 +349,7 @@ export default function StoreManagerHome() {
       <LeaderboardDrawer
         open={leaderboardOpen}
         onClose={() => setLeaderboardOpen(false)}
-        myRank={myRank}
+        myRank={storeRank}
       />
 
       <EmployeeDetailDrawer
@@ -280,13 +361,7 @@ export default function StoreManagerHome() {
       />
 
       <div className={styles.layout}>
-        {tab === 'home' && (
-          <HeaderBar
-            employeeName={firstName}
-            rank={myRank?.rank}
-            onOpenLeaderboard={() => setLeaderboardOpen(true)}
-          />
-        )}
+        <HeaderBar />
 
         <main className={styles.main}>
           {tab === 'team' && (
@@ -303,6 +378,23 @@ export default function StoreManagerHome() {
             </section>
           )}
 
+          {tab === 'board' && (
+            <>
+              <div className={`${styles.datemark} rise rise-1`}>
+                <span>Leaderboard · {store.storeName}</span>
+                <span className={styles.line} />
+                <span>by sales</span>
+              </div>
+              <section className={`${styles.pad} rise rise-2`}>
+                <StoreLeaderboard
+                  leaderboardData={leaderboardResult.data}
+                  loading={leaderboardResult.loading}
+                  storeName={store.storeName}
+                />
+              </section>
+            </>
+          )}
+
           {tab === 'tx' && (
             <StoreTransactions
               storeCode={store.storeCode}
@@ -312,19 +404,25 @@ export default function StoreManagerHome() {
 
           {tab === 'home' && (
             <>
+              <HeaderGreeting
+                employeeName={firstName}
+                storeName={`${store.storeFormat || store.storeName} — ${store.city}, ${store.state}`}
+                rank={storeRank?.rank}
+                onOpenLeaderboard={() => setLeaderboardOpen(true)}
+              />
               <section className={`${styles.pad} rise rise-2`}>
                 <HeroCard>
                   <HeroCard.EyebrowRow>
                     {summary.kind === 'GROCERY' ? (
-                      <>
-                        <HeroCard.Eyebrow withDot>Live campaign</HeroCard.Eyebrow>
-                        <HeroCard.Badge tone="brand">{summary.campaign.incentiveType}</HeroCard.Badge>
-                      </>
+                      <HeroCard.Eyebrow withDot>Live campaign</HeroCard.Eyebrow>
                     ) : (
                       <HeroCard.Eyebrow withDot>
                         {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
                         {summary.kind === 'FNL' && `Week of ${summary.week.start}`}
                       </HeroCard.Eyebrow>
+                    )}
+                    {summary.achievementPct >= 100 && (
+                      <HeroCard.TrendPill>Target exceeded!</HeroCard.TrendPill>
                     )}
                   </HeroCard.EyebrowRow>
 
@@ -342,7 +440,9 @@ export default function StoreManagerHome() {
                     </>
                   )}
 
-                  <HeroCard.Amount suffix="%">{summary.achievementPct}</HeroCard.Amount>
+                  <HeroCard.Amount suffix="%" tone={summary.achievementPct >= 100 ? 'success' : undefined}>
+                    {summary.achievementPct}
+                  </HeroCard.Amount>
                   <HeroCard.AmountCap>
                     {summary.kind === 'GROCERY'
                       ? `of ${formatINR(summary.totalTarget)} store target`
@@ -353,6 +453,14 @@ export default function StoreManagerHome() {
                     actualValue={summary.totalActual}
                     targetValue={summary.totalTarget}
                   />
+
+                  {/* Gap to target or surplus */}
+                  {summary.achievementPct < 100 && summary.gapToTarget > 0 && (
+                    <HeroCard.Caption>
+                      <Target size={13} strokeWidth={2.2} />
+                      <strong>{formatINR(summary.gapToTarget)}</strong> more to hit target
+                    </HeroCard.Caption>
+                  )}
 
                   {summary.kind === 'GROCERY' && (
                     <HeroCard.Caption>
@@ -371,14 +479,22 @@ export default function StoreManagerHome() {
                         {summary.kind === 'GROCERY' ? formatINR(selfPayout) : formatINR(summary.totalPayout)}
                       </HeroCard.FooterValue>
                     </div>
-                    <HeroCard.FooterMeta>
-                      <Users size={12} strokeWidth={2.2} />
-                      <span>
-                        {summary.kind === 'GROCERY'
-                          ? `Split equally across ${summary.employees.length} staff`
-                          : `${summary.employees.length} staff`}
-                      </span>
-                    </HeroCard.FooterMeta>
+                    <div style={{ textAlign: 'right' }}>
+                      <HeroCard.FooterMeta>
+                        <Users size={12} strokeWidth={2.2} />
+                        <span>
+                          {summary.kind === 'GROCERY'
+                            ? `Split equally across ${summary.employees.length} staff`
+                            : `${summary.employees.length} staff`}
+                        </span>
+                      </HeroCard.FooterMeta>
+                      {typeof summary.daysLeft === 'number' && (
+                        <HeroCard.FooterMeta>
+                          <Clock size={12} strokeWidth={2.2} />
+                          <span>{summary.daysLeft} days left</span>
+                        </HeroCard.FooterMeta>
+                      )}
+                    </div>
                   </HeroCard.FooterBlock>
                 </HeroCard>
               </section>
@@ -416,6 +532,118 @@ export default function StoreManagerHome() {
                       {Array.from({ length: 7 }, (_, i) => (
                         <span key={i} className={i < myDaysPresent ? styles.pipOn : styles.pipOff} />
                       ))}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* Daily Run Rate */}
+              {summary.dailyPace > 0 && (
+                <section className={`${styles.pad} rise rise-3`}>
+                  <div className={styles.cardLight}>
+                    <div className={styles.cardHead}>
+                      <span className={styles.eyebrow}>
+                        <TrendingUp size={12} strokeWidth={2.4} style={{ marginRight: 4 }} />
+                        Daily run rate
+                      </span>
+                      <span className={styles.headSub}>day {summary.daysElapsed} of {summary.daysElapsed + summary.daysLeft}</span>
+                    </div>
+                    <div className={styles.runRateGrid}>
+                      <div className={styles.runRateItem}>
+                        <div className={styles.runRateValue}>{formatINR(summary.dailyPace)}</div>
+                        <div className={styles.runRateCap}>current pace / day</div>
+                      </div>
+                      <div className={styles.runRateDivider} />
+                      {summary.requiredPace > 0 ? (
+                        <div className={styles.runRateItem}>
+                          <div className={styles.runRateValue}>{formatINR(summary.requiredPace)}</div>
+                          <div className={styles.runRateCap}>needed / day</div>
+                        </div>
+                      ) : (
+                        <div className={styles.runRateItem}>
+                          <div className={`${styles.runRateValue} ${styles.runRateGreen}`}>{formatINR(summary.projectedTotal)}</div>
+                          <div className={styles.runRateCap}>projected total</div>
+                        </div>
+                      )}
+                    </div>
+                    {summary.projectedTotal >= summary.totalTarget ? (
+                      <div className={styles.runRateStatus}>
+                        <TrendingUp size={13} strokeWidth={2.4} />
+                        On pace to hit <strong>{Math.round((summary.projectedTotal / summary.totalTarget) * 100)}%</strong> of target
+                      </div>
+                    ) : (
+                      <div className={`${styles.runRateStatus} ${styles.runRateBehind}`}>
+                        <Target size={13} strokeWidth={2.2} />
+                        Behind pace — need to increase daily sales by <strong>{formatINR(summary.requiredPace - summary.dailyPace)}</strong>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              )}
+
+              {summary.kind === 'ELECTRONICS' && (
+                <section className={`${styles.pad} rise rise-4`}>
+                  <div className={styles.cardDark}>
+                    <div className={styles.cardHead}>
+                      <span className={styles.eyebrow}>Department multipliers</span>
+                    </div>
+                    <div className={styles.deptList}>
+                      {summary.departments.map((d) => {
+                        const mPct = Math.round(d.multiplier * 100);
+                        const isClose = d.nextTier && d.gapToNext != null && d.gapToNext > 0 && (d.nextTier.pct - d.achievementPct) <= 15;
+
+                        return (
+                          <div key={d.department} className={styles.deptRow}>
+                            <div className={styles.deptInfo}>
+                              <div className={styles.deptName}>{d.department}</div>
+                              <div className={styles.deptSub}>{formatINR(d.actualSales)} of {formatINR(d.target)}</div>
+                              {isClose && (
+                                <div className={styles.deptNudge}>
+                                  <Zap size={11} strokeWidth={2.4} />
+                                  {formatINR(d.gapToNext)} to unlock {d.nextTier.mult}%
+                                </div>
+                              )}
+                            </div>
+                            <div className={styles.deptAch}>{d.achievementPct}%</div>
+                            <div className={`${styles.deptMult} ${d.multiplier === 0 ? styles.multZero : ''}`}>
+                              {d.multiplier === 0 ? 'NO PAYOUT' : `${mPct}%`}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* What If Simulator */}
+              {summary.kind === 'ELECTRONICS' && summary.departments.some((d) => d.payoutUplift > 0) && (
+                <section className={`${styles.pad} rise rise-5`}>
+                  <div className={styles.cardLight}>
+                    <div className={styles.cardHead}>
+                      <span className={styles.eyebrow}>
+                        <Zap size={12} strokeWidth={2.4} style={{ marginRight: 4 }} />
+                        What if?
+                      </span>
+                      <span className={styles.headSub}>unlock potential</span>
+                    </div>
+                    <div className={styles.whatIfList}>
+                      {summary.departments
+                        .filter((d) => d.payoutUplift > 0 && d.nextTier && d.gapToNext > 0)
+                        .sort((a, b) => b.payoutUplift - a.payoutUplift)
+                        .map((d) => (
+                          <div key={d.department} className={styles.whatIfRow}>
+                            <div className={styles.whatIfQuestion}>
+                              If <strong>{d.department}</strong> hits {d.nextTier.pct}%
+                            </div>
+                            <div className={styles.whatIfDetail}>
+                              Sell <strong>{formatINR(d.gapToNext)}</strong> more → multiplier jumps to <strong>{d.nextTier.mult}%</strong>
+                            </div>
+                            <div className={styles.whatIfResult}>
+                              +{formatINR(d.payoutUplift)} extra payout for {d.employeesInDept} staff
+                            </div>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </section>
@@ -570,6 +798,8 @@ export default function StoreManagerHome() {
 }
 
 function TeamRoster({ summary, onSelectRow }) {
+  const unlockPct = summary.unlockPct;
+
   return (
     <div className={`${styles.cardLight} ${styles.teamRosterCard}`}>
       <div className={styles.cardHead}>
@@ -579,61 +809,134 @@ function TeamRoster({ summary, onSelectRow }) {
           Tap a row for detail
         </span>
       </div>
+
+      {/* Column headers */}
+      <div className={styles.rosterHeader}>
+        <span>Employee</span>
+        <span className={styles.rosterHeaderRight}>Potential</span>
+        <span className={styles.rosterHeaderRight}>Earned</span>
+      </div>
+
       <div className={styles.rosterList}>
-        {summary.employees.map((e) => (
-          <button
-            key={e.employeeId}
-            type="button"
-            className={`${styles.rosterRow} ${styles.rosterRowBtn} ${e.ineligible ? styles.rosterInelig : ''}`}
-            onClick={() => onSelectRow && onSelectRow(e)}
-          >
-            <div className={styles.rosterLeft}>
-              <span className={styles.rosterRole}>{e.role}</span>
-              <span className={styles.rosterName}>{e.employeeName}</span>
-              {e.payrollStatus !== 'ACTIVE' && (
-                <span className={styles.rosterStatus}>{e.payrollStatus.replace(/_/g, ' ')}</span>
-              )}
-              {typeof e.daysPresent === 'number' && (
-                <span className={styles.rosterDays}>{e.daysPresent}/7 days</span>
-              )}
-            </div>
-            <span className={styles.rosterPayout}>
-              {e.ineligible ? '—' : formatINR(e.total)}
-            </span>
-          </button>
-        ))}
+        {summary.employees.map((e) => {
+          const ach = e.achievementPct;
+          const unlocked = unlockPct != null && ach >= unlockPct;
+
+          return (
+            <button
+              key={e.employeeId}
+              type="button"
+              className={`${styles.rosterRow3Col} ${styles.rosterRowBtn} ${e.ineligible ? styles.rosterInelig : ''}`}
+              onClick={() => onSelectRow && onSelectRow(e)}
+            >
+              <div className={styles.rosterLeft}>
+                <span className={styles.rosterName}>{e.employeeName}</span>
+                <div className={styles.rosterMeta}>
+                  <span className={styles.rosterRole}>{e.role}</span>
+                  {!e.ineligible && ach > 0 && (
+                    <span className={`${styles.rosterAch} ${unlocked ? styles.rosterAchGreen : ''}`}>
+                      {ach}%
+                    </span>
+                  )}
+                  {e.payrollStatus !== 'ACTIVE' && (
+                    <span className={styles.rosterStatus}>{e.payrollStatus.replace(/_/g, ' ')}</span>
+                  )}
+                  {typeof e.daysPresent === 'number' && (
+                    <span className={styles.rosterDays}>{e.daysPresent}/7 days</span>
+                  )}
+                </div>
+              </div>
+              <span className={styles.rosterPotential}>
+                {e.ineligible ? '—' : formatINR(e.potential)}
+              </span>
+              <span className={styles.rosterEarned}>
+                {e.ineligible ? '—' : formatINR(e.earned)}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-function buildMyRankFromSummary(summary, selfEmployeeId) {
-  const rows = summary?.employees || [];
-  if (!selfEmployeeId || rows.length === 0) return null;
+function StoreLeaderboard({ leaderboardData, loading, storeName }) {
+  const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
 
-  const sorted = [...rows]
-    .map((r) => ({
-      name: r.employeeName || r.employeeId,
-      earned: Number(r.total) || 0,
-      isSelf: r.employeeId === selfEmployeeId,
-    }))
-    .sort((a, b) => b.earned - a.earned)
-    .map((r, i) => ({ ...r, rank: i + 1 }));
+  if (loading) {
+    return <div className={styles.cardLight}><div className={styles.loading}>Loading leaderboard...</div></div>;
+  }
 
-  const self = sorted.find((r) => r.isSelf);
-  if (!self) return null;
+  const ranked = leaderboardData?.leaderboard || [];
 
-  const selfIdx = sorted.findIndex((r) => r.isSelf);
-  const deltaAbove = selfIdx > 0 ? (sorted[selfIdx - 1].earned - self.earned) : 0;
+  if (ranked.length === 0) {
+    return (
+      <div className={styles.cardLight}>
+        <div className={styles.cardHead}>
+          <span className={styles.eyebrow}><Trophy size={12} strokeWidth={2.4} style={{ marginRight: 4 }} /> Store ranking</span>
+        </div>
+        <div className={styles.loading}>No sales data yet this month</div>
+      </div>
+    );
+  }
 
-  return {
-    rank: self.rank,
-    deltaAbove,
-    scope: 'store',
-    scopeNote: 'by incentive payout',
-    unitLabel: 'earned',
-    top: sorted.slice(0, 5),
-  };
+  return (
+    <div className={styles.cardLight}>
+      <div className={styles.cardHead}>
+        <span className={styles.eyebrow}>
+          <Trophy size={12} strokeWidth={2.4} style={{ marginRight: 4 }} />
+          Store ranking
+        </span>
+        <span className={styles.headSub}>{storeName}</span>
+      </div>
+
+      {/* Podium — top 3 */}
+      {ranked.length >= 3 && (
+        <div className={styles.podium}>
+          {[ranked[1], ranked[0], ranked[2]].map((e, i) => {
+            const pos = [2, 1, 3][i];
+            return (
+              <div key={e.employeeId} className={`${styles.podiumSlot} ${pos === 1 ? styles.podiumFirst : ''}`}>
+                <div className={styles.podiumMedal} style={{ color: medalColors[pos - 1] }}>
+                  <Medal size={pos === 1 ? 28 : 22} strokeWidth={2} />
+                </div>
+                <div className={styles.podiumName}>{e.employeeName.split(' ')[0]}</div>
+                <div className={styles.podiumAmount}>{formatINR(e.totalSales)}</div>
+                <div className={styles.podiumRank}>#{pos}</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Column header */}
+      <div className={styles.boardHeader}>
+        <span>#</span>
+        <span>Employee</span>
+        <span style={{ textAlign: 'right' }}>Sales</span>
+      </div>
+
+      {/* Full list */}
+      <div className={styles.boardList}>
+        {ranked.map((e) => (
+          <div key={e.employeeId} className={`${styles.boardRow} ${e.rank <= 3 ? styles.boardTop3 : ''}`}>
+            <span className={styles.boardRank}>
+              {e.rank <= 3 ? (
+                <Medal size={14} strokeWidth={2.2} style={{ color: medalColors[e.rank - 1] }} />
+              ) : (
+                e.rank
+              )}
+            </span>
+            <div className={styles.boardInfo}>
+              <span className={styles.boardName}>{e.employeeName}</span>
+              <span className={styles.rosterRole}>{e.role}</span>
+            </div>
+            <span className={styles.boardEarned}>{formatINR(e.totalSales)}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function buildCycleMeta(vertical, employee, storeDetail, summary) {

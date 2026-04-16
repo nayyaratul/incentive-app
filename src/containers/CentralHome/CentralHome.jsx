@@ -3,7 +3,7 @@ import { Flag, CheckCircle2, XCircle, Search, X } from 'lucide-react';
 import styles from './CentralHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import useCentralData from '../../hooks/useCentralData';
-import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
+import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import StoreDetailDrawer from '../../components/Organism/StoreDetailDrawer/StoreDetailDrawer';
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
@@ -70,11 +70,7 @@ export default function CentralHome() {
       />
 
       <div className={styles.layout}>
-        <HeaderBar
-          employeeName={tab === 'home' ? firstName : null}
-          streak={0}
-          showStreak={false}
-        />
+        <HeaderBar />
 
         <main className={styles.main}>
           {tab === 'stores' && (
@@ -218,6 +214,7 @@ export default function CentralHome() {
 
           {tab === 'home' && (
             <>
+          <HeaderGreeting employeeName={firstName} />
           {/* Org hero */}
           <section className={`${styles.pad} rise rise-2`}>
             <HeroCard>

@@ -19,3 +19,11 @@ export async function fetchStoreIncentive(storeCode, vertical, periodStart, peri
 export async function fetchCityIncentives(vertical) {
   return api.get('/incentives', { params: { vertical } });
 }
+
+export async function fetchAllStoreIncentives(vertical) {
+  return api.get('/incentives/stores', { params: { vertical } });
+}
+
+export async function fetchLeaderboard(storeCode, scope = 'store') {
+  return api.get('/leaderboard', { params: { storeCode, scope } });
+}

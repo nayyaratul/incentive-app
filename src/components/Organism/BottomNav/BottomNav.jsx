@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Users, BarChart3, Flag, Store, Receipt } from 'lucide-react';
+import { Home, Users, BarChart3, Flag, Store, Receipt, Trophy } from 'lucide-react';
 import cx from 'classnames';
 import styles from './BottomNav.module.scss';
 
@@ -14,6 +14,7 @@ const NAV_SETS = {
   SM: [
     { id: 'home',  label: 'Home',  Icon: Home },
     { id: 'team',  label: 'Team',  Icon: Users },
+    { id: 'board', label: 'Leaderboard', Icon: Trophy },
     { id: 'tx',    label: 'Transactions', Icon: Receipt },
   ],
   CENTRAL: [

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchDashboard } from '../api/dashboard';
-import { fetchIncentives } from '../api/incentives';
+import { fetchIncentives, fetchAllStoreIncentives } from '../api/incentives';
 import { fetchRules } from '../api/rules';
 import { transformCentralReporting } from '../api/transformers/central';
 
@@ -16,14 +16,14 @@ export default function useCentralData() {
 
     Promise.all([
       fetchDashboard(),
-      fetchIncentives({}),          // city-level (no filters)
-      fetchIncentives({ vertical: undefined }), // store-level
+      fetchIncentives({}),              // city-level summary
+      fetchAllStoreIncentives(),        // all stores with incentive data
       fetchRules(),
     ])
       .then(([dashboard, cityData, storeData, allPlans]) => {
         if (cancelled) return;
         const cityRows = cityData?.level === 'city' ? cityData.rows : [];
-        const storeRows = storeData?.level === 'store' ? storeData.rows : [];
+        const storeRows = storeData?.rows ?? [];
         setReporting(transformCentralReporting(dashboard, cityRows, storeRows, allPlans));
         setRules(allPlans);
       })

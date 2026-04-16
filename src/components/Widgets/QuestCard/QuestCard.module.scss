@@ -41,6 +41,29 @@
   }
 }
 
+/* Empty state */
+.empty {
+  display: flex;
+  align-items: center;
+  gap: var(--space-150);
+  padding: var(--space-200) var(--space-150);
+  border: var(--border-width-100) dashed var(--color-border-default);
+  border-radius: var(--radius-150);
+  background: var(--color-bg-secondary);
+  margin-bottom: var(--space-125);
+}
+
+.emptyIcon {
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+.emptyText {
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
 /* Stack of standalone quest cards. Nexus Card handles bg/border/radius/spacing. */
 .list {
   list-style: none;

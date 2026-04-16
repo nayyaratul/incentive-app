@@ -22,10 +22,9 @@ function findSplit(sms, dms) {
 export default function FnlView({ payout, employee, store, role }) {
   const qualifies = payout.storeQualifies;
   const split = findSplit(payout.staffing.sms, payout.staffing.dms);
-  const myEmp = payout.employees.find((e) => e.employeeId === employee.employeeId);
-  const myPayout = myEmp?.payout ?? 0;
-  const myDays = myEmp?.daysPresent ?? 0;
-  const eligible5Day = myDays >= fnlWeeklyRules.minWorkingDays;
+  const myPayout = payout.myPayout ?? 0;
+  const myDays = payout.myAttendanceDays ?? 0;
+  const eligible5Day = payout.myAttendanceEligible ?? (myDays >= fnlWeeklyRules.minWorkingDays);
 
   return (
     <>

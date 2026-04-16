@@ -25,7 +25,6 @@ export default function QuestCard({ employeeId, vertical }) {
   const direct = questsByEmployee[employeeId];
   const fallbackId = VERTICAL_SAMPLE_ID[vertical];
   const quests = direct || (fallbackId ? questsByEmployee[fallbackId] : null) || [];
-  if (quests.length === 0) return null;
 
   const activeCount = quests.filter((q) => q.status === 'active').length;
 
@@ -40,6 +39,15 @@ export default function QuestCard({ employeeId, vertical }) {
           <strong>{activeCount}</strong> live
         </Text>
       </div>
+
+      {quests.length === 0 && (
+        <div className={styles.empty}>
+          <Target size={20} strokeWidth={1.8} className={styles.emptyIcon} />
+          <Text as="div" variant="caption" size="sm" className={styles.emptyText}>
+            No active quests yet. Keep selling to unlock your first quest!
+          </Text>
+        </div>
+      )}
 
       <ul className={styles.list}>
         {quests.map((q) => {

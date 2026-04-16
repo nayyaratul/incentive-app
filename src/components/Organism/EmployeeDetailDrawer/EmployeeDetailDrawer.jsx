@@ -1,16 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Drawer } from '@/nexus/molecules';
 import styles from './EmployeeDetailDrawer.module.scss';
 import { formatINR } from '../../../utils/format';
-import { transactionsByEmployee } from '../../../data/transactions';
-import { electronicsPayoutsRD3675 } from '../../../data/payouts';
-import { electronicsMultiplierTiers } from '../../../data/configs';
-
-function findMultiplier(pct) {
-  const tier = electronicsMultiplierTiers.find((t) => pct >= t.gateFromPct && pct < t.gateToPct);
-  return tier ? tier.multiplier : 0;
-}
+import { fetchEmployeeIncentive } from '../../../api/incentives';
+import { fetchSales } from '../../../api/sales';
 
 /**
  * Bottom-sheet drilling into a single team member from the SM's roster.
@@ -19,17 +13,55 @@ function findMultiplier(pct) {
  * Now uses Nexus Drawer for overlay, animation, focus management, and close handling.
  */
 export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClose, onViewAllTransactions }) {
+  const [detail, setDetail] = useState(null);
+  const [recentTx, setRecentTx] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open || !employee) {
+      setDetail(null);
+      setRecentTx([]);
+      return;
+    }
+
+    let cancelled = false;
+    setLoading(true);
+
+    const vertical = employee.vertical || 'ELECTRONICS';
+
+    Promise.all([
+      fetchEmployeeIncentive(employee.employeeId, vertical).catch(() => null),
+      fetchSales({ employeeId: employee.employeeId, storeCode: employee.storeCode }).catch(() => []),
+    ])
+      .then(([empDetail, txRows]) => {
+        if (cancelled) return;
+        setDetail(empDetail);
+        setRecentTx((txRows || []).slice(0, 5));
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => { cancelled = true; };
+  }, [open, employee?.employeeId]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!employee) return null;
 
   const initial = employee.employeeName?.[0] || '?';
-  const elecPayout = electronicsPayoutsRD3675.find((p) => p.employeeId === employee.employeeId);
-  const allTx = transactionsByEmployee[employee.employeeId] || [];
-  const recentTx = allTx.slice(0, 5);
-  const totalTxCount = allTx.length;
+  const totalTxCount = recentTx.length;
 
   const ineligible = summaryRow?.ineligible;
-  const total = summaryRow?.total ?? 0;
+  const earned = summaryRow?.earned ?? summaryRow?.total ?? 0;
+  const potential = summaryRow?.potential ?? summaryRow?.eligible ?? 0;
+  const achievementPct = summaryRow?.achievementPct ?? 0;
   const days = summaryRow?.daysPresent;
+
+  // Department breakdown from the API employee detail (Electronics)
+  const departments = detail?.departments || [];
+  const multiplierTiers = detail?.multiplierTiers || [];
+
+  const findMultiplier = (pct) => {
+    const tier = multiplierTiers.find((t) => pct >= Number(t.from) && pct < Number(t.to));
+    return tier ? Number(tier.multiplierPct) / 100 : 0;
+  };
 
   const headerIcon = (
     <div className={styles.avatar} aria-hidden="true">{initial}</div>
@@ -53,19 +85,21 @@ export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClo
         <section className={styles.stats}>
           <div>
             <div className={styles.statVal} style={{ color: ineligible ? 'var(--color-text-tertiary)' : 'var(--brand-70)' }}>
-              {ineligible ? '\u2014' : formatINR(total)}
+              {ineligible ? '\u2014' : formatINR(earned)}
             </div>
-            <div className={styles.statCap}>this period</div>
+            <div className={styles.statCap}>earned</div>
           </div>
           <div className={styles.statDiv} />
           <div>
-            <div className={styles.statVal}>{typeof days === 'number' ? `${days}/7` : '\u2014'}</div>
-            <div className={styles.statCap}>days present</div>
+            <div className={styles.statVal}>
+              {ineligible ? '\u2014' : formatINR(potential)}
+            </div>
+            <div className={styles.statCap}>potential</div>
           </div>
           <div className={styles.statDiv} />
           <div>
-            <div className={styles.statVal}>{recentTx.length}</div>
-            <div className={styles.statCap}>recent tx</div>
+            <div className={styles.statVal}>{achievementPct > 0 ? `${achievementPct}%` : '\u2014'}</div>
+            <div className={styles.statCap}>achievement</div>
           </div>
         </section>
 
@@ -79,7 +113,7 @@ export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClo
         )}
 
         {/* Department breakdown — Electronics only */}
-        {elecPayout && elecPayout.byDepartment.length > 0 && (
+        {departments.length > 0 && (
           <section className={styles.section}>
             <h3 className={styles.sectionTitle}>By department</h3>
             <div className={styles.deptList}>
@@ -87,19 +121,15 @@ export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClo
                 <span>Dept</span>
                 <span>%</span>
                 <span>&times;</span>
-                <span>Final</span>
               </div>
-              {elecPayout.byDepartment.map((d) => {
-                const m = findMultiplier(d.achievementPct);
+              {departments.map((d) => {
+                const m = findMultiplier(Number(d.achievementPct) || 0);
                 const zero = m === 0;
                 return (
                   <div key={d.department} className={`${styles.deptRow} ${zero ? styles.deptZero : ''}`}>
                     <span className={styles.deptName}>{d.department}</span>
                     <span className={styles.deptVal}>{d.achievementPct}%</span>
                     <span className={styles.deptVal}>{m === 0 ? '\u2014' : `${m.toFixed(2)}\u00d7`}</span>
-                    <span className={`${styles.deptFinal} ${zero ? styles.deptZeroFinal : ''}`}>
-                      {d.finalPayout === 0 ? '\u20B90' : formatINR(d.finalPayout)}
-                    </span>
                   </div>
                 );
               })}
@@ -118,26 +148,24 @@ export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClo
                   className={styles.viewAll}
                   onClick={() => onViewAllTransactions(employee.employeeId)}
                 >
-                  {totalTxCount > recentTx.length
-                    ? `See all ${totalTxCount}`
-                    : 'Open in Transactions'}
+                  Open in Transactions
                   <ArrowUpRight size={12} strokeWidth={2.4} />
                 </button>
               )}
             </div>
             <div className={styles.txList}>
               {recentTx.map((tx) => {
-                const earned = typeof tx.finalIncentive === 'number' ? tx.finalIncentive : null;
+                const earned = typeof tx.incentiveAmount === 'number' ? tx.incentiveAmount : null;
                 return (
                   <div key={tx.transactionId} className={styles.txRow}>
                     <div className={styles.txLeft}>
                       <div className={styles.txArticle}>
-                        {tx.brand && <span className={styles.txBrand}>{tx.brand}</span>}
+                        {tx.brand && tx.brand !== '—' && <span className={styles.txBrand}>{tx.brand}</span>}
                         <span className={styles.txArticleCode}>{tx.articleCode}</span>
                       </div>
                       <div className={styles.txMeta}>
                         {new Date(tx.transactionDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
-                        {tx.department && ` \u00b7 ${tx.department}`}
+                        {tx.department && tx.department !== '—' && ` \u00b7 ${tx.department}`}
                         {tx.transactionType !== 'NORMAL' && (
                           <span className={styles.txTag}>{tx.transactionType}</span>
                         )}
@@ -164,18 +192,11 @@ export default function EmployeeDetailDrawer({ employee, summaryRow, open, onClo
           <div className={styles.metaList}>
             <Row label="Employee ID"     value={employee.employeeId} />
             <Row label="Role"             value={employee.role} />
-            {employee.primaryDepartment && (
-              <Row label="Primary dept"   value={employee.primaryDepartment} />
-            )}
-            {employee.brandRep && (
-              <Row label="Brand"          value={employee.brandRep} />
+            {employee.department && (
+              <Row label="Department"     value={employee.department} />
             )}
             <Row label="Store"            value={employee.storeCode} />
             <Row label="Payroll status"   value={employee.payrollStatus} />
-            <Row label="Joined"           value={employee.dateOfJoining} />
-            {employee.dateOfExit && (
-              <Row label="Exit date"      value={employee.dateOfExit} />
-            )}
           </div>
         </section>
       </div>

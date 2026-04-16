@@ -6,7 +6,7 @@ import useAsync from '../../hooks/useAsync';
 import { fetchSales } from '../../api/sales';
 import { fetchEmployees } from '../../api/employees';
 import { fetchStoreIncentive } from '../../api/incentives';
-import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
+import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import BadgesStrip from '../../components/Widgets/BadgesStrip/BadgesStrip';
@@ -76,14 +76,11 @@ export default function BrandAssociateHome() {
       <BottomNav active={tab} role="BA" onNavigate={setTab} />
 
       <div className={styles.layout}>
-        <HeaderBar
-          employeeName={tab === 'home' ? firstName : null}
-          streak={0}
-          showStreak={false}
-        />
+        <HeaderBar />
 
         <main className={styles.main}>
           {tab === 'home' && (<>
+          <HeaderGreeting employeeName={firstName} />
           {/* Eligibility notice */}
           <section className={`${styles.pad} rise rise-2`}>
             <div className={styles.ineligCard}>

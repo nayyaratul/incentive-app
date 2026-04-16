@@ -29,7 +29,6 @@ export default function GroceryView({ payout, employee, store, role }) {
         <HeroCard>
           <HeroCard.EyebrowRow>
             <HeroCard.Eyebrow withDot>Live campaign</HeroCard.Eyebrow>
-            <HeroCard.Badge tone="brand">{groceryCampaign.incentiveType}</HeroCard.Badge>
           </HeroCard.EyebrowRow>
 
           <HeroCard.Title>{groceryCampaign.campaignName}</HeroCard.Title>

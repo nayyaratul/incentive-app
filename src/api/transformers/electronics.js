@@ -68,6 +68,8 @@ function buildMyRank(storeEmployees, employeeId) {
   return {
     rank,
     deltaAbove,
+    /** Simulated rank change from yesterday — positive = improved */
+    deltaRank: rank > 0 ? Math.floor(Math.random() * 3) : 0,
     scope: 'store',
     top: ranked.slice(0, 5),
   };
@@ -108,6 +110,9 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
 
   // -- month-to-date --
   const monthToDateEarned = Number(cs.finalIncentive) || 0;
+  const baseIncentive = Number(cs.baseIncentive) || 0;
+  const achievementPct = Number(cs.achievementPct) || 0;
+  const currentMultiplierPct = Number(cs.currentMultiplierPct) || 0;
 
   // -- milestones --
   const milestones = MILESTONE_THRESHOLDS.map((t, i) => ({
@@ -117,12 +122,22 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
     crossed: monthToDateEarned >= t,
   }));
 
+  // -- nudge / multiplier tiers from API --
+  const apiMultiplierTiers = detail?.multiplierTiers ?? [];
+  const apiMessage = detail?.message ?? '';
+
   return {
     employeeId,
     byDepartment,
     todayEarned,
     monthToDateEarned,
-    monthlyGoalTarget: Number(cs.storeTarget) || 0,
+    baseIncentive,
+    achievementPct,
+    currentMultiplierPct,
+    apiMultiplierTiers,
+    apiMessage,
+    employeeDepartment: cs.employeeDepartment || null,
+    monthlyGoalTarget: Number(cs.departmentTarget) || 0,
     lastMonthPayout: Number(prevPeriod?.currentStanding?.finalIncentive) || 0,
     nextPayoutDate: nextPayoutDate(),
     overallMultiplier: (Number(cs.currentMultiplierPct) || 0) / 100,
