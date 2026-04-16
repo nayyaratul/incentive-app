@@ -198,8 +198,7 @@
 /* ---------- Hero amount (48px unified) ---------- */
 .amountRow {
   display: flex;
-  align-items: baseline;
-  gap: var(--space-050);
+  align-items: center;
 }
 
 .amount {
@@ -215,16 +214,23 @@
 .amount-brand { color: var(--brand-70); }
 .amount-success { color: var(--color-text-success); }
 
-.amountSymbol {
-  font-family: var(--sans);
-  font-style: italic;
-  font-variation-settings: 'opsz' 72, 'SOFT' 100, 'wght' 420;
-  font-size: var(--font-size-800);
-  line-height: 0.9;
-  color: var(--color-action-primary);
-  letter-spacing: -0.03em;
-  transform: translateY(calc(-1 * var(--space-025)));
-  display: inline-block;
+.amountAffix {
+  font-family: inherit;
+  font-style: inherit;
+  font-size: 1em;
+  font-weight: inherit;
+  font-variation-settings: inherit;
+  line-height: inherit;
+  color: currentColor;
+  letter-spacing: inherit;
+}
+
+.prefixAffix {
+  margin-right: 0.06em;
+}
+
+.suffixAffix {
+  margin-left: 0.04em;
 }
 
 .amountCap {
@@ -320,6 +326,11 @@
   }
 }
 
+.noBottomDivider {
+  border-bottom: 0;
+  padding-bottom: var(--space-125);
+}
+
 .figure {
   flex: 1;
   min-width: 0;
@@ -405,6 +416,7 @@
   text-transform: uppercase;
   color: var(--color-text-secondary);
   margin-bottom: var(--space-025);
+  white-space: nowrap;
 }
 
 .footerValue {
@@ -412,7 +424,7 @@
   font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 680;
   font-size: var(--font-size-600);
   line-height: var(--line-height-600);
-  color: var(--brand-70);
+  color: var(--color-text-primary);
   letter-spacing: var(--letter-spacing-tighter);
   font-variant-numeric: tabular-nums;
 }

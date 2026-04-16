@@ -2,20 +2,5 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-150);
-}
-
-.banner {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-075);
-  align-self: flex-start;
-  padding: var(--space-075) var(--space-125);
-  background: var(--brand-a100);
-  color: var(--brand-70);
-  border-radius: var(--radius-full);
-  font-family: var(--sans);
-  font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  box-shadow: 0 0 0 1px var(--brand-50) inset;
+  padding-top: var(--space-100);
 }

@@ -260,6 +260,7 @@ export const fnlPayoutTRN0241 = {
     { employeeId: 'FNL-3107', role: 'SA', daysPresent: 6, eligible: true, payout: 1080 },
     { employeeId: 'FNL-3108', role: 'SA', daysPresent: 5, eligible: true, payout: 1080 },
     { employeeId: 'FNL-3109', role: 'SA', daysPresent: 7, eligible: true, payout: 1080 },
+    { employeeId: 'FNL-3110', role: 'SA', daysPresent: 6, eligible: true, payout: 1080 },
     // The 8th SA (a placeholder we track but not in masters) on 4 days — ineligible
     // (kept as pseudo record to illustrate the 5-day rule)
   ],

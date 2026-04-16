@@ -7,12 +7,13 @@ import { VERTICALS } from '../../data/masters';
 import useElectronicsData from '../../hooks/useElectronicsData';
 import useGroceryData from '../../hooks/useGroceryData';
 import useFnlData from '../../hooks/useFnlData';
-import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
+import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
 import ElectronicsView from './views/ElectronicsView';
 import GroceryView from './views/GroceryView';
 import FnlView from './views/FnlView';
+import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
 import HistoryScreen from '../screens/HistoryScreen';
 
 export default function EmployeeHome() {
@@ -32,10 +33,13 @@ export default function EmployeeHome() {
   const groc = useGroceryData(isGroc ? employee?.employeeId : null);
   const fnl = useFnlData(isFnl ? employee?.employeeId : null);
 
-  const dataLoading = elec.loading || groc.loading || fnl.loading;
+  const activeDataLoading = isElec ? elec.loading : isGroc ? groc.loading : isFnl ? fnl.loading : true;
+  const activeDataReady = isElec ? !!elec.payout : isGroc ? !!groc.payout : isFnl ? !!fnl.payout : false;
   const myPayout = isElec ? elec.payout : isGroc ? groc.payout : isFnl ? fnl.payout : null;
 
-  const myRank = myPayout?.myRank;
+  const storeRank = active?.vertical && store?.storeCode
+    ? buildStoreLeaderboard(active.vertical, store.storeCode)
+    : null;
 
   /* Pull-to-refresh — triggers a re-render that reloads data hooks */
   const handleRefresh = useCallback(() => {
@@ -61,7 +65,7 @@ export default function EmployeeHome() {
     return () => PullToRefresh.destroyAll();
   }, [handleRefresh]);
 
-  if (!active || !employee || dataLoading) {
+  if (!active || !employee || activeDataLoading || !activeDataReady) {
     return <div className={styles.loading}>Loading...</div>;
   }
 
@@ -72,21 +76,21 @@ export default function EmployeeHome() {
       <LeaderboardDrawer
         open={leaderboardOpen}
         onClose={() => setLeaderboardOpen(false)}
-        myRank={myRank}
+        myRank={storeRank}
       />
 
       <div className={styles.layout}>
-        <HeaderBar
-          employeeName={tab === 'home' ? firstName : null}
-          storeName={tab === 'home' && store ? `${store.storeFormat || store.storeName} — ${store.city}, ${store.state}` : undefined}
-          rank={tab === 'home' ? myRank?.rank : undefined}
-          deltaRank={tab === 'home' ? myRank?.deltaRank : undefined}
-          onOpenLeaderboard={() => setLeaderboardOpen(true)}
-        />
+        <HeaderBar />
 
         <main className={styles.main} ref={mainRef}>
           {tab === 'home' && (
             <>
+              <HeaderGreeting
+                employeeName={firstName}
+                storeName={store ? `${store.storeFormat || store.storeName} — ${store.city}, ${store.state}` : undefined}
+                rank={storeRank?.rank}
+                onOpenLeaderboard={() => setLeaderboardOpen(true)}
+              />
               {active.vertical === VERTICALS.ELECTRONICS && (
                 <ElectronicsView payout={myPayout} employee={employee} store={store} role={active.role} />
               )}

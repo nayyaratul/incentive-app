@@ -41,14 +41,14 @@ export default function FnlView({ payout, employee, store, role }) {
             </HeroCard.QualifyPill>
           </HeroCard.EyebrowRow>
 
-          <HeroCard.Amount prefix="₹" tone="brand">
+          <HeroCard.Amount prefix="₹">
             {qualifies && eligible5Day
               ? new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(myPayout)
               : '0'}
           </HeroCard.Amount>
           <HeroCard.AmountCap>Your share this week</HeroCard.AmountCap>
 
-          <HeroCard.Figures dense>
+          <HeroCard.Figures dense noBottomDivider>
             <HeroCard.Figure value={formatINR(payout.actualWeeklyGrossSales)} cap="actual" />
             <HeroCard.FigureDivider />
             <HeroCard.Figure value={formatINR(payout.weeklySalesTarget)} cap="target" />

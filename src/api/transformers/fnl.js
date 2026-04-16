@@ -27,6 +27,58 @@ function buildStreakShape(weeks) {
 }
 
 // ---------------------------------------------------------------------------
+// Leaderboard synthesis (mock) — peers and ranks are fabricated from the
+// current user's weekly payout since the API doesn't yet return peer rankings.
+// MOCK-TODO: Remove this synthesiser and consume real peer data from API.
+// ---------------------------------------------------------------------------
+
+const FNL_PEER_NAMES = [
+  'Rahul Shetty',
+  'Ishaan Joshi',
+  'Dhruv Joshi',
+  'Pooja Kulkarni',
+  'Kavya Sen',
+];
+
+function buildFnlMyRank(detail, saPayoutEach) {
+  const cs = detail?.currentStanding ?? {};
+  const employee = detail?.employee ?? {};
+  const myName = employee.employeeName || employee.employeeId || 'You';
+  const myPayout =
+    Number(cs.yourPayout) ||
+    Number(cs.currentPayout) ||
+    Number(cs.currentWeekPayout) ||
+    Number(saPayoutEach) ||
+    0;
+
+  const peerDeltas = [0.35, 0.18, -0.08, -0.2];
+  const fallbackBase = myPayout > 0 ? myPayout : 1100;
+  const peers = FNL_PEER_NAMES.slice(0, 4).map((name, i) => ({
+    name,
+    earned: Math.max(0, Math.round(fallbackBase * (1 + peerDeltas[i]))),
+    isSelf: false,
+  }));
+
+  const selfEntry = { name: myName, earned: Math.max(0, Math.round(myPayout)), isSelf: true };
+  const sorted = [...peers, selfEntry]
+    .sort((a, b) => b.earned - a.earned)
+    .map((e, i) => ({ ...e, rank: i + 1 }));
+
+  const self = sorted.find((e) => e.isSelf);
+  const selfIdx = sorted.findIndex((e) => e.isSelf);
+  const deltaAbove = selfIdx > 0 ? sorted[selfIdx - 1].earned - self.earned : 0;
+
+  return {
+    rank: self.rank,
+    deltaAbove,
+    scope: 'store',
+    scopeNote: 'by weekly payout',
+    unitLabel: 'earned',
+    top: sorted,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Main transformer
 // ---------------------------------------------------------------------------
 
@@ -101,7 +153,7 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     lastWeekSaPayout,
     nextPayoutDate: nextPayoutDate(),
     streak: buildStreakShape(weeks),
-    myRank: null, // not available yet
+    myRank: buildFnlMyRank(detail, saPayoutEach),
     employees: [], // needs attendance endpoint
     recentWeeks,
   };

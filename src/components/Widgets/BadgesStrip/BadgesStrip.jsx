@@ -1,21 +1,37 @@
-import React from 'react';
-import { Medal } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Trophy } from 'lucide-react';
 import { Text } from '@/nexus/atoms';
 import styles from './BadgesStrip.module.scss';
 import { badgesByEmployee } from '../../../data/gamification';
+import Medallion from '../../Atom/Medallion/Medallion';
+import TrophyCaseDrawer from '../../Organism/TrophyCaseDrawer/TrophyCaseDrawer';
+import BadgeDetailDrawer from '../../Organism/BadgeDetailDrawer/BadgeDetailDrawer';
+import { sortBadgesForStrip, isNewBadge } from './badgeSort';
 
-// Sample employee per vertical — used when the API-fetched employeeId
-// isn't in the gamification mock data, so every user sees example badges.
 const VERTICAL_SAMPLE_ID = {
   ELECTRONICS: 'EMP-0041',
-  GROCERY: 'GRC-2203',
-  FNL: 'FNL-3103',
+  GROCERY:     'GRC-2203',
+  FNL:         'FNL-3103',
 };
 
+const SHELF_MAX = 4;
+
 export default function BadgesStrip({ employeeId, vertical }) {
-  const direct = badgesByEmployee[employeeId];
-  const fallbackId = VERTICAL_SAMPLE_ID[vertical];
-  const badges = direct || (fallbackId ? badgesByEmployee[fallbackId] : null) || [];
+  const [trophyOpen, setTrophyOpen] = useState(false);
+  const [selectedBadge, setSelectedBadge] = useState(null);
+
+  const badges = useMemo(() => {
+    const direct = badgesByEmployee[employeeId];
+    if (direct) return direct;
+    const fallbackId = VERTICAL_SAMPLE_ID[vertical];
+    return fallbackId ? badgesByEmployee[fallbackId] || [] : [];
+  }, [employeeId, vertical]);
+
+  const sorted = useMemo(() => sortBadgesForStrip(badges), [badges]);
+  const visible = sorted.slice(0, SHELF_MAX);
+  const overflow = Math.max(0, sorted.length - SHELF_MAX);
+
+  if (badges.length === 0) return null;
 
   const unlocked = badges.filter((b) => b.unlockedAt).length;
 
@@ -23,45 +39,62 @@ export default function BadgesStrip({ employeeId, vertical }) {
     <section className={styles.section}>
       <div className={styles.header}>
         <div className={styles.headerLeft}>
-          <Medal size={14} strokeWidth={2.4} className={styles.iconAccent} />
+          <Trophy size={14} strokeWidth={2.4} className={styles.iconAccent} />
           <span className={styles.title}>Badges</span>
         </div>
         <Text variant="caption" size="sm" as="span" className={styles.counter}>
-          <strong>{unlocked}</strong> of {badges.length}
+          <strong>{unlocked}</strong> of {badges.length} earned
         </Text>
       </div>
 
-      {badges.length === 0 && (
-        <div className={styles.empty}>
-          <Medal size={18} strokeWidth={1.8} className={styles.emptyIcon} />
-          <Text as="span" variant="caption" size="sm" className={styles.emptyText}>
-            Complete your first sale to start earning badges!
-          </Text>
-        </div>
-      )}
-
-      <div className={styles.scroll}>
-        {badges.map((b) => {
-          const isLocked = !b.unlockedAt;
+      <div className={styles.row}>
+        {visible.map((b) => {
+          const locked = !b.unlockedAt;
           return (
-            <div
-              key={b.id}
-              className={`${styles.badge} ${isLocked ? styles.locked : ''}`}
-              title={b.note}
-            >
-              <div className={styles.icon} aria-hidden="true">{b.icon}</div>
-              <div className={styles.body}>
-                <Text as="div" variant="caption" size="sm" weight="semibold" truncate className={styles.label}>
-                  {b.label}
-                </Text>
-                <Text as="div" variant="micro" className={styles.note}>
-                  {isLocked ? 'Not yet' : new Date(b.unlockedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
-                </Text>
+            <div key={b.id} className={styles.cell}>
+              <Medallion
+                icon={b.icon}
+                rarity={b.rarity}
+                locked={locked}
+                isNew={isNewBadge(b.unlockedAt)}
+                size="md"
+                ariaLabel={`${b.label} — ${b.rarity} ${b.category} badge${locked ? ', locked' : ''}`}
+                onClick={() => setSelectedBadge(b)}
+              />
+              <div className={`${styles.cellLabel} ${locked ? styles.cellLabelLocked : ''}`}>
+                {b.label}
               </div>
             </div>
           );
         })}
+
+        {overflow > 0 && (
+          <div className={styles.cell}>
+            <button
+              type="button"
+              className={styles.viewAll}
+              aria-label={`View all ${badges.length} badges`}
+              onClick={() => setTrophyOpen(true)}
+            >
+              +{overflow}
+            </button>
+            <div className={styles.cellLabel}>View all</div>
+          </div>
+        )}
       </div>
+
+      <TrophyCaseDrawer
+        badges={sorted}
+        open={trophyOpen}
+        onClose={() => setTrophyOpen(false)}
+        onSelectBadge={(b) => setSelectedBadge(b)}
+      />
+
+      <BadgeDetailDrawer
+        badge={selectedBadge}
+        open={!!selectedBadge}
+        onClose={() => setSelectedBadge(null)}
+      />
     </section>
   );
 }

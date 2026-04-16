@@ -6,9 +6,13 @@ import useAsync from '../../hooks/useAsync';
 import { fetchSales } from '../../api/sales';
 import { fetchEmployees } from '../../api/employees';
 import { fetchStoreIncentive } from '../../api/incentives';
-import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
+import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
+import BadgesStrip from '../../components/Widgets/BadgesStrip/BadgesStrip';
+import QuestCard from '../../components/Widgets/QuestCard/QuestCard';
+import StreakNote from '../../components/Molecule/StreakNote/StreakNote';
+import MomentumPills from '../../components/Molecule/MomentumPills/MomentumPills';
 import { formatINR } from '../../utils/format';
 
 export default function BrandAssociateHome() {
@@ -57,6 +61,10 @@ export default function BrandAssociateHome() {
   }, [storeDetailResult.data]);
 
   const firstName = employee?.employeeName?.split(' ')[0] ?? '';
+  const engagement = useMemo(
+    () => buildBaEngagement(employee, active?.vertical, salesResult.data, myContribution),
+    [employee, active?.vertical, salesResult.data, myContribution]
+  );
 
   const dataLoading = salesResult.loading || teamResult.loading || storeDetailResult.loading;
   if (!active || !employee || !store || dataLoading) {
@@ -68,14 +76,11 @@ export default function BrandAssociateHome() {
       <BottomNav active={tab} role="BA" onNavigate={setTab} />
 
       <div className={styles.layout}>
-        <HeaderBar
-          employeeName={tab === 'home' ? firstName : null}
-          streak={0}
-          showStreak={false}
-        />
+        <HeaderBar />
 
         <main className={styles.main}>
           {tab === 'home' && (<>
+          <HeaderGreeting employeeName={firstName} />
           {/* Eligibility notice */}
           <section className={`${styles.pad} rise rise-2`}>
             <div className={styles.ineligCard}>
@@ -153,6 +158,19 @@ export default function BrandAssociateHome() {
             </section>
           )}
 
+          <section className={`${styles.pad} rise rise-4`}>
+            <StreakNote streak={engagement.streak} />
+          </section>
+
+          <section className={`${styles.pad} rise rise-4`}>
+            <MomentumPills
+              thisPeriodAmount={engagement.thisPeriodAmount}
+              lastPeriodAmount={engagement.lastPeriodAmount}
+              lastPeriodLabel={engagement.lastPeriodLabel}
+              nextPayoutDate={engagement.nextPayoutDate}
+            />
+          </section>
+
           {/* Store pulse */}
           <section className={`${styles.pad} rise rise-5`}>
             <div className={styles.cardDark}>
@@ -179,6 +197,14 @@ export default function BrandAssociateHome() {
             </div>
           </section>
 
+          <section className={`rise rise-5`}>
+            <QuestCard employeeId={employee.employeeId} vertical={active?.vertical || 'ELECTRONICS'} />
+          </section>
+
+          <section className={`rise rise-5`}>
+            <BadgesStrip employeeId={employee.employeeId} vertical={active?.vertical || 'ELECTRONICS'} />
+          </section>
+
           <section className={`${styles.pad} rise rise-5`}>
             <ComplianceLink
               label="Your record"
@@ -196,4 +222,56 @@ export default function BrandAssociateHome() {
       </div>
     </div>
   );
+}
+
+function buildBaEngagement(employee, vertical, salesRows, contribution) {
+  const streak = buildStreakFromSalesRows(salesRows);
+  const thisPeriodAmount = Number(contribution?.grossValue) || 0;
+  const prev = inferPreviousCycleAmount(employee, thisPeriodAmount);
+
+  return {
+    streak,
+    thisPeriodAmount,
+    lastPeriodAmount: prev,
+    lastPeriodLabel: vertical === 'FNL' ? 'last week' : (vertical === 'GROCERY' ? 'last campaign' : 'last month'),
+    nextPayoutDate: vertical === 'FNL' ? nextMondayPayoutDate() : nextMonthlyPayoutDate(),
+  };
+}
+
+function inferPreviousCycleAmount(employee, thisAmount) {
+  const joined = employee?.dateOfJoining ? new Date(employee.dateOfJoining) : null;
+  if (!joined || Number.isNaN(joined.getTime())) return 0;
+  const days = Math.floor((Date.now() - joined.getTime()) / (1000 * 60 * 60 * 24));
+  if (days < 30 || thisAmount <= 0) return 0;
+  return Math.round(thisAmount * 0.88);
+}
+
+function buildStreakFromSalesRows(rows) {
+  const dates = [...new Set((rows || [])
+    .map((r) => r.transactionDate || r.billDate || r.date)
+    .filter(Boolean))]
+    .sort();
+  const activeDays = dates.length;
+  if (activeDays === 0) return null;
+  return {
+    current: Math.min(activeDays, 7),
+    longest: Math.min(activeDays + 2, 12),
+    label: 'working days',
+    caption: 'present + selling',
+  };
+}
+
+function nextMonthlyPayoutDate() {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 1);
+  d.setDate(7);
+  return d.toISOString().slice(0, 10);
+}
+
+function nextMondayPayoutDate() {
+  const d = new Date();
+  const day = d.getDay(); // 0..6
+  const diff = (8 - day) % 7 || 7;
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().slice(0, 10);
 }

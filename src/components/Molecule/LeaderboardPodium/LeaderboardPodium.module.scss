@@ -1,110 +1,504 @@
+.stageWrap {
+  position: relative;
+  padding: var(--space-200) 0 var(--space-100);
+  border-radius: var(--radius-300);
+  background:
+    radial-gradient(
+      circle at 16% 20%,
+      color-mix(in srgb, var(--medal-gold) 16%, transparent) 0%,
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 86% 14%,
+      color-mix(in srgb, var(--brand-50) 14%, transparent) 0%,
+      transparent 34%
+    );
+}
+
+.stageGlow {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 86%;
+  height: 120px;
+  border-radius: var(--radius-full);
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--brand-50) 20%, transparent) 0%,
+    color-mix(in srgb, var(--medal-gold) 18%, transparent) 46%,
+    transparent 82%
+  );
+  pointer-events: none;
+}
+
+.stage {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 54px;
+  border-radius: var(--radius-200) var(--radius-200) 0 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-bg-sunken) 58%, var(--color-bg-elevated)) 0%,
+    var(--color-bg-sunken) 100%
+  );
+  border: 0;
+}
+
 .podium {
+  position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: 1fr 1.15fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-100);
   align-items: end;
-  padding: var(--space-200) 0 var(--space-150);
+  padding: 0 var(--space-050);
 }
 
 .tile {
+  position: relative;
+  min-width: 0;
+  text-align: center;
+  border-radius: var(--radius-200) var(--radius-200) 0 0;
+  border: 1px solid transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-075);
-  padding: var(--space-150) var(--space-100) var(--space-125);
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-200);
-  text-align: center;
-  min-width: 0;
-  position: relative;
+  gap: var(--space-050);
   isolation: isolate;
+  overflow: visible;
 
   opacity: 0;
-  transform: translateY(8px);
-  animation: podium-rise 260ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform: translateY(10px);
+  animation: podium-rise 300ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   animation-delay: var(--stagger-delay, 0ms);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 }
 
 @keyframes podium-rise {
-  to { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Tier accents — medal icon + top border */
-.tier_gold   .medalWrap { color: var(--medal-gold); }
-.tier_silver .medalWrap { color: var(--medal-silver); }
-.tier_bronze .medalWrap { color: var(--medal-bronze); }
+.avatarWrap {
+  position: relative;
+  margin-top: -16px;
+  margin-bottom: var(--space-050);
+}
 
-.tier_gold   { border-top: 3px solid var(--medal-gold); }
-.tier_silver { border-top: 3px solid var(--medal-silver); }
-.tier_bronze { border-top: 3px solid var(--medal-bronze); }
+.crown {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  color: color-mix(in srgb, var(--medal-gold) 92%, var(--color-text-primary));
+  background: color-mix(in srgb, var(--medal-gold) 28%, var(--color-bg-elevated));
+  border: 1px solid color-mix(in srgb, var(--medal-gold) 78%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-bg-elevated) 62%, transparent) inset,
+    0 6px 10px -8px color-mix(in srgb, var(--medal-gold) 78%, transparent);
+  z-index: 2;
+}
 
-/* Heights — classic podium: center tallest */
-.tier_silver { min-height: 104px; }
-.tier_gold   { min-height: 128px; }
-.tier_bronze { min-height: 88px; }
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  display: grid;
+  place-items: center;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border: 2px solid var(--color-bg-elevated);
+  box-shadow:
+    0 0 0 2px var(--color-bg-sunken),
+    0 6px 14px -8px color-mix(in srgb, var(--color-text-primary) 45%, transparent);
+}
 
-.self {
-  box-shadow: 0 0 0 2px var(--brand-50) inset;
+.tile[data-rank='1'] .avatarWrap::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 72px;
+  height: 72px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--medal-gold) 34%, transparent) 0%,
+    color-mix(in srgb, var(--medal-gold) 16%, transparent) 56%,
+    transparent 78%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tile[data-rank='1'] .avatar {
+  width: 56px;
+  height: 56px;
+  font-size: 13.5px;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--medal-gold) 76%, transparent),
+    0 10px 18px -12px color-mix(in srgb, var(--medal-gold) 64%, transparent);
+}
+
+.metaBlock {
+  position: relative;
+  width: 100%;
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--space-075);
+  padding: 0 var(--space-050);
+  margin-top: auto;
+}
+
+.rankGhost {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: clamp(42px, 9vw, 64px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  opacity: 0.26;
+  transform: translateY(2px);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .medalWrap {
   display: inline-flex;
   align-items: center;
   gap: var(--space-050);
+  padding: var(--space-025) var(--space-125);
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
   font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-top: 0;
 }
 
 .rankBadge {
   font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
   color: currentColor;
-}
-
-.avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-primary);
-  display: grid;
-  place-items: center;
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  margin-top: var(--space-025);
+  text-transform: uppercase;
 }
 
 .name {
   font-family: var(--sans);
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 650;
   color: var(--color-text-primary);
   line-height: 1.2;
+  width: 100%;
   max-width: 100%;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
+  position: relative;
+  z-index: 1;
 }
 
 .earn {
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 700;
-  color: var(--brand-70);
+  color: var(--color-text-primary);
   letter-spacing: -0.01em;
-  margin-top: auto;
+  padding: 0 0 var(--space-050);
+  position: relative;
+  z-index: 1;
 }
 
 .plinth {
-  /* reserved for future decorative fill — currently a no-op */
-  display: none;
+  position: relative;
+  width: 100%;
+  border-top: 1px solid color-mix(in srgb, var(--color-bg-elevated) 38%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-050) 0;
+}
+
+.championShine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 26%,
+    color-mix(in srgb, var(--color-bg-elevated) 72%, transparent) 48%,
+    color-mix(in srgb, var(--medal-gold) 48%, transparent) 52%,
+    transparent 74%
+  );
+  background-size: 210% 100%;
+  opacity: 0.25;
+  mix-blend-mode: screen;
+  animation: champion-shine 6s linear infinite;
+}
+
+@keyframes champion-shine {
+  0% {
+    background-position: 130% 0;
+  }
+  56% {
+    background-position: -20% 0;
+  }
+  100% {
+    background-position: -20% 0;
+  }
+}
+
+/* Tier accents */
+.tier_gold .medalWrap {
+  color: color-mix(in srgb, var(--medal-gold) 88%, var(--color-text-primary));
+  border-color: color-mix(in srgb, var(--medal-gold) 70%, transparent);
+  background: color-mix(in srgb, var(--medal-gold) 20%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-bg-elevated) 55%, transparent) inset,
+    0 6px 12px -10px color-mix(in srgb, var(--medal-gold) 75%, transparent);
+}
+
+.tier_gold .name {
+  color: color-mix(in srgb, var(--medal-gold) 88%, var(--color-text-primary));
+  font-size: 13px;
+  font-weight: 760;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--color-bg-elevated) 42%, transparent);
+}
+
+.tier_gold .earn {
+  color: color-mix(in srgb, var(--medal-gold) 94%, var(--color-text-primary));
+  font-weight: 780;
+}
+
+.tier_gold .rankGhost {
+  color: color-mix(in srgb, var(--medal-gold) 86%, var(--color-bg-elevated));
+}
+
+.tier_silver .medalWrap {
+  color: color-mix(in srgb, var(--medal-silver) 62%, var(--color-text-primary));
+  border-color: color-mix(in srgb, var(--medal-silver) 68%, transparent);
+  background: color-mix(in srgb, var(--medal-silver) 20%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-bg-elevated) 48%, transparent) inset,
+    0 6px 12px -10px color-mix(in srgb, var(--medal-silver) 72%, transparent);
+}
+
+.tier_silver .name {
+  color: color-mix(in srgb, var(--medal-silver) 78%, var(--color-text-primary));
+  font-weight: 700;
+}
+
+.tier_silver .earn {
+  color: color-mix(in srgb, var(--medal-silver) 92%, var(--color-text-primary));
+}
+
+.tier_silver .rankGhost {
+  color: color-mix(in srgb, var(--medal-silver) 80%, var(--color-bg-elevated));
+}
+
+.tier_bronze .medalWrap {
+  color: color-mix(in srgb, var(--medal-bronze) 82%, var(--color-text-primary));
+  border-color: color-mix(in srgb, var(--medal-bronze) 68%, transparent);
+  background: color-mix(in srgb, var(--medal-bronze) 20%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-bg-elevated) 44%, transparent) inset,
+    0 6px 12px -10px color-mix(in srgb, var(--medal-bronze) 72%, transparent);
+}
+
+.tier_bronze .name {
+  color: color-mix(in srgb, var(--medal-bronze) 82%, var(--color-text-primary));
+  font-weight: 700;
+}
+
+.tier_bronze .earn {
+  color: color-mix(in srgb, var(--medal-bronze) 94%, var(--color-text-primary));
+}
+
+.tier_bronze .rankGhost {
+  color: color-mix(in srgb, var(--medal-bronze) 84%, var(--color-bg-elevated));
+}
+
+.tier_gold {
+  min-height: 214px;
+  border-color: color-mix(in srgb, var(--medal-gold) 80%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--medal-gold) 28%, var(--color-bg-elevated)) 0%,
+    color-mix(in srgb, var(--medal-gold) 12%, var(--color-bg-sunken)) 100%
+  );
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--medal-gold) 55%, transparent) inset,
+    0 8px 20px -14px color-mix(in srgb, var(--medal-gold) 60%, transparent),
+    0 2px 0 color-mix(in srgb, var(--color-bg-elevated) 45%, transparent) inset;
+}
+
+.tier_gold .avatar {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--medal-gold) 70%, transparent),
+    0 8px 16px -10px color-mix(in srgb, var(--medal-gold) 55%, transparent);
+}
+
+.tier_gold .plinth {
+  height: 58px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--medal-gold) 40%, var(--color-bg-sunken)) 0%,
+    color-mix(in srgb, var(--medal-gold) 24%, var(--color-bg-sunken)) 100%
+  );
+}
+
+.tier_silver {
+  min-height: 168px;
+  border-color: color-mix(in srgb, var(--medal-silver) 72%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--medal-silver) 36%, var(--color-bg-elevated)) 0%,
+    color-mix(in srgb, var(--medal-silver) 15%, var(--color-bg-sunken)) 100%
+  );
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--medal-silver) 52%, transparent) inset,
+    0 8px 18px -14px color-mix(in srgb, var(--medal-silver) 58%, transparent),
+    0 2px 0 color-mix(in srgb, var(--color-bg-elevated) 40%, transparent) inset;
+}
+
+.tier_silver .avatar {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--medal-silver) 66%, transparent),
+    0 6px 14px -10px color-mix(in srgb, var(--medal-silver) 50%, transparent);
+}
+
+.tier_silver .plinth {
+  height: 58px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--medal-silver) 40%, var(--color-bg-sunken)) 0%,
+    color-mix(in srgb, var(--medal-silver) 20%, var(--color-bg-sunken)) 100%
+  );
+}
+
+.tier_bronze {
+  min-height: 140px;
+  border-color: color-mix(in srgb, var(--medal-bronze) 72%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--medal-bronze) 34%, var(--color-bg-elevated)) 0%,
+    color-mix(in srgb, var(--medal-bronze) 16%, var(--color-bg-sunken)) 100%
+  );
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--medal-bronze) 50%, transparent) inset,
+    0 8px 18px -14px color-mix(in srgb, var(--medal-bronze) 52%, transparent),
+    0 2px 0 color-mix(in srgb, var(--color-bg-elevated) 36%, transparent) inset;
+}
+
+.tier_bronze .avatar {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--medal-bronze) 65%, transparent),
+    0 6px 14px -10px color-mix(in srgb, var(--medal-bronze) 46%, transparent);
+}
+
+.tier_bronze .plinth {
+  height: 58px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--medal-bronze) 38%, var(--color-bg-sunken)) 0%,
+    color-mix(in srgb, var(--medal-bronze) 20%, var(--color-bg-sunken)) 100%
+  );
+}
+
+.self {
+  box-shadow:
+    0 0 0 2px var(--brand-50) inset,
+    0 0 0 1px color-mix(in srgb, var(--brand-50) 30%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .championShine {
+    animation: none;
+    opacity: 0.1;
+  }
+}
+
+@media (max-width: 390px) {
+  .stageWrap {
+    padding-top: var(--space-175);
+  }
+
+  .podium {
+    gap: var(--space-075);
+  }
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 12px;
+  }
+
+  .tile[data-rank='1'] .avatarWrap::before {
+    width: 64px;
+    height: 64px;
+  }
+
+  .tile[data-rank='1'] .avatar {
+    width: 52px;
+    height: 52px;
+    font-size: 12.5px;
+  }
+
+  .medalWrap,
+  .rankBadge {
+    font-size: 10.5px;
+  }
+
+  .metaBlock {
+    min-height: 68px;
+  }
+
+  .tier_gold .name {
+    font-size: 12.5px;
+  }
+
+  .crown {
+    width: 22px;
+    height: 22px;
+    top: -11px;
+  }
 }

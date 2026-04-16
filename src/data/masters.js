@@ -172,6 +172,7 @@ export const employees = [
   { employeeId: 'FNL-3107', employeeName: 'Pooja Kulkarni',role: ROLES.SA, storeCode: 'TRN0241', payrollStatus: PAYROLL_STATUS.ACTIVE,        dateOfJoining: '2024-03-22', dateOfExit: null },
   { employeeId: 'FNL-3108', employeeName: 'Kavya Sen',     role: ROLES.SA, storeCode: 'TRN0241', payrollStatus: PAYROLL_STATUS.ACTIVE,        dateOfJoining: '2024-05-04', dateOfExit: null },
   { employeeId: 'FNL-3109', employeeName: 'Dhruv Joshi',   role: ROLES.SA, storeCode: 'TRN0241', payrollStatus: PAYROLL_STATUS.ACTIVE,        dateOfJoining: '2024-08-09', dateOfExit: null },
+  { employeeId: 'FNL-3110', employeeName: 'Aarav Kapoor',  role: ROLES.SA, storeCode: 'TRN0241', payrollStatus: PAYROLL_STATUS.ACTIVE,        dateOfJoining: '2024-09-18', dateOfExit: null },
 
   // Central Ops persona (no store mapping)
   { employeeId: 'OPS-0001', employeeName: 'Rashmi Iyer',   role: 'CENTRAL_MAKER',  storeCode: null, payrollStatus: PAYROLL_STATUS.ACTIVE,   dateOfJoining: '2016-11-01', dateOfExit: null },

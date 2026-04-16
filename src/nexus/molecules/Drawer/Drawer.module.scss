@@ -21,8 +21,12 @@
 
 .placementBottom {
   align-items: flex-end;
-  justify-content: stretch;
+  justify-content: center;
   padding: 0 var(--space-100) var(--space-100);
+
+  .surface {
+    animation: drawer-enter-bottom 300ms ease;
+  }
 }
 
 .surface {
@@ -183,6 +187,18 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes drawer-enter-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-300));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

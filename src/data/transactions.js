@@ -47,6 +47,11 @@ export const transactionsByEmployee = {
     { transactionId: 'TX-FL-1884', transactionDate: '2026-04-12', storeCode: 'TRN0241', vertical: 'FNL', storeFormat: 'Trends', employeeId: 'FNL-3103', articleCode: 'TRN-TSHIRT',  brand: 'Fusion',    productFamily: null, quantity: 2, grossAmount: 998,  taxAmount: 120, totalAmount: 1118, transactionType: TX_TYPE.NORMAL, channel: CHANNEL.OFFLINE },
     { transactionId: 'TX-FL-1876', transactionDate: '2026-04-12', storeCode: 'TRN0241', vertical: 'FNL', storeFormat: 'Trends', employeeId: 'FNL-3103', articleCode: 'TRN-KURTA-M', brand: 'Performax', productFamily: null, quantity: 1, grossAmount: 799,  taxAmount: 96,  totalAmount: 895,  transactionType: TX_TYPE.NORMAL, channel: CHANNEL.OFFLINE },
   ],
+  'FNL-3110': [
+    { transactionId: 'TX-FL-1931', transactionDate: '2026-04-13', storeCode: 'TRN0241', vertical: 'FNL', storeFormat: 'Trends', employeeId: 'FNL-3110', articleCode: 'TRN-TSHIRT',  brand: 'Fusion',    productFamily: null, quantity: 3, grossAmount: 1497, taxAmount: 180, totalAmount: 1677, transactionType: TX_TYPE.NORMAL, channel: CHANNEL.OFFLINE },
+    { transactionId: 'TX-FL-1922', transactionDate: '2026-04-12', storeCode: 'TRN0241', vertical: 'FNL', storeFormat: 'Trends', employeeId: 'FNL-3110', articleCode: 'TRN-JEANS-L', brand: 'Network',   productFamily: null, quantity: 1, grossAmount: 1499, taxAmount: 180, totalAmount: 1679, transactionType: TX_TYPE.NORMAL, channel: CHANNEL.OFFLINE },
+    { transactionId: 'TX-FL-1915', transactionDate: '2026-04-11', storeCode: 'TRN0241', vertical: 'FNL', storeFormat: 'Trends', employeeId: 'FNL-3110', articleCode: 'TRN-KURTA-M', brand: 'Performax', productFamily: null, quantity: 2, grossAmount: 1598, taxAmount: 192, totalAmount: 1790, transactionType: TX_TYPE.NORMAL, channel: CHANNEL.OFFLINE },
+  ],
 };
 
 // Store-wide totals (for SM transactions tab — aggregate count)

@@ -1,48 +1,77 @@
 .header {
-  padding: var(--space-250) var(--space-250) var(--space-075);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-200);
+  padding: var(--space-200) var(--space-250);
 }
 
-.top {
+/* Row 1: Logo | theme + logout */
+.topRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-150);
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-075);
 }
 
 .themeToggle {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-050);
-  color: var(--color-text-tertiary);
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: var(--border-width-100) solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 140ms ease;
+
+  &:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-border-strong);
+    background: var(--color-bg-tertiary);
+  }
+
+  &:active { transform: scale(0.93); }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 2px;
+  }
 }
 
-.greetingRow {
+/* Greeting row — rendered standalone outside the header */
+.bottomRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-150);
+  padding: 0 var(--space-250);
 }
 
 .greeting {
   display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: var(--space-050) var(--space-100);
+  flex-direction: column;
+  gap: var(--space-025);
   min-width: 0;
   flex: 1 1 auto;
 }
 
+.nameRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-100);
+}
+
 .storeName {
-  width: 100%;
   font-family: var(--mono);
   font-size: var(--font-size-100);
   letter-spacing: 0.08em;
   color: var(--color-text-tertiary);
   text-transform: uppercase;
-  margin-top: calc(-1 * var(--space-025));
 }
 
 .namaste {
@@ -64,13 +93,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-100);
-  flex-shrink: 0;
 }
 
 /* ---------- Rank pill — "Minted" treatment -------------------------------- */
@@ -179,7 +201,7 @@
     115deg,
     transparent 30%,
     color-mix(in srgb, var(--medal-gold) 55%, transparent) 48%,
-    color-mix(in srgb, #fff 72%, transparent) 50%,
+    color-mix(in srgb, var(--color-bg-elevated) 72%, transparent) 50%,
     color-mix(in srgb, var(--medal-gold) 55%, transparent) 52%,
     transparent 70%
   );
@@ -189,19 +211,19 @@
 
 /* ---------- Tier: Gold (#1) — struck medal + slow continuous shine -------- */
 .leaderboardPill[data-rank-tier='gold'] {
-  color: color-mix(in srgb, var(--medal-gold) 88%, var(--color-text-primary));
+  color: color-mix(in srgb, var(--medal-gold) 92%, var(--color-text-primary));
   border-color: transparent;
   background:
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--medal-gold) 22%, var(--color-bg-elevated)) 0%,
-      color-mix(in srgb, var(--medal-gold) 12%, var(--color-bg-elevated)) 100%
+      color-mix(in srgb, var(--medal-gold) 26%, var(--color-bg-elevated)) 0%,
+      color-mix(in srgb, var(--medal-gold) 14%, var(--color-bg-elevated)) 100%
     );
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--medal-gold) 85%, transparent) inset,
-    0 1px 0 color-mix(in srgb, #fff 55%, transparent) inset,
-    0 6px 16px -6px color-mix(in srgb, var(--medal-gold) 65%, transparent),
-    0 1px 2px rgba(0, 0, 0, 0.08);
+    0 1px 0 color-mix(in srgb, var(--color-bg-elevated) 55%, transparent) inset,
+    0 8px 18px -8px color-mix(in srgb, var(--medal-gold) 68%, transparent),
+    0 1px 2px color-mix(in srgb, var(--color-text-primary) 8%, transparent);
 
   .pillShine {
     opacity: 1;
@@ -218,36 +240,42 @@
 
 /* ---------- Tier: Silver (#2) --------------------------------------------- */
 .leaderboardPill[data-rank-tier='silver'] {
-  color: color-mix(in srgb, var(--medal-silver) 45%, var(--color-text-primary));
+  color: color-mix(in srgb, var(--medal-silver) 72%, var(--color-text-primary));
   border-color: transparent;
   background:
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--medal-silver) 28%, var(--color-bg-elevated)) 0%,
-      color-mix(in srgb, var(--medal-silver) 14%, var(--color-bg-elevated)) 100%
+      color-mix(in srgb, var(--medal-silver) 34%, var(--color-bg-elevated)) 0%,
+      color-mix(in srgb, var(--medal-silver) 16%, var(--color-bg-elevated)) 100%
     );
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--medal-silver) 75%, transparent) inset,
-    0 1px 0 color-mix(in srgb, #fff 60%, transparent) inset,
-    0 4px 12px -6px color-mix(in srgb, var(--medal-silver) 55%, transparent),
-    0 1px 2px rgba(0, 0, 0, 0.06);
+    0 0 0 1px color-mix(in srgb, var(--medal-silver) 82%, transparent) inset,
+    0 1px 0 color-mix(in srgb, var(--color-bg-elevated) 60%, transparent) inset,
+    0 6px 14px -8px color-mix(in srgb, var(--medal-silver) 60%, transparent),
+    0 1px 2px color-mix(in srgb, var(--color-text-primary) 6%, transparent);
 }
 
 /* ---------- Tier: Bronze (#3) --------------------------------------------- */
 .leaderboardPill[data-rank-tier='bronze'] {
-  color: color-mix(in srgb, var(--medal-bronze) 80%, var(--color-text-primary));
+  color: color-mix(in srgb, var(--medal-bronze) 88%, var(--color-text-primary));
   border-color: transparent;
   background:
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--medal-bronze) 24%, var(--color-bg-elevated)) 0%,
-      color-mix(in srgb, var(--medal-bronze) 12%, var(--color-bg-elevated)) 100%
+      color-mix(in srgb, var(--medal-bronze) 30%, var(--color-bg-elevated)) 0%,
+      color-mix(in srgb, var(--medal-bronze) 14%, var(--color-bg-elevated)) 100%
     );
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--medal-bronze) 80%, transparent) inset,
-    0 1px 0 color-mix(in srgb, #fff 50%, transparent) inset,
-    0 4px 12px -6px color-mix(in srgb, var(--medal-bronze) 55%, transparent),
-    0 1px 2px rgba(0, 0, 0, 0.07);
+    0 0 0 1px color-mix(in srgb, var(--medal-bronze) 86%, transparent) inset,
+    0 1px 0 color-mix(in srgb, var(--color-bg-elevated) 50%, transparent) inset,
+    0 6px 14px -8px color-mix(in srgb, var(--medal-bronze) 58%, transparent),
+    0 1px 2px color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+}
+
+.leaderboardPill[data-rank-tier='gold'] .num,
+.leaderboardPill[data-rank-tier='silver'] .num,
+.leaderboardPill[data-rank-tier='bronze'] .num {
+  font-weight: 760;
 }
 
 /* ---------- Tier: Brand (#4 – #10) ---------------------------------------- */
@@ -255,7 +283,7 @@
   color: var(--brand-70);
   border-color: color-mix(in srgb, var(--brand-50) 55%, transparent);
   background: color-mix(in srgb, var(--brand-50) 8%, var(--color-bg-elevated));
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-text-primary) 4%, transparent);
 
   &:hover {
     background: color-mix(in srgb, var(--brand-50) 14%, var(--color-bg-elevated));

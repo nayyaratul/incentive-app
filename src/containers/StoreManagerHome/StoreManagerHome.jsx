@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { Users, TrendingUp, AlertTriangle, Target, Zap, Clock, Trophy, Medal } from 'lucide-react';
+import { Users, TrendingUp, AlertTriangle, Calendar, Check, X as XIcon, Target, Zap, Clock, Trophy, Medal } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
@@ -8,12 +8,19 @@ import useAsync from '../../hooks/useAsync';
 import { fetchStoreIncentive, fetchLeaderboard } from '../../api/incentives';
 import { fetchEmployees } from '../../api/employees';
 import { fetchRules } from '../../api/rules';
-import HeaderBar from '../../components/Organism/HeaderBar/HeaderBar';
+import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
+import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
 import StoreTransactions from '../screens/StoreTransactions';
-import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
+import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
+import BadgesStrip from '../../components/Widgets/BadgesStrip/BadgesStrip';
+import QuestCard from '../../components/Widgets/QuestCard/QuestCard';
+import StreakNote from '../../components/Molecule/StreakNote/StreakNote';
+import MomentumPills from '../../components/Molecule/MomentumPills/MomentumPills';
+import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
+import TargetTrendBreakdown from '../../components/Molecule/TargetTrendBreakdown/TargetTrendBreakdown';
 import { formatINR, formatDateRange } from '../../utils/format';
 import {
   Accordion,
@@ -21,10 +28,25 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/nexus/atoms';
+import { employees as staticEmployees } from '../../data/masters';
+import {
+  electronicsPayoutsRD3675,
+  groceryPayoutT28V,
+  fnlPayoutTRN0241,
+} from '../../data/payouts';
+import {
+  electronicsActualsRD3675,
+  electronicsTargetsRD3675,
+  groceryCampaign,
+  fnlWeeklyRules,
+} from '../../data/configs';
+
+const useMock = process.env.REACT_APP_USE_MOCK_DATA === 'true';
 
 export default function StoreManagerHome() {
   const [tab, setTab] = useState('home');
   const [selectedRow, setSelectedRow] = useState(null);
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [txEmpFilter, setTxEmpFilter] = useState('ALL');
   const { active, employee, store } = usePersona();
 
@@ -45,22 +67,40 @@ export default function StoreManagerHome() {
   const periodEnd = dayjs().endOf('month').format('YYYY-MM-DD');
 
   const storeDetailResult = useAsync(
-    () => store?.storeCode ? fetchStoreIncentive(store.storeCode, active?.vertical, periodStart, periodEnd) : Promise.resolve(null),
+    () => {
+      if (!store?.storeCode || !active?.vertical) return Promise.resolve(null);
+      if (useMock) return Promise.resolve(buildMockStoreDetail(active.vertical, store.storeCode));
+      return fetchStoreIncentive(store.storeCode, active.vertical, periodStart, periodEnd);
+    },
     [store?.storeCode, active?.vertical],
   );
 
   const employeesResult = useAsync(
-    () => store?.storeCode ? fetchEmployees(store.storeCode) : Promise.resolve([]),
+    () => {
+      if (!store?.storeCode) return Promise.resolve([]);
+      if (useMock) {
+        return Promise.resolve(staticEmployees.filter((e) => e.storeCode === store.storeCode));
+      }
+      return fetchEmployees(store.storeCode);
+    },
     [store?.storeCode],
   );
 
   const rulesResult = useAsync(
-    () => active?.vertical ? fetchRules(active.vertical) : Promise.resolve([]),
+    () => {
+      if (!active?.vertical) return Promise.resolve([]);
+      if (useMock) return Promise.resolve(buildMockRules(active.vertical));
+      return fetchRules(active.vertical);
+    },
     [active?.vertical],
   );
 
   const leaderboardResult = useAsync(
-    () => store?.storeCode ? fetchLeaderboard(store.storeCode, 'store') : Promise.resolve(null),
+    () => {
+      if (!store?.storeCode) return Promise.resolve(null);
+      if (useMock) return Promise.resolve(null);
+      return fetchLeaderboard(store.storeCode, 'store');
+    },
     [store?.storeCode],
   );
 
@@ -183,14 +223,35 @@ export default function StoreManagerHome() {
       const deptTarget = storeDetail.departments?.reduce((s, d) => s + (Number(d.target) || 0), 0) || totalTarget;
       const deptActual = storeDetail.departments?.reduce((s, d) => s + (Number(d.actual) || 0), 0) || 0;
       const achPct = deptTarget > 0 ? Math.round((deptActual / deptTarget) * 100) : 0;
+      const piecesSold = Number(storeDetail.summary?.totalPiecesSold) || 0;
+      const currentSlab = slabs.find((s) => {
+        const from = Number(s.achievementFrom);
+        const to = Number(s.achievementTo);
+        return achPct >= from && (Number.isFinite(to) ? achPct < to : true);
+      });
+      const currentRate = Number(currentSlab?.perPieceRate) || 0;
 
       return {
         kind: 'GROCERY',
-        campaign: campaign ? { campaignName: campaign.campaignName, campaignStart: campaign.startDate, campaignEnd: campaign.endDate } : {},
+        campaign: campaign
+          ? {
+              campaignName: campaign.campaignName,
+              campaignStart: campaign.startDate,
+              campaignEnd: campaign.endDate,
+              geography: campaign.geography || 'Kerala',
+              channel: campaign.channel || 'OFFLINE',
+              incentiveType: campaign.incentiveType || activePlan?.incentiveType || 'Multi-Article',
+            }
+          : {
+              incentiveType: 'Multi-Article',
+            },
         totalTarget: deptTarget,
         totalActual: deptActual,
         totalPayout,
         achievementPct: achPct,
+        piecesSoldTotal: piecesSold,
+        appliedRate: currentRate,
+        splitPerEmployee: perEmp,
         daysLeft: dayjs().endOf('month').diff(dayjs(), 'day'),
         gapToTarget: deptTarget > deptActual ? deptTarget - deptActual : 0,
         unlockPct: 100, // Grocery requires 100% store achievement
@@ -210,7 +271,9 @@ export default function StoreManagerHome() {
         projections: slabs.filter((s) => Number(s.achievementFrom) >= 100).map((s) => ({
           scenario: `${Number(s.achievementFrom)}%`,
           rate: Number(s.perPieceRate) || 0,
-          estPerEmployee: 0, // rough placeholder
+          atSalesValue: deptTarget > 0 ? Math.round((Number(s.achievementFrom) / 100) * deptTarget) : 0,
+          estTotalIncentive: (Number(s.perPieceRate) || 0) * piecesSold,
+          estPerEmployee: empCount > 0 ? Math.round(((Number(s.perPieceRate) || 0) * piecesSold) / empCount) : 0,
         })),
       };
     }
@@ -221,10 +284,12 @@ export default function StoreManagerHome() {
       const totalTarget = depts.reduce((s, d) => s + (Number(d.target) || 0), 0);
       const totalActual = depts.reduce((s, d) => s + (Number(d.actual) || 0), 0);
       const totalPayout = emps.reduce((s, e) => s + (Number(e.finalIncentive) || 0), 0);
+      const weekStart = storeDetail?.summary?.weekStart || fnlPayoutTRN0241.weekStart;
+      const weekEnd = storeDetail?.summary?.weekEnd || fnlPayoutTRN0241.weekEnd;
 
       return {
         kind: 'FNL',
-        week: { start: '', end: '' }, // Will need period info
+        week: { start: weekStart, end: weekEnd },
         totalTarget,
         totalActual,
         totalPayout,
@@ -240,7 +305,9 @@ export default function StoreManagerHome() {
             employeeName: emp.employeeName || master?.employeeName || emp.employeeId,
             role: emp.role || master?.role || '—',
             payrollStatus: master?.payrollStatus || 'ACTIVE',
-            daysPresent: undefined, // needs attendance endpoint data
+            daysPresent: Number(emp.daysPresent),
+            eligible: Number(emp.daysPresent) >= Number(fnlWeeklyRules.minWorkingDays || 5),
+            total: Number(emp.finalIncentive) || 0,
             achievementPct: Number(emp.achievementPct) || 0,
             potential: Number(emp.baseIncentive) || 0,
             earned: Number(emp.finalIncentive) || 0,
@@ -260,6 +327,16 @@ export default function StoreManagerHome() {
 
   if (!summary) return null;
 
+  const storeRank = active?.vertical && store?.storeCode
+    ? buildStoreLeaderboard(active.vertical, store.storeCode)
+    : null;
+  const selfPayout = summary.employees.find((e) => e.employeeId === employee?.employeeId)?.total || 0;
+  const selfRow = summary.employees.find((e) => e.employeeId === employee?.employeeId) || null;
+  const myDaysPresent = Number(selfRow?.daysPresent);
+  const minWorkingDays = Number(fnlWeeklyRules.minWorkingDays || 5);
+  const eligible5Day = Number.isFinite(myDaysPresent) && myDaysPresent >= minWorkingDays;
+  const cycleMeta = buildCycleMeta(active?.vertical, employee, storeDetailResult.data, summary);
+
   // Look up the full master record for the selected roster row (drawer needs it)
   const selectedEmployee = selectedRow
     ? storeTeam.find((e) => e.employeeId === selectedRow.employeeId) || null
@@ -267,7 +344,13 @@ export default function StoreManagerHome() {
 
   return (
     <div className={styles.shell}>
-      <BottomNav active={tab} role="SM" onNavigate={handleNavigate} />
+      <BottomNav active={tab} role={active.role} onNavigate={handleNavigate} />
+
+      <LeaderboardDrawer
+        open={leaderboardOpen}
+        onClose={() => setLeaderboardOpen(false)}
+        myRank={storeRank}
+      />
 
       <EmployeeDetailDrawer
         employee={selectedEmployee}
@@ -278,25 +361,21 @@ export default function StoreManagerHome() {
       />
 
       <div className={styles.layout}>
-        <HeaderBar
-          employeeName={tab === 'home' ? firstName : null}
-          storeName={tab === 'home' ? `${store.storeFormat || store.storeName} — ${store.city}, ${store.state}` : null}
-          streak={0}
-          showStreak={false}
-        />
+        <HeaderBar />
 
         <main className={styles.main}>
           {tab === 'team' && (
-            <>
-              <div className={`${styles.datemark} rise rise-1`}>
-                <span>Team · {store.storeName}</span>
-                <span className={styles.line} />
-                <span>{summary.employees.length} staff</span>
+            <section className={`${styles.pad} ${styles.teamStack}`}>
+              <div className="rise rise-1">
+                <TabPageHeader
+                  title="Team"
+                  subtitle={`${store.storeName} · ${summary.employees.length} staff`}
+                />
               </div>
-              <section className={`${styles.pad} rise rise-2`}>
+              <div className="rise rise-2">
                 <TeamRoster summary={summary} onSelectRow={(row) => setSelectedRow({ row, employeeId: row.employeeId })} />
-              </section>
-            </>
+              </div>
+            </section>
           )}
 
           {tab === 'board' && (
@@ -325,25 +404,55 @@ export default function StoreManagerHome() {
 
           {tab === 'home' && (
             <>
+              <HeaderGreeting
+                employeeName={firstName}
+                storeName={`${store.storeFormat || store.storeName} — ${store.city}, ${store.state}`}
+                rank={storeRank?.rank}
+                onOpenLeaderboard={() => setLeaderboardOpen(true)}
+              />
               <section className={`${styles.pad} rise rise-2`}>
                 <HeroCard>
                   <HeroCard.EyebrowRow>
-                    <HeroCard.Eyebrow withDot>
-                      {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
-                      {summary.kind === 'GROCERY' && `${summary.campaign.campaignName} · ${formatDateRange(summary.campaign.campaignStart, summary.campaign.campaignEnd)}`}
-                      {summary.kind === 'FNL' && `Week · ${summary.week.start} → ${summary.week.end}`}
-                    </HeroCard.Eyebrow>
+                    {summary.kind === 'GROCERY' ? (
+                      <HeroCard.Eyebrow withDot>Live campaign</HeroCard.Eyebrow>
+                    ) : (
+                      <HeroCard.Eyebrow withDot>
+                        {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
+                        {summary.kind === 'FNL' && `Week of ${summary.week.start}`}
+                      </HeroCard.Eyebrow>
+                    )}
                     {summary.achievementPct >= 100 && (
                       <HeroCard.TrendPill>Target exceeded!</HeroCard.TrendPill>
                     )}
                   </HeroCard.EyebrowRow>
 
+                  {summary.kind === 'GROCERY' && (
+                    <>
+                      <HeroCard.Title>{summary.campaign.campaignName}</HeroCard.Title>
+                      <HeroCard.Meta>
+                        <Calendar size={11} strokeWidth={2.2} />
+                        <span>{formatDateRange(summary.campaign.campaignStart, summary.campaign.campaignEnd)}</span>
+                        <HeroCard.MetaDot />
+                        <span>{summary.campaign.geography}</span>
+                        <HeroCard.MetaDot />
+                        <span>{summary.campaign.channel}</span>
+                      </HeroCard.Meta>
+                    </>
+                  )}
+
                   <HeroCard.Amount suffix="%" tone={summary.achievementPct >= 100 ? 'success' : undefined}>
                     {summary.achievementPct}
                   </HeroCard.Amount>
                   <HeroCard.AmountCap>
-                    of store {summary.kind === 'FNL' ? 'weekly' : 'period'} target
+                    {summary.kind === 'GROCERY'
+                      ? `of ${formatINR(summary.totalTarget)} store target`
+                      : `of store ${summary.kind === 'FNL' ? 'weekly' : 'period'} target`}
                   </HeroCard.AmountCap>
+
+                  <TargetTrendBreakdown
+                    actualValue={summary.totalActual}
+                    targetValue={summary.totalTarget}
+                  />
 
                   {/* Gap to target or surplus */}
                   {summary.achievementPct < 100 && summary.gapToTarget > 0 && (
@@ -353,22 +462,31 @@ export default function StoreManagerHome() {
                     </HeroCard.Caption>
                   )}
 
-                  <HeroCard.Figures>
-                    <HeroCard.Figure
-                      value={formatINR(summary.totalActual)}
-                      cap={`of ${formatINR(summary.totalTarget)}`}
-                    />
-                  </HeroCard.Figures>
+                  {summary.kind === 'GROCERY' && (
+                    <HeroCard.Caption>
+                      <strong>{summary.piecesSoldTotal}</strong>
+                      <span>pieces sold</span>
+                      <em>{summary.appliedRate > 0 ? `₹${summary.appliedRate}/piece` : 'rate not unlocked'}</em>
+                    </HeroCard.Caption>
+                  )}
 
                   <HeroCard.FooterBlock>
                     <div>
-                      <HeroCard.FooterLabel>Total store payout</HeroCard.FooterLabel>
-                      <HeroCard.FooterValue>{formatINR(summary.totalPayout)}</HeroCard.FooterValue>
+                      <HeroCard.FooterLabel>
+                        {summary.kind === 'GROCERY' ? 'Your payout so far' : 'Total store payout'}
+                      </HeroCard.FooterLabel>
+                      <HeroCard.FooterValue>
+                        {summary.kind === 'GROCERY' ? formatINR(selfPayout) : formatINR(summary.totalPayout)}
+                      </HeroCard.FooterValue>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <HeroCard.FooterMeta>
                         <Users size={12} strokeWidth={2.2} />
-                        <span>{summary.employees.length} staff</span>
+                        <span>
+                          {summary.kind === 'GROCERY'
+                            ? `Split equally across ${summary.employees.length} staff`
+                            : `${summary.employees.length} staff`}
+                        </span>
                       </HeroCard.FooterMeta>
                       {typeof summary.daysLeft === 'number' && (
                         <HeroCard.FooterMeta>
@@ -380,6 +498,44 @@ export default function StoreManagerHome() {
                   </HeroCard.FooterBlock>
                 </HeroCard>
               </section>
+
+              <section className={`${styles.streakRow} rise rise-3`}>
+                <StreakNote streak={cycleMeta.streak} />
+              </section>
+
+              <section className={`${styles.streakRow} rise rise-3`}>
+                <MomentumPills
+                  thisPeriodAmount={selfPayout}
+                  lastPeriodAmount={cycleMeta.lastPeriodAmount}
+                  lastPeriodLabel={cycleMeta.lastPeriodLabel}
+                  nextPayoutDate={cycleMeta.nextPayoutDate}
+                />
+              </section>
+
+              {summary.kind === 'FNL' && Number.isFinite(myDaysPresent) && (
+                <section className={`${styles.pad} rise rise-3`}>
+                  <div className={eligible5Day ? styles.eligibleOk : styles.eligibleNo}>
+                    <div className={styles.eligIconWrap}>
+                      {eligible5Day
+                        ? <Check size={14} strokeWidth={2.6} />
+                        : <XIcon size={14} strokeWidth={2.6} />}
+                    </div>
+                    <div className={styles.eligBody}>
+                      <div className={styles.eligTitle}>
+                        {eligible5Day ? 'Eligible this week' : 'Not eligible this week'}
+                      </div>
+                      <div className={styles.eligSub}>
+                        You have <strong>{myDaysPresent}</strong> PRESENT days · minimum {minWorkingDays} needed
+                      </div>
+                    </div>
+                    <div className={styles.dayPips} aria-hidden="true">
+                      {Array.from({ length: 7 }, (_, i) => (
+                        <span key={i} className={i < myDaysPresent ? styles.pipOn : styles.pipOff} />
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              )}
 
               {/* Daily Run Rate */}
               {summary.dailyPace > 0 && (
@@ -505,41 +661,134 @@ export default function StoreManagerHome() {
                 </section>
               )}
 
-              {summary.kind === 'GROCERY' && (
-                <section className={`${styles.pad} rise rise-3`}>
-                  <div className={styles.cardDark}>
-                    <div className={styles.cardHead}>
-                      <span className={styles.eyebrow}>Projections · per employee</span>
-                    </div>
-                    <div className={styles.projList}>
-                      {summary.projections.map((p) => (
-                        <div key={p.scenario} className={styles.projRow}>
-                          <span className={styles.projName}>{p.scenario}</span>
-                          <span className={styles.projRate}>₹{p.rate}/pc</span>
-                          <span className={styles.projTotal}>{formatINR(p.estPerEmployee)}</span>
+              <section className={`rise rise-4`}>
+                <QuestCard employeeId={employee.employeeId} vertical={active.vertical} />
+              </section>
+
+              <section className={`rise rise-4`}>
+                <BadgesStrip employeeId={employee.employeeId} vertical={active.vertical} />
+              </section>
+
+              {summary.kind === 'ELECTRONICS' && (
+                <section className={`${styles.pad} ${styles.compactAccordion} rise rise-5`}>
+                  <Accordion variant="default" type="multiple">
+                    <AccordionItem value="dept-multipliers">
+                      <AccordionTrigger>Department multipliers</AccordionTrigger>
+                      <AccordionContent>
+                        <div className={styles.deptList}>
+                          {summary.departments.map((d) => {
+                            const mPct = Math.round(d.multiplier * 100);
+                            return (
+                              <div key={d.department} className={styles.deptRow}>
+                                <div>
+                                  <div className={styles.deptName}>{d.department}</div>
+                                  <div className={styles.deptSub}>{formatINR(d.actualSales)} of {formatINR(d.target)}</div>
+                                </div>
+                                <div className={styles.deptAch}>{d.achievementPct}%</div>
+                                <div className={`${styles.deptMult} ${d.multiplier === 0 ? styles.multZero : ''}`}>
+                                  {d.multiplier === 0 ? 'NO PAYOUT' : `${mPct}%`}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                      ))}
-                    </div>
-                  </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="eligibility">
+                      <AccordionTrigger>Store eligibility</AccordionTrigger>
+                      <AccordionContent>
+                        <dl className={styles.compactList}>
+                          {[
+                            { label: 'Store code', value: store.storeCode },
+                            { label: 'Format', value: store.storeFormat },
+                            { label: 'City · State', value: `${store.city}, ${store.state}` },
+                            { label: 'Status', value: store.storeStatus },
+                            { label: 'Operational days', value: `${store.operationalDaysInMonth} / 30` },
+                          ].map((it) => (
+                            <div key={it.label} className={styles.compactRow}>
+                              <dt className={styles.compactLabel}>{it.label}</dt>
+                              <dd className={styles.compactValue}>{it.value}</dd>
+                            </div>
+                          ))}
+                        </dl>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </section>
               )}
 
-              <section className={`${styles.pad} rise rise-4`}>
-                <TeamRoster summary={summary} onSelectRow={(row) => setSelectedRow({ row, employeeId: row.employeeId })} />
-              </section>
+              {summary.kind === 'GROCERY' && (
+                <section className={`${styles.pad} ${styles.compactAccordion} rise rise-5`}>
+                  <Accordion variant="default" type="multiple">
+                    <AccordionItem value="projections">
+                      <AccordionTrigger>Projections · per employee</AccordionTrigger>
+                      <AccordionContent>
+                        <div className={styles.projList}>
+                          {summary.projections.map((p) => (
+                            <div key={p.scenario} className={styles.projRow}>
+                              <div className={styles.projLeft}>
+                                <span className={styles.projName}>{p.scenario}</span>
+                                <span className={styles.projAt}>at {formatINR(p.atSalesValue)}</span>
+                              </div>
+                              <span className={styles.projRate}>₹{p.rate}/pc</span>
+                              <div className={styles.projRight}>
+                                <span className={styles.projTotal}>{formatINR(p.estPerEmployee)}</span>
+                                <span className={styles.projTotalSub}>per employee</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-              <section className={`${styles.pad} rise rise-5`}>
-                <ComplianceLink
-                  label="Store eligibility"
-                  items={[
-                    { label: 'Store code',              value: store.storeCode },
-                    { label: 'Format',                   value: store.storeFormat },
-                    { label: 'City · State',             value: `${store.city}, ${store.state}` },
-                    { label: 'Status',                   value: store.storeStatus },
-                    { label: 'Operational days',         value: `${store.operationalDaysInMonth} / 30` },
-                  ]}
-                />
-              </section>
+                    <AccordionItem value="eligibility">
+                      <AccordionTrigger>Store eligibility</AccordionTrigger>
+                      <AccordionContent>
+                        <dl className={styles.compactList}>
+                          {[
+                            { label: 'Store code', value: store.storeCode },
+                            { label: 'Format', value: store.storeFormat },
+                            { label: 'City · State', value: `${store.city}, ${store.state}` },
+                            { label: 'Status', value: store.storeStatus },
+                            { label: 'Operational days', value: `${store.operationalDaysInMonth} / 30` },
+                          ].map((it) => (
+                            <div key={it.label} className={styles.compactRow}>
+                              <dt className={styles.compactLabel}>{it.label}</dt>
+                              <dd className={styles.compactValue}>{it.value}</dd>
+                            </div>
+                          ))}
+                        </dl>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </section>
+              )}
+
+              {summary.kind === 'FNL' && (
+                <section className={`${styles.pad} rise rise-5`}>
+                  <Accordion variant="default" type="multiple">
+                    <AccordionItem value="eligibility">
+                      <AccordionTrigger>Store eligibility</AccordionTrigger>
+                      <AccordionContent>
+                        <dl className={styles.compactList}>
+                          {[
+                            { label: 'Store code', value: store.storeCode },
+                            { label: 'Format', value: store.storeFormat },
+                            { label: 'City · State', value: `${store.city}, ${store.state}` },
+                            { label: 'Status', value: store.storeStatus },
+                            { label: 'Operational days', value: `${store.operationalDaysInMonth} / 30` },
+                          ].map((it) => (
+                            <div key={it.label} className={styles.compactRow}>
+                              <dt className={styles.compactLabel}>{it.label}</dt>
+                              <dd className={styles.compactValue}>{it.value}</dd>
+                            </div>
+                          ))}
+                        </dl>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </section>
+              )}
             </>
           )}
         </main>
@@ -552,7 +801,7 @@ function TeamRoster({ summary, onSelectRow }) {
   const unlockPct = summary.unlockPct;
 
   return (
-    <div className={styles.cardLight}>
+    <div className={`${styles.cardLight} ${styles.teamRosterCard}`}>
       <div className={styles.cardHead}>
         <span className={styles.eyebrow}>Team · {summary.employees.length}</span>
         <span className={styles.headSub}>
@@ -688,4 +937,221 @@ function StoreLeaderboard({ leaderboardData, loading, storeName }) {
       </div>
     </div>
   );
+}
+
+function buildCycleMeta(vertical, employee, storeDetail, summary) {
+  const byVertical = {
+    ELECTRONICS: {
+      streak: { current: 6, longest: 11, label: 'working days', caption: 'present + selling' },
+      lastPeriodLabel: 'last month',
+      nextPayoutDate: nextMonthlyPayoutDate(),
+    },
+    GROCERY: {
+      streak: { current: 5, longest: 9, label: 'working days', caption: 'present + selling' },
+      lastPeriodLabel: 'last campaign',
+      nextPayoutDate: resolveGroceryPayoutDate(summary),
+    },
+    FNL: {
+      streak: { current: 4, longest: 8, label: 'working days', caption: 'present + selling' },
+      lastPeriodLabel: 'last week',
+      nextPayoutDate: nextMondayPayoutDate(),
+    },
+  };
+
+  const meta = byVertical[vertical] || byVertical.ELECTRONICS;
+  const tenureDays = employee?.dateOfJoining ? daysSince(employee.dateOfJoining) : 999;
+  const reportedLast =
+    Number(storeDetail?.summary?.lastPeriodPayout) ||
+    Number(storeDetail?.summary?.lastCampaignPayoutPerEmp) ||
+    Number(storeDetail?.summary?.lastWeekPayoutPerEmp) ||
+    0;
+
+  // Comparison appears only after first cycle. If no backend last-cycle figure
+  // exists yet, derive a gentle baseline from current payout for tenured staff.
+  const selfPayout = summary?.employees?.find((e) => e.employeeId === employee?.employeeId)?.total || 0;
+  const derivedLast = tenureDays >= 30 && selfPayout > 0 ? Math.round(selfPayout * 0.9) : 0;
+
+  return {
+    ...meta,
+    lastPeriodAmount: reportedLast > 0 ? reportedLast : derivedLast,
+  };
+}
+
+function resolveGroceryPayoutDate(summary) {
+  const end = summary?.campaign?.campaignEnd;
+  if (!end) return null;
+  const d = new Date(end);
+  if (Number.isNaN(d.getTime())) return null;
+  d.setDate(d.getDate() + 5);
+  return d.toISOString().slice(0, 10);
+}
+
+function nextMonthlyPayoutDate() {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 1);
+  d.setDate(7);
+  return d.toISOString().slice(0, 10);
+}
+
+function nextMondayPayoutDate() {
+  const d = new Date();
+  const day = d.getDay(); // 0..6
+  const diff = (8 - day) % 7 || 7;
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().slice(0, 10);
+}
+
+function daysSince(dateStr) {
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return 0;
+  const now = new Date();
+  return Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function buildMockStoreDetail(vertical, storeCode) {
+  if (vertical === VERTICALS.ELECTRONICS && storeCode === 'RD3675') {
+    const byDeptTarget = electronicsTargetsRD3675.reduce((acc, row) => {
+      const next = { ...(acc[row.department] || { target: 0, actual: 0, achievementPct: 0 }) };
+      next.target += Number(row.monthlyTarget) || 0;
+      acc[row.department] = next;
+      return acc;
+    }, {});
+
+    for (const row of electronicsActualsRD3675) {
+      const next = byDeptTarget[row.department] || { target: 0, actual: 0, achievementPct: 0 };
+      next.actual = Number(row.actualSales) || 0;
+      next.achievementPct = Number(row.achievementPct) || 0;
+      byDeptTarget[row.department] = next;
+    }
+
+    const departments = Object.entries(byDeptTarget).map(([department, vals]) => ({
+      department,
+      target: vals.target,
+      actual: vals.actual,
+      achievementPct: vals.achievementPct,
+    }));
+
+    const employees = electronicsPayoutsRD3675.map((p) => {
+      const total = (p.byDepartment || []).reduce((sum, d) => sum + (Number(d.finalPayout) || 0), 0);
+      const master = staticEmployees.find((e) => e.employeeId === p.employeeId);
+      return {
+        employeeId: p.employeeId,
+        employeeName: master?.employeeName || p.employeeId,
+        role: master?.role || 'SA',
+        finalIncentive: total,
+      };
+    });
+
+    return { departments, employees, summary: { totalIncentive: employees.reduce((s, e) => s + e.finalIncentive, 0) } };
+  }
+
+  if (vertical === VERTICALS.GROCERY && storeCode === groceryPayoutT28V.storeCode) {
+    const employees = staticEmployees
+      .filter((e) => e.storeCode === storeCode)
+      .map((e) => ({
+        employeeId: e.employeeId,
+        employeeName: e.employeeName,
+        role: e.role,
+        finalIncentive: groceryPayoutT28V.individualPayout,
+      }));
+
+    return {
+      departments: [
+        {
+          department: 'Campaign',
+          target: groceryPayoutT28V.targetSalesValue,
+          actual: groceryPayoutT28V.actualSalesValue,
+          achievementPct: groceryPayoutT28V.achievementPct,
+        },
+      ],
+      employees,
+      summary: {
+        totalIncentive: groceryPayoutT28V.totalStoreIncentive,
+        totalPiecesSold: groceryPayoutT28V.piecesSoldTotal,
+      },
+    };
+  }
+
+  if (vertical === VERTICALS.FNL && storeCode === 'TRN0241') {
+    const employees = fnlPayoutTRN0241.employees.map((e) => {
+      const master = staticEmployees.find((m) => m.employeeId === e.employeeId);
+      return {
+        employeeId: e.employeeId,
+        employeeName: master?.employeeName || e.employeeId,
+        role: e.role,
+        daysPresent: Number(e.daysPresent),
+        finalIncentive: e.payout,
+      };
+    });
+
+    return {
+      departments: [
+        {
+          department: 'Weekly',
+          target: fnlPayoutTRN0241.weeklySalesTarget,
+          actual: fnlPayoutTRN0241.actualWeeklyGrossSales,
+          achievementPct: Math.round(
+            (fnlPayoutTRN0241.actualWeeklyGrossSales / fnlPayoutTRN0241.weeklySalesTarget) * 100,
+          ),
+        },
+      ],
+      employees,
+      summary: {
+        totalIncentive: fnlPayoutTRN0241.totalStoreIncentive,
+      },
+    };
+  }
+
+  return { departments: [], employees: [], summary: {} };
+}
+
+function buildMockRules(vertical) {
+  if (vertical === VERTICALS.ELECTRONICS) {
+    return [
+      {
+        status: 'ACTIVE',
+        achievementMultipliers: [
+          { achievementFrom: 0, achievementTo: 85, multiplierPct: 0 },
+          { achievementFrom: 85, achievementTo: 90, multiplierPct: 50 },
+          { achievementFrom: 90, achievementTo: 100, multiplierPct: 80 },
+          { achievementFrom: 100, achievementTo: 110, multiplierPct: 100 },
+          { achievementFrom: 110, achievementTo: 120, multiplierPct: 110 },
+          { achievementFrom: 120, achievementTo: Number.POSITIVE_INFINITY, multiplierPct: 120 },
+        ],
+      },
+    ];
+  }
+
+  if (vertical === VERTICALS.GROCERY) {
+    return [
+      {
+        status: 'ACTIVE',
+        campaignConfigs: [
+          {
+            campaignName: groceryCampaign.campaignName,
+            startDate: groceryCampaign.campaignStart,
+            endDate: groceryCampaign.campaignEnd,
+            geography: groceryCampaign.geography,
+            channel: groceryCampaign.channel,
+            incentiveType: groceryCampaign.incentiveType,
+            storeTargets: groceryCampaign.stores.map((s) => ({
+              storeCode: s.storeCode,
+              targetValue: s.targetSalesValue,
+            })),
+            payoutSlabs: groceryCampaign.payoutSlabs.map((s) => ({
+              achievementFrom: s.achievementFromPct,
+              achievementTo: s.achievementToPct,
+              perPieceRate: s.ratePerPiece,
+            })),
+          },
+        ],
+      },
+    ];
+  }
+
+  if (vertical === VERTICALS.FNL) {
+    return [{ status: 'ACTIVE', fnlRoleSplits: fnlWeeklyRules.splitMatrix }];
+  }
+
+  return [];
 }

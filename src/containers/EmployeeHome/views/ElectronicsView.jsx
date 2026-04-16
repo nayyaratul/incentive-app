@@ -35,14 +35,14 @@ export default function ElectronicsView({ payout, employee, store, role }) {
     pct: payout.monthlyGoalTarget ? finalTotal / payout.monthlyGoalTarget : 0,
   };
 
-  const allDepartments = payout.byDepartment.map((d) => ({
+  const allDepartments = (payout.byDepartment || []).map((d) => ({
     department: d.department,
     achievementPct: d.achievementPct,
     multiplier: findMultiplier(d.achievementPct),
   }));
 
-  const empDept = payout.employeeDepartment || employee.department;
-  const primary = allDepartments.find((d) => d.department === empDept) || allDepartments[0];
+  const empDept = payout.employeeDepartment || employee.primaryDepartment || employee.department;
+  const primary = allDepartments.find((d) => d.department === empDept) || allDepartments[0] || null;
 
   const complianceItems = [
     { label: 'Role',                        value: `${role} · ${employee?.employeeId}` },
@@ -143,17 +143,19 @@ export default function ElectronicsView({ payout, employee, store, role }) {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="department">
-            <AccordionTrigger>
-              Your department &middot; {primary.department}
-            </AccordionTrigger>
-            <AccordionContent>
-              <DepartmentPanel
-                primary={primary}
-                others={allDepartments.filter((d) => d.department !== primary.department)}
-              />
-            </AccordionContent>
-          </AccordionItem>
+          {primary && (
+            <AccordionItem value="department">
+              <AccordionTrigger>
+                Your department &middot; {primary.department}
+              </AccordionTrigger>
+              <AccordionContent>
+                <DepartmentPanel
+                  primary={primary}
+                  others={allDepartments.filter((d) => d.department !== primary.department)}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          )}
 
           <AccordionItem value="eligibility">
             <AccordionTrigger>Eligibility &amp; exclusions</AccordionTrigger>

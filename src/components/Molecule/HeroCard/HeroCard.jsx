@@ -98,11 +98,11 @@ function MetaDot() {
 function Amount({ prefix, suffix, children, tone }) {
   return (
     <div className={styles.amountRow}>
-      {prefix && <span className={styles.amountSymbol}>{prefix}</span>}
       <span className={cx(styles.amount, tone && styles[`amount-${tone}`])}>
+        {prefix && <span className={cx(styles.amountAffix, styles.prefixAffix)}>{prefix}</span>}
         {children}
+        {suffix && <span className={cx(styles.amountAffix, styles.suffixAffix)}>{suffix}</span>}
       </span>
-      {suffix && <span className={styles.amountSymbol}>{suffix}</span>}
     </div>
   );
 }
@@ -129,9 +129,9 @@ function Progress({ pct, scale }) {
   );
 }
 
-function Figures({ children, dense = false }) {
+function Figures({ children, dense = false, noBottomDivider = false }) {
   return (
-    <div className={cx(styles.figures, dense && styles.dense)}>
+    <div className={cx(styles.figures, dense && styles.dense, noBottomDivider && styles.noBottomDivider)}>
       {children}
     </div>
   );
