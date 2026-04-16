@@ -371,6 +371,24 @@ export default function StoreManagerHome() {
   const eligible5Day = Number.isFinite(myDaysPresent) && myDaysPresent >= minWorkingDays;
   const cycleMeta = buildCycleMeta(active?.vertical, employee, storeDetailResult.data, summary);
 
+  // Derive period-aware FNL data from the period selector
+  const fnlActive = useMemo(() => {
+    if (summary?.kind !== 'FNL' || !summary.weekPayouts?.length) return null;
+    const sel = fnlPeriod || (() => {
+      const today = dayjs();
+      const idx = summary.weekPayouts.findIndex(
+        (w) => today.isAfter(dayjs(w.weekStart).subtract(1, 'day')) && today.isBefore(dayjs(w.weekEnd).add(1, 'day')),
+      );
+      return idx >= 0 ? `w${idx}` : `w${summary.weekPayouts.length - 1}`;
+    })();
+    if (sel === 'month' && summary.monthAggregate) {
+      return { ...summary.monthAggregate, isMonthView: true };
+    }
+    const idx = parseInt(sel.replace('w', ''), 10);
+    const wp = summary.weekPayouts[idx];
+    return wp ? { ...wp, isMonthView: false } : null;
+  }, [summary, fnlPeriod]);
+
   // Look up the full master record for the selected roster row (drawer needs it)
   const selectedEmployee = selectedRow
     ? storeTeam.find((e) => e.employeeId === selectedRow.employeeId) || null
@@ -497,14 +515,24 @@ export default function StoreManagerHome() {
                       <HeroCard.Eyebrow withDot>
                         {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
                         {summary.kind === 'FNL' && (() => {
-                          const sel = fnlPeriod || `w${(summary.weekPayouts || []).length - 1}`;
-                          return sel === 'month' ? 'Month to date' : `Week of ${summary.week.start}`;
+                          if (fnlActive?.isMonthView) return 'Month to date';
+                          const ws = fnlActive?.weekStart || summary.week.start;
+                          const we = fnlActive?.weekEnd;
+                          return we
+                            ? `${dayjs(ws).format('MMM D')} – ${dayjs(we).format('MMM D')}`
+                            : `Week of ${ws}`;
                         })()}
                       </HeroCard.Eyebrow>
                     )}
-                    {summary.achievementPct >= 100 && (
-                      <HeroCard.TrendPill>Target exceeded!</HeroCard.TrendPill>
-                    )}
+                    {(() => {
+                      const isFnl = summary.kind === 'FNL' && fnlActive;
+                      const achPct = isFnl
+                        ? (fnlActive.weeklySalesTarget > 0
+                            ? Math.round((fnlActive.actualWeeklyGrossSales / fnlActive.weeklySalesTarget) * 100)
+                            : 0)
+                        : summary.achievementPct;
+                      return achPct >= 100 ? <HeroCard.TrendPill>Target exceeded!</HeroCard.TrendPill> : null;
+                    })()}
                   </HeroCard.EyebrowRow>
 
                   {summary.kind === 'GROCERY' && (
@@ -521,37 +549,64 @@ export default function StoreManagerHome() {
                     </>
                   )}
 
-                  <HeroCard.Amount suffix="%" tone={summary.achievementPct >= 100 ? 'success' : undefined}>
-                    {summary.achievementPct}
-                  </HeroCard.Amount>
-                  <HeroCard.AmountCap>
-                    {summary.kind === 'GROCERY'
-                      ? `of ${formatINR(summary.totalTarget)} campaign target`
-                      : `of store ${summary.kind === 'FNL' ? 'weekly' : 'period'} target`}
-                  </HeroCard.AmountCap>
+                  {(() => {
+                    const isFnl = summary.kind === 'FNL' && fnlActive;
+                    const achPct = isFnl
+                      ? (fnlActive.weeklySalesTarget > 0
+                          ? Math.round((fnlActive.actualWeeklyGrossSales / fnlActive.weeklySalesTarget) * 100)
+                          : 0)
+                      : summary.achievementPct;
+                    const tgt = isFnl ? fnlActive.weeklySalesTarget : summary.totalTarget;
+                    const act = isFnl ? fnlActive.actualWeeklyGrossSales : summary.totalActual;
+                    const gap = tgt > act ? tgt - act : 0;
+                    const periodLabel = isFnl
+                      ? (fnlActive.isMonthView ? 'monthly' : 'weekly')
+                      : (summary.kind === 'GROCERY' ? 'campaign' : 'period');
 
-                  <TargetTrendBreakdown
-                    actualValue={summary.totalActual}
-                    targetValue={summary.totalTarget}
-                    extraCaption={
-                      summary.achievementPct < 100 && summary.gapToTarget > 0
-                        ? <>
-                            <span>·</span>
-                            <Target size={13} strokeWidth={2.2} />
-                            <strong>{formatINR(summary.gapToTarget)}</strong> more to hit target
-                          </>
-                        : null
-                    }
-                  />
+                    return (
+                      <>
+                        <HeroCard.Amount suffix="%" tone={achPct >= 100 ? 'success' : undefined}>
+                          {achPct}
+                        </HeroCard.Amount>
+                        <HeroCard.AmountCap>
+                          {summary.kind === 'GROCERY'
+                            ? `of ${formatINR(tgt)} campaign target`
+                            : `of store ${periodLabel} target`}
+                        </HeroCard.AmountCap>
+
+                        <TargetTrendBreakdown
+                          actualValue={act}
+                          targetValue={tgt}
+                          extraCaption={
+                            achPct < 100 && gap > 0
+                              ? <>
+                                  <span>·</span>
+                                  <Target size={13} strokeWidth={2.2} />
+                                  <strong>{formatINR(gap)}</strong> more to hit target
+                                </>
+                              : null
+                          }
+                        />
+                      </>
+                    );
+                  })()}
 
 
                   <HeroCard.FooterBlock>
                     <div>
                       <HeroCard.FooterLabel>
-                        {summary.kind === 'GROCERY' ? 'Your payout so far' : 'Total store payout'}
+                        {summary.kind === 'GROCERY'
+                          ? 'Your payout so far'
+                          : summary.kind === 'FNL' && fnlActive
+                            ? (fnlActive.isMonthView ? 'Total month payout' : 'Total week payout')
+                            : 'Total store payout'}
                       </HeroCard.FooterLabel>
                       <HeroCard.FooterValue>
-                        {summary.kind === 'GROCERY' ? formatINR(selfPayout) : formatINR(summary.totalPayout)}
+                        {summary.kind === 'GROCERY'
+                          ? formatINR(selfPayout)
+                          : summary.kind === 'FNL' && fnlActive
+                            ? formatINR(fnlActive.myPayout || 0)
+                            : formatINR(summary.totalPayout)}
                       </HeroCard.FooterValue>
                     </div>
                     <HeroCard.FooterMetaGroup>
@@ -587,7 +642,7 @@ export default function StoreManagerHome() {
                 />
               </section>
 
-              {summary.kind === 'FNL' && Number.isFinite(myDaysPresent) && (
+              {summary.kind === 'FNL' && Number.isFinite(myDaysPresent) && !(fnlActive?.isMonthView) && (
                 <section className={`${styles.pad} rise rise-3`}>
                   <div className={eligible5Day ? styles.eligibleOk : styles.eligibleNo}>
                     <div className={styles.eligIconWrap}>
@@ -724,20 +779,29 @@ export default function StoreManagerHome() {
                 </section>
               )}
 
-              {summary.kind === 'FNL' && !summary.storeQualifies && (
-                <section className={`${styles.pad} rise rise-3`}>
-                  <div className={styles.notice}>
-                    <AlertTriangle size={14} strokeWidth={2.4} />
-                    <div>
-                      <div className={styles.noticeTitle}>Store didn't beat target</div>
-                      <div className={styles.noticeBody}>No payout this week for any role — the store needed to beat the weekly target. Gap: {formatINR(summary.totalTarget - summary.totalActual)}.</div>
+              {summary.kind === 'FNL' && (() => {
+                const qualifies = fnlActive ? fnlActive.storeQualifies : summary.storeQualifies;
+                if (qualifies) return null;
+                const tgt = fnlActive ? fnlActive.weeklySalesTarget : summary.totalTarget;
+                const act = fnlActive ? fnlActive.actualWeeklyGrossSales : summary.totalActual;
+                const label = fnlActive?.isMonthView ? 'month' : 'week';
+                return (
+                  <section className={`${styles.pad} rise rise-3`}>
+                    <div className={styles.notice}>
+                      <AlertTriangle size={14} strokeWidth={2.4} />
+                      <div>
+                        <div className={styles.noticeTitle}>Store didn't beat target</div>
+                        <div className={styles.noticeBody}>
+                          No payout this {label} for any role — the store needed to beat the {label === 'month' ? 'monthly' : 'weekly'} target. Gap: {formatINR(tgt - act)}.
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </section>
-              )}
+                  </section>
+                );
+              })()}
 
               <section className={`rise rise-4`}>
-                <QuestCard employeeId={employee.employeeId} vertical={active.vertical} payout={summary} />
+                <QuestCard employeeId={employee.employeeId} vertical={active.vertical} payout={summary.kind === 'FNL' && fnlActive ? fnlActive : summary} />
               </section>
 
               <section className={`rise rise-4`}>
