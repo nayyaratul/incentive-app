@@ -242,7 +242,7 @@ export default function StoreManagerHome() {
         const to = Number(s.achievementTo);
         return achPct >= from && (Number.isFinite(to) ? achPct < to : true);
       });
-      const currentRate = Number(currentSlab?.perPieceRate) || 0;
+      const currentRate = Number(currentSlab?.perPieceRate) || Number(storeDetail.summary?.appliedRate) || 0;
 
       return {
         kind: 'GROCERY',
