@@ -107,7 +107,7 @@ export default function ElectronicsView({ payout, employee, store, role }) {
       </section>
 
       <section className={`rise rise-4`}>
-        <QuestCard employeeId={employee.employeeId} vertical="ELECTRONICS" />
+        <QuestCard employeeId={employee.employeeId} vertical="ELECTRONICS" payout={payout} />
       </section>
 
       <section className={`rise rise-5`}>

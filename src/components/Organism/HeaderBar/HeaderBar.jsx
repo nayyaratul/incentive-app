@@ -49,7 +49,7 @@ export default function HeaderBar() {
   );
 }
 
-export function HeaderGreeting({ employeeName, storeName, rank, deltaRank, onOpenLeaderboard }) {
+export function HeaderGreeting({ employeeName, storeName, department, rank, deltaRank, onOpenLeaderboard }) {
   if (!employeeName) return null;
 
   const hasRank = typeof rank === 'number' && rank > 0;
@@ -70,7 +70,11 @@ export function HeaderGreeting({ employeeName, storeName, rank, deltaRank, onOpe
           <Text variant="body" className={styles.namaste}>Hi</Text>
           <Heading level={2} className={styles.name}>{employeeName}</Heading>
         </div>
-        {storeName && <Text variant="caption" className={styles.storeName}>{storeName}</Text>}
+        {storeName && (
+          <Text variant="caption" className={styles.storeName}>
+            {department ? `${storeName} · ${department}` : storeName}
+          </Text>
+        )}
       </div>
 
       {hasRank && onOpenLeaderboard && (

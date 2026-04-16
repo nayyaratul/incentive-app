@@ -88,6 +88,7 @@ export default function EmployeeHome() {
               <HeaderGreeting
                 employeeName={firstName}
                 storeName={store ? `${store.storeFormat || store.storeName} — ${store.city}, ${store.state}` : undefined}
+                department={isElec ? (myPayout?.employeeDepartment || employee?.department) : undefined}
                 rank={storeRank?.rank}
                 onOpenLeaderboard={() => setLeaderboardOpen(true)}
               />

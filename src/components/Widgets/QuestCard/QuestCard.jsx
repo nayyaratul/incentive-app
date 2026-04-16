@@ -61,6 +61,49 @@ function buildGroceryQuests(payout) {
 }
 
 /**
+ * Build electronics quests dynamically from live payout data so quest
+ * progress matches the hero card (same dept achievement %).
+ */
+function buildElectronicsQuests(payout) {
+  if (!payout) return null;
+  const dept = payout.employeeDepartment || 'Dept';
+  const ach = Math.round(Number(payout.achievementPct) || 0);
+  const base = Number(payout.baseIncentive) || 0;
+  const tiers = payout.apiMultiplierTiers || [];
+
+  const quests = [];
+
+  // Sort tiers by 'from' ascending
+  const sorted = [...tiers].sort((a, b) => (Number(a.from) || 0) - (Number(b.from) || 0));
+
+  for (const tier of sorted) {
+    const from = Number(tier.from) || 0;
+    const mult = Number(tier.multiplierPct) || 0;
+    if (from <= 0) continue;
+
+    const atTier = Math.round(base * (mult / 100));
+    const done = ach >= from;
+
+    quests.push({
+      id: `q-dept-${from}`,
+      type: 'Dept multiplier',
+      title: done
+        ? `${dept} at ${from}%`
+        : from === 85
+          ? `Help ${dept} reach ${from}% of target`
+          : `Stretch — ${dept} at ${from}%`,
+      progress: { current: Math.min(ach, from), target: from, unit: '%' },
+      reward: mult === 0
+        ? `Below ${from}% — no payout on ${dept} base incentive`
+        : `Unlocks ${mult === 100 ? 'full' : `${mult}%`} payout on your ${dept} base incentive (₹${atTier.toLocaleString('en-IN')})`,
+      status: done ? 'completed' : 'active',
+    });
+  }
+
+  return quests.length > 0 ? quests : null;
+}
+
+/**
  * Brief-aligned quests only. Each quest tracks progress toward a gate/mechanic
  * defined in the vendor brief. Rewards quote the brief's own payout — no
  * invented bonuses.
@@ -69,13 +112,14 @@ function buildGroceryQuests(payout) {
  * standalone Nexus Cards, one per quest. No outer card wrapping the stack.
  */
 export default function QuestCard({ employeeId, vertical, payout }) {
-  // For Grocery, prefer dynamic quests built from the live payout data so
-  // quest progress always matches the hero card achievement.
+  // Prefer dynamic quests built from live payout data so quest progress
+  // always matches the hero card achievement.
   const dynamicGrocery = vertical === 'GROCERY' ? buildGroceryQuests(payout) : null;
+  const dynamicElec = vertical === 'ELECTRONICS' ? buildElectronicsQuests(payout) : null;
 
   const direct = questsByEmployee[employeeId];
   const fallbackId = VERTICAL_SAMPLE_ID[vertical];
-  const quests = dynamicGrocery || direct || (fallbackId ? questsByEmployee[fallbackId] : null) || [];
+  const quests = dynamicGrocery || dynamicElec || direct || (fallbackId ? questsByEmployee[fallbackId] : null) || [];
 
   const activeCount = quests.filter((q) => q.status === 'active').length;
 
