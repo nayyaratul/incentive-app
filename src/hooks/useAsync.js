@@ -14,7 +14,6 @@ export default function useAsync(asyncFn, deps = [], { immediate = true } = {}) 
       return result;
     } catch (e) {
       setError(e);
-      throw e;
     } finally {
       setLoading(false);
     }

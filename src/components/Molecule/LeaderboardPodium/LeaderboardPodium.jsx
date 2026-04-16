@@ -66,9 +66,7 @@ export default function LeaderboardPodium({ entries, unitLabel = 'earned', isSto
                   {entry.rank}
                 </span>
                 <div className={styles.name} title={entry.name}>
-                  {entry.isSelf
-                    ? `${entry.name} ${isStoreScope ? '(Your store)' : '(You)'}`
-                    : entry.name}
+                  {entry.name}
                 </div>
                 <div className={styles.earn}>{formatEarn(entry.earned, unitLabel)}</div>
               </div>

@@ -1,11 +1,11 @@
 /* Shared styles for ElectronicsView / GroceryView / FnlView mobile-only layouts */
 
-.pad    { padding: 0 20px; }
-.heroPad{ padding: 0 20px; }
+.pad    { padding: 0 var(--space-250); }
+.heroPad{ padding: 0 var(--space-250); }
 
 /* Streak sits right under the hero — left-aligned, narrow footprint */
 .streakRow {
-  padding: 0 20px;
+  padding: 0 var(--space-250);
   display: flex;
   margin-top: -10px; // pull slightly closer to hero without overlapping
 }
@@ -74,7 +74,7 @@
 
 /* ---------- Notice / banner ---------- */
 .notice {
-  margin: 0 20px;
+  margin: 0 var(--space-250);
   padding: 12px 14px;
   display: flex;
   gap: 10px;
@@ -199,6 +199,59 @@ details[open] .tierSummary::before { content: '–  '; }
   }
 }
 .tierMult { color: var(--yellow-50); font-weight: 700; }
+
+/* ---------- Grocery — prominent stat strip ---------- */
+.groceryStats {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-150);
+  padding: var(--space-175, 14px) var(--space-175, 14px);
+  background: var(--brand-a100);
+  border: var(--border-width-100) solid var(--brand-a150);
+  border-radius: var(--radius-200);
+}
+
+.groceryStat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-075);
+  min-width: 0;
+}
+
+.groceryStatValue {
+  font-family: var(--sans);
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 700;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--color-text-primary);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.groceryStatUnit {
+  font-size: 18px;
+  font-weight: 500;
+  font-variation-settings: 'opsz' 72, 'SOFT' 30, 'wght' 500;
+  color: var(--color-text-secondary);
+  letter-spacing: -0.01em;
+}
+
+.groceryStatLabel {
+  font-family: var(--mono);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-70);
+  line-height: 1.2;
+}
+
+.groceryStatDivider {
+  width: var(--border-width-100);
+  align-self: stretch;
+  background: var(--brand-a150);
+}
 
 /* ---------- Grocery ---------- */
 /* Slab grid */

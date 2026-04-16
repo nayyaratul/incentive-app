@@ -8,6 +8,11 @@ import { fetchEmployees } from '../../api/employees';
 import { fetchStoreIncentive } from '../../api/incentives';
 import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
+import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
+import LeaderboardPodium from '../../components/Molecule/LeaderboardPodium/LeaderboardPodium';
+import LeaderboardFocusList from '../../components/Molecule/LeaderboardFocusList/LeaderboardFocusList';
+import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
+import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import BadgesStrip from '../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../components/Widgets/QuestCard/QuestCard';
@@ -17,6 +22,7 @@ import { formatINR } from '../../utils/format';
 
 export default function BrandAssociateHome() {
   const [tab, setTab] = useState('home');
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const { active, employee, store } = usePersona();
 
   // Fetch BA's own sales for contribution stats
@@ -66,6 +72,12 @@ export default function BrandAssociateHome() {
     [employee, active?.vertical, salesResult.data, myContribution]
   );
 
+  // Store-level leaderboard (stores vs stores)
+  const storeRank = active?.vertical && store?.storeCode
+    ? buildStoreLeaderboard(active.vertical, store.storeCode)
+    : null;
+  const storeLeaderboard = storeRank;
+
   const dataLoading = salesResult.loading || teamResult.loading || storeDetailResult.loading;
   if (!active || !employee || !store || dataLoading) {
     return <div className={styles.shell}><div className={styles.loading}>Loading...</div></div>;
@@ -75,12 +87,48 @@ export default function BrandAssociateHome() {
     <div className={styles.shell}>
       <BottomNav active={tab} role="BA" onNavigate={setTab} />
 
+      <LeaderboardDrawer
+        open={leaderboardOpen}
+        onClose={() => setLeaderboardOpen(false)}
+        myRank={storeRank}
+      />
+
       <div className={styles.layout}>
         <HeaderBar />
 
         <main className={styles.main}>
+          {tab === 'board' && storeLeaderboard && (
+            <section className={styles.pad}>
+              <div className="rise rise-1">
+                <TabPageHeader
+                  title="Leaderboard"
+                  subtitle={`${store?.storeName || 'Store'} · ${storeLeaderboard.scopeNote || 'store rankings'}`}
+                />
+              </div>
+              <div className="rise rise-2">
+                <LeaderboardPodium
+                  entries={storeLeaderboard.top}
+                  unitLabel={storeLeaderboard.unitLabel || 'achievement'}
+                  isStoreScope
+                />
+              </div>
+              <div className="rise rise-3">
+                <LeaderboardFocusList
+                  entries={storeLeaderboard.top}
+                  selfRank={storeLeaderboard.rank}
+                  unitLabel={storeLeaderboard.unitLabel || 'achievement'}
+                  isStoreScope
+                />
+              </div>
+            </section>
+          )}
+
           {tab === 'home' && (<>
-          <HeaderGreeting employeeName={firstName} />
+          <HeaderGreeting
+            employeeName={firstName}
+            rank={storeRank?.rank}
+            onOpenLeaderboard={() => setLeaderboardOpen(true)}
+          />
           {/* Eligibility notice */}
           <section className={`${styles.pad} rise rise-2`}>
             <div className={styles.ineligCard}>

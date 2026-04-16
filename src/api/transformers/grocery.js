@@ -101,7 +101,7 @@ export function transformGroceryPayout(detail, campaignConfig, salesRows) {
         ? Math.round((scenarioPct / 100) * storeTarget)
         : 0;
       const rate = Number(s.rate) || 0;
-      const piecesSold = Number(cs.totalPiecesSold) || 0;
+      const piecesSold = Number(cs.totalPiecesSold) || Number(cs.piecesSold) || Number(cs.totalPieces) || 0;
       // estimate at that slab
       const estTotalIncentive = rate * piecesSold;
       const estPerEmployee = staffCount > 0
@@ -123,9 +123,9 @@ export function transformGroceryPayout(detail, campaignConfig, salesRows) {
     targetSalesValue: storeTarget,
     actualSalesValue: storeActual,
     achievementPct,
-    piecesSoldTotal: Number(cs.totalPiecesSold) || 0,
-    myPiecesSold: Number(cs.myPiecesSold) || 0,
-    appliedRate: Number(cs.currentRate) || 0,
+    piecesSoldTotal: Number(cs.totalPiecesSold) || Number(cs.piecesSold) || Number(cs.totalPieces) || 0,
+    myPiecesSold: Number(cs.myPiecesSold) || Number(cs.piecesSold) || 0,
+    appliedRate: Number(cs.currentRate) || Number(cs.appliedRate) || Number(cs.rate) || 0,
     totalStoreIncentive: Number(cs.totalStorePayout) || 0,
     staffCount,
     individualPayout: Number(cs.yourPayout) || 0,

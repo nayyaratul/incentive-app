@@ -252,18 +252,19 @@
 .caption {
   margin: 0;
   font-family: var(--sans);
-  font-size: var(--font-size-300);
+  font-size: var(--font-size-200);
   color: var(--color-text-secondary);
   display: flex;
   align-items: center;
-  gap: var(--space-075);
-  flex-wrap: wrap;
+  gap: var(--space-050);
+  flex-wrap: nowrap;
+  white-space: nowrap;
 
   strong {
     font-family: var(--mono);
     font-weight: 700;
     color: var(--color-text-primary);
-    font-size: var(--font-size-300);
+    font-size: var(--font-size-200);
     letter-spacing: var(--letter-spacing-tight);
   }
 

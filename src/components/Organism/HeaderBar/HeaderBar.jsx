@@ -101,6 +101,21 @@ export function HeaderGreeting({ employeeName, storeName, department, rank, delt
           )}
         </button>
       )}
+
+      {!hasRank && onOpenLeaderboard && (
+        <button
+          type="button"
+          className={styles.leaderboardPill}
+          data-rank-tier="default"
+          onClick={onOpenLeaderboard}
+          aria-label="Tap to see leaderboard"
+        >
+          <span className={styles.pillShine} aria-hidden="true" />
+          <span className={styles.pillIcon} aria-hidden="true">
+            <Trophy size={15} strokeWidth={2.2} />
+          </span>
+        </button>
+      )}
     </div>
   );
 }

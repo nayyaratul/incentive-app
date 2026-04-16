@@ -10,11 +10,16 @@ import useFnlData from '../../hooks/useFnlData';
 import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
+import LeaderboardPodium from '../../components/Molecule/LeaderboardPodium/LeaderboardPodium';
+import LeaderboardFocusList from '../../components/Molecule/LeaderboardFocusList/LeaderboardFocusList';
+import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
 import ElectronicsView from './views/ElectronicsView';
 import GroceryView from './views/GroceryView';
 import FnlView from './views/FnlView';
 import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
 import HistoryScreen from '../screens/HistoryScreen';
+
+const useMock = process.env.REACT_APP_USE_MOCK_DATA === 'true';
 
 export default function EmployeeHome() {
   const [tab, setTab] = useState('home');
@@ -37,8 +42,15 @@ export default function EmployeeHome() {
   const activeDataReady = isElec ? !!elec.payout : isGroc ? !!groc.payout : isFnl ? !!fnl.payout : false;
   const myPayout = isElec ? elec.payout : isGroc ? groc.payout : isFnl ? fnl.payout : null;
 
-  const storeRank = active?.vertical && store?.storeCode
-    ? buildStoreLeaderboard(active.vertical, store.storeCode)
+  // Employee rank within store — used by drawer and header pill
+  const storeRank = myPayout?.myRank
+    || (active?.vertical && store?.storeCode
+        ? buildStoreLeaderboard(active.vertical, store.storeCode)
+        : null);
+
+  // Store-level leaderboard (stores vs stores) — used by the board tab
+  const storeLeaderboard = active?.vertical
+    ? buildStoreLeaderboard(active.vertical, store?.storeCode)
     : null;
 
   /* Pull-to-refresh — triggers a re-render that reloads data hooks */
@@ -102,6 +114,32 @@ export default function EmployeeHome() {
                 <FnlView payout={myPayout} employee={employee} store={store} role={active.role} />
               )}
             </>
+          )}
+
+          {tab === 'board' && storeLeaderboard && (
+            <section className={styles.pad}>
+              <div className="rise rise-1">
+                <TabPageHeader
+                  title="Leaderboard"
+                  subtitle={`${store?.storeName || 'Store'} · ${storeLeaderboard.scopeNote || 'store rankings'}`}
+                />
+              </div>
+              <div className="rise rise-2">
+                <LeaderboardPodium
+                  entries={storeLeaderboard.top}
+                  unitLabel={storeLeaderboard.unitLabel || 'achievement'}
+                  isStoreScope
+                />
+              </div>
+              <div className="rise rise-3">
+                <LeaderboardFocusList
+                  entries={storeLeaderboard.top}
+                  selfRank={storeLeaderboard.rank}
+                  unitLabel={storeLeaderboard.unitLabel || 'achievement'}
+                  isStoreScope
+                />
+              </div>
+            </section>
           )}
 
           {tab === 'history' && <HistoryScreen employeeId={employee.employeeId} vertical={active.vertical} />}

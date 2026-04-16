@@ -24,7 +24,7 @@ api.interceptors.response.use(
   (err) => {
     const status = err.response?.status;
     const url = err.config?.url || '';
-    if (status === 401 && !url.includes('/auth/login')) {
+    if (status === 401 && !url.includes('/auth/login') && !url.includes('/leaderboard')) {
       window.dispatchEvent(new CustomEvent('auth:session-expired'));
     }
     const message = err.response?.data?.error || err.message;

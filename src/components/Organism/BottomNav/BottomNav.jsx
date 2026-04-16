@@ -6,10 +6,12 @@ import styles from './BottomNav.module.scss';
 const NAV_SETS = {
   EMPLOYEE: [
     { id: 'home',    label: 'Home',    Icon: Home },
+    { id: 'board',   label: 'Leaderboard', Icon: Trophy },
     { id: 'history', label: 'History', Icon: BarChart3 },
   ],
   BA: [
     { id: 'home',    label: 'Home',    Icon: Home },
+    { id: 'board',   label: 'Leaderboard', Icon: Trophy },
   ],
   SM: [
     { id: 'home',  label: 'Home',  Icon: Home },
@@ -19,6 +21,7 @@ const NAV_SETS = {
   ],
   CENTRAL: [
     { id: 'home',   label: 'Overview', Icon: Home },
+    { id: 'board',  label: 'Leaderboard', Icon: Trophy },
     { id: 'stores', label: 'Stores',   Icon: Store },
     { id: 'alerts', label: 'Alerts',   Icon: Flag },
   ],

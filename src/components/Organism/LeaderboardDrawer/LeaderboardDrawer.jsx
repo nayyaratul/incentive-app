@@ -22,7 +22,7 @@ export default function LeaderboardDrawer({ open, onClose, myRank }) {
       open={open}
       onOpenChange={(isOpen) => !isOpen && onClose()}
       placement="bottom"
-      title={isStoreScope ? `Your store is #${myRank.rank}` : `#${myRank.rank}`}
+      title={myRank.rank > 0 ? (isStoreScope ? `Your store is #${myRank.rank}` : `#${myRank.rank}`) : 'Store rankings'}
       subtitle={`Leaderboard \u00b7 ${scopeNote}`}
       icon={<Trophy size={16} strokeWidth={2.4} />}
     >

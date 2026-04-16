@@ -45,7 +45,6 @@ export default function HistoryScreen({ employeeId }) {
   const [period, setPeriod] = useState('month');
   const [query, setQuery] = useState('');
   const [txType, setTxType] = useState('ALL');
-  const [earningOnly, setEarningOnly] = useState(false);
   const [selectedTx, setSelectedTx] = useState(null);
 
   const today = new Date().toISOString().slice(0, 10);
@@ -66,9 +65,6 @@ export default function HistoryScreen({ employeeId }) {
     if (txType !== 'ALL') {
       list = list.filter((tx) => tx.transactionType === txType);
     }
-    if (earningOnly) {
-      list = list.filter((tx) => typeof tx.finalIncentive === 'number' && tx.finalIncentive > 0);
-    }
     if (query.trim()) {
       const q = query.trim().toLowerCase();
       list = list.filter((tx) =>
@@ -78,10 +74,7 @@ export default function HistoryScreen({ employeeId }) {
       );
     }
     return list;
-  }, [allTx, period, txType, earningOnly, query, today]);
-
-  const mtdEarned = filtered.reduce((s, tx) => s + (tx.finalIncentive || 0), 0);
-  const mtdGross  = filtered.reduce((s, tx) => s + tx.grossAmount, 0);
+  }, [allTx, period, txType, query, today]);
 
   // Group filtered transactions by day
   const grouped = useMemo(() => {
@@ -94,7 +87,7 @@ export default function HistoryScreen({ employeeId }) {
     return Array.from(groups.entries()).sort((a, b) => b[0].localeCompare(a[0]));
   }, [filtered]);
 
-  const anyFilterActive = txType !== 'ALL' || earningOnly || query.trim();
+  const anyFilterActive = txType !== 'ALL' || query.trim();
 
   return (
     <div className={styles.screen}>
@@ -151,33 +144,7 @@ export default function HistoryScreen({ employeeId }) {
             {c.label}
           </button>
         ))}
-        <button
-          type="button"
-          className={`${styles.chip} ${earningOnly ? styles.chipActive : ''}`}
-          onClick={() => setEarningOnly(!earningOnly)}
-          aria-pressed={earningOnly}
-        >
-          Incentive only
-        </button>
       </div>
-
-      {/* Summary strip — reflects filtered set */}
-      <section className={`${styles.summaryRow} rise rise-4`}>
-        <div>
-          <div className={styles.summaryVal}>{filtered.length}</div>
-          <div className={styles.summaryCap}>transactions</div>
-        </div>
-        <div className={styles.summaryDiv} />
-        <div>
-          <div className={styles.summaryVal}>{formatINR(mtdGross)}</div>
-          <div className={styles.summaryCap}>gross (pre-tax)</div>
-        </div>
-        <div className={styles.summaryDiv} />
-        <div>
-          <div className={styles.summaryVal} style={{ color: 'var(--brand-70)' }}>{formatINR(mtdEarned)}</div>
-          <div className={styles.summaryCap}>final incentive</div>
-        </div>
-      </section>
 
       {salesResult.loading && (
         <div className={styles.loadingBar}>Loading transactions...</div>
@@ -195,7 +162,7 @@ export default function HistoryScreen({ employeeId }) {
             <button
               type="button"
               className={styles.emptyReset}
-              onClick={() => { setQuery(''); setTxType('ALL'); setEarningOnly(false); }}
+              onClick={() => { setQuery(''); setTxType('ALL'); }}
             >
               Clear filters
             </button>
@@ -207,7 +174,7 @@ export default function HistoryScreen({ employeeId }) {
             <section key={day} className={styles.dayGroup}>
               <div className={styles.dayHead}>
                 <span>{dayHeading(day, today)}</span>
-                <span className={styles.dayMeta}>{txs.length} tx · {formatINR(txs.reduce((s, t) => s + (t.finalIncentive || 0), 0))}</span>
+                <span className={styles.dayMeta}>{txs.length} tx</span>
               </div>
               <div className={styles.txList}>
                 {txs.map((tx) => (
@@ -229,7 +196,6 @@ export default function HistoryScreen({ employeeId }) {
 }
 
 function TxRow({ tx, onSelect }) {
-  const earned = typeof tx.finalIncentive === 'number' ? tx.finalIncentive : null;
   return (
     <button type="button" className={styles.txCardBtn} onClick={onSelect}>
       <div className={styles.txLeft}>
@@ -248,11 +214,6 @@ function TxRow({ tx, onSelect }) {
       </div>
       <div className={styles.txRight}>
         <div className={styles.txGross}>{formatINR(tx.grossAmount)}</div>
-        {earned !== null && (
-          <div className={`${styles.txEarn} ${earned === 0 ? styles.txZero : ''}`}>
-            {earned > 0 ? `+₹${earned}` : '₹0'}
-          </div>
-        )}
       </div>
     </button>
   );

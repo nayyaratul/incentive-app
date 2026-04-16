@@ -1,5 +1,6 @@
 import React from 'react';
-import { Calendar } from 'lucide-react';
+import dayjs from 'dayjs';
+import { Calendar, Users, Clock } from 'lucide-react';
 import styles from './VerticalViews.module.scss';
 import { groceryCampaign } from '../../../data/configs';
 import { formatINR, formatDateRange } from '../../../utils/format';
@@ -34,8 +35,6 @@ export default function GroceryView({ payout, employee }) {
             <span>{formatDateRange(groceryCampaign.campaignStart, groceryCampaign.campaignEnd)}</span>
             <HeroCard.MetaDot />
             <span>{groceryCampaign.geography}</span>
-            <HeroCard.MetaDot />
-            <span>{groceryCampaign.channel}</span>
           </HeroCard.Meta>
 
           <HeroCard.Amount suffix="%">{achievementPct}</HeroCard.Amount>
@@ -46,20 +45,21 @@ export default function GroceryView({ payout, employee }) {
             targetValue={payout.targetSalesValue}
           />
 
-          <HeroCard.Caption>
-            <span>Pool unlocked</span>
-            <strong>{formatINR(payout.totalStoreIncentive)}</strong>
-          </HeroCard.Caption>
-
           <HeroCard.FooterBlock>
             <div>
-              <HeroCard.FooterLabel>Your pieces sold</HeroCard.FooterLabel>
-              <HeroCard.FooterValue>{payout.myPiecesSold}</HeroCard.FooterValue>
-            </div>
-            <div>
-              <HeroCard.FooterLabel>Your payout</HeroCard.FooterLabel>
+              <HeroCard.FooterLabel>Your payout so far</HeroCard.FooterLabel>
               <HeroCard.FooterValue>{formatINR(payout.individualPayout)}</HeroCard.FooterValue>
             </div>
+            <HeroCard.FooterMetaGroup>
+              <HeroCard.FooterMeta>
+                <Users size={12} strokeWidth={2.2} />
+                <span>Split equally across {payout.staffCount} staff</span>
+              </HeroCard.FooterMeta>
+              <HeroCard.FooterMeta>
+                <Clock size={12} strokeWidth={2.2} />
+                <span>{dayjs(groceryCampaign.campaignEnd).diff(dayjs(), 'day')} days left</span>
+              </HeroCard.FooterMeta>
+            </HeroCard.FooterMetaGroup>
           </HeroCard.FooterBlock>
         </HeroCard>
       </section>
@@ -141,4 +141,3 @@ export default function GroceryView({ payout, employee }) {
     </>
   );
 }
-
