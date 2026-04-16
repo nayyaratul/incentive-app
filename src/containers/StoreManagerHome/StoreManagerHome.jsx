@@ -594,13 +594,16 @@ export default function StoreManagerHome() {
                         {summary.kind === 'GROCERY' && summary.piecesSoldTotal > 0 && (
                           <HeroCard.Caption>
                             <Package size={13} strokeWidth={2.2} />
-                            <strong>{summary.piecesSoldTotal.toLocaleString('en-IN')}</strong> units sold
+                            <strong>{summary.piecesSoldTotal.toLocaleString('en-IN')}</strong> pcs sold
                             {summary.appliedRate > 0 && (
                               <>
-                                <span>·</span>
-                                <em>₹{summary.appliedRate}/pc</em>
+                                <span>×</span>
+                                <strong>₹{summary.appliedRate}/pc</strong>
+                                <span>=</span>
+                                <strong>{formatINR(summary.totalPayout)}</strong> store pool
                               </>
                             )}
+                            {!summary.appliedRate && <span>· below 100% — no payout yet</span>}
                           </HeroCard.Caption>
                         )}
                       </>
@@ -626,6 +629,12 @@ export default function StoreManagerHome() {
                       </HeroCard.FooterValue>
                     </div>
                     <HeroCard.FooterMetaGroup>
+                      {summary.kind === 'GROCERY' && summary.totalPayout > 0 && (
+                        <HeroCard.FooterMeta>
+                          <Package size={12} strokeWidth={2.2} />
+                          <span>Store pool {formatINR(summary.totalPayout)} ÷ {summary.employees.length} staff</span>
+                        </HeroCard.FooterMeta>
+                      )}
                       <HeroCard.FooterMeta>
                         <Users size={12} strokeWidth={2.2} />
                         <span>

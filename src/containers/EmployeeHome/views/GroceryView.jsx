@@ -48,22 +48,31 @@ export default function GroceryView({ payout, employee }) {
           {payout.piecesSoldTotal > 0 && (
             <HeroCard.Caption>
               <Package size={13} strokeWidth={2.2} />
-              <strong>{payout.piecesSoldTotal.toLocaleString('en-IN')}</strong> units sold
+              <strong>{payout.piecesSoldTotal.toLocaleString('en-IN')}</strong> pcs sold
               {payout.appliedRate > 0 && (
                 <>
-                  <span>·</span>
-                  <em>₹{payout.appliedRate}/pc</em>
+                  <span>×</span>
+                  <strong>₹{payout.appliedRate}/pc</strong>
+                  <span>=</span>
+                  <strong>{formatINR(payout.totalStoreIncentive)}</strong> store pool
                 </>
               )}
+              {!payout.appliedRate && <span>· below 100% — no payout yet</span>}
             </HeroCard.Caption>
           )}
 
           <HeroCard.FooterBlock>
             <div>
-              <HeroCard.FooterLabel>Your payout so far</HeroCard.FooterLabel>
+              <HeroCard.FooterLabel>Your payout</HeroCard.FooterLabel>
               <HeroCard.FooterValue>{formatINR(payout.individualPayout)}</HeroCard.FooterValue>
             </div>
             <HeroCard.FooterMetaGroup>
+              {payout.totalStoreIncentive > 0 && (
+                <HeroCard.FooterMeta>
+                  <Package size={12} strokeWidth={2.2} />
+                  <span>Store pool {formatINR(payout.totalStoreIncentive)} ÷ {payout.staffCount} staff</span>
+                </HeroCard.FooterMeta>
+              )}
               <HeroCard.FooterMeta>
                 <Users size={12} strokeWidth={2.2} />
                 <span>Split equally across {payout.staffCount} staff</span>
