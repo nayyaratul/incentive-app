@@ -5,6 +5,11 @@ import { usePersona } from '../../context/PersonaContext';
 import useCentralData from '../../hooks/useCentralData';
 import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
+import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
+import LeaderboardPodium from '../../components/Molecule/LeaderboardPodium/LeaderboardPodium';
+import LeaderboardFocusList from '../../components/Molecule/LeaderboardFocusList/LeaderboardFocusList';
+import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
+import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
 import StoreDetailDrawer from '../../components/Organism/StoreDetailDrawer/StoreDetailDrawer';
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import { formatINR } from '../../utils/format';
@@ -28,9 +33,14 @@ export default function CentralHome() {
   const [storeQuery, setStoreQuery] = useState('');
   const [verticalFilter, setVerticalFilter] = useState('ALL');
   const [selectedStore, setSelectedStore] = useState(null);
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const { employee } = usePersona();
   const { reporting, rules, loading: dataLoading } = useCentralData();
   const firstName = employee?.employeeName?.split(' ')[0] ?? '';
+
+  // CENTRAL has no store — show org-wide store leaderboard (default to ELECTRONICS)
+  const storeRank = buildStoreLeaderboard('ELECTRONICS', null);
+  const storeLeaderboard = storeRank;
 
   const ruleCatalog = (rules || []).map((plan) => ({
     ruleId: `PLAN-${plan.id}`,
@@ -63,6 +73,12 @@ export default function CentralHome() {
     <div className={styles.shell}>
       <BottomNav active={tab} role="CENTRAL" onNavigate={setTab} />
 
+      <LeaderboardDrawer
+        open={leaderboardOpen}
+        onClose={() => setLeaderboardOpen(false)}
+        myRank={storeRank}
+      />
+
       <StoreDetailDrawer
         store={selectedStore}
         open={!!selectedStore}
@@ -73,6 +89,32 @@ export default function CentralHome() {
         <HeaderBar />
 
         <main className={styles.main}>
+          {tab === 'board' && storeLeaderboard && (
+            <section className={styles.pad}>
+              <div className="rise rise-1">
+                <TabPageHeader
+                  title="Leaderboard"
+                  subtitle={`Organisation · ${storeLeaderboard.scopeNote || 'store rankings'}`}
+                />
+              </div>
+              <div className="rise rise-2">
+                <LeaderboardPodium
+                  entries={storeLeaderboard.top}
+                  unitLabel={storeLeaderboard.unitLabel || 'achievement'}
+                  isStoreScope
+                />
+              </div>
+              <div className="rise rise-3">
+                <LeaderboardFocusList
+                  entries={storeLeaderboard.top}
+                  selfRank={storeLeaderboard.rank}
+                  unitLabel={storeLeaderboard.unitLabel || 'achievement'}
+                  isStoreScope
+                />
+              </div>
+            </section>
+          )}
+
           {tab === 'stores' && (
             <>
               <div className={`${styles.datemark} rise rise-1`}>
@@ -214,7 +256,11 @@ export default function CentralHome() {
 
           {tab === 'home' && (
             <>
-          <HeaderGreeting employeeName={firstName} />
+          <HeaderGreeting
+            employeeName={firstName}
+            rank={storeRank?.rank}
+            onOpenLeaderboard={() => setLeaderboardOpen(true)}
+          />
           {/* Org hero */}
           <section className={`${styles.pad} rise rise-2`}>
             <HeroCard>

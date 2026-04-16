@@ -2,19 +2,10 @@ import React from 'react';
 import HeroCard from '../HeroCard/HeroCard';
 import { formatINR } from '../../../utils/format';
 
-function formatINRCompact(amount) {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    notation: 'compact',
-    maximumFractionDigits: 1,
-  }).format(amount);
-}
-
 function formatSignedINR(amount) {
   if (!amount) return '₹0';
   const abs = formatINR(Math.abs(amount));
-  return `${amount > 0 ? '+' : '-'}${abs.replace('₹', '₹')}`;
+  return `${amount > 0 ? '+' : '-'}${abs}`;
 }
 
 function varianceLabel(variance) {
@@ -24,7 +15,7 @@ function varianceLabel(variance) {
 }
 
 function variancePctText(variance, target) {
-  if (!target) return 'no target baseline';
+  if (!target) return '';
   const pct = Math.abs((variance / target) * 100);
   return `${pct.toFixed(1)}% of target`;
 }
@@ -34,28 +25,30 @@ export default function TargetTrendBreakdown({
   targetValue,
   achievedLabel = 'sales achieved',
   targetLabel = 'target',
+  extraCaption,
 }) {
   const variance = (Number(actualValue) || 0) - (Number(targetValue) || 0);
+  const pctText = variancePctText(variance, targetValue);
 
   return (
-    <HeroCard.Figures dense noBottomDivider>
-      <HeroCard.Figure
-        value={formatINRCompact(actualValue)}
-        cap={achievedLabel}
-        sub={formatINR(actualValue)}
-      />
-      <HeroCard.FigureDivider />
-      <HeroCard.Figure
-        value={formatINRCompact(targetValue)}
-        cap={targetLabel}
-        sub={formatINR(targetValue)}
-      />
-      <HeroCard.FigureDivider />
-      <HeroCard.Figure
-        value={formatSignedINR(variance)}
-        cap={varianceLabel(variance)}
-        sub={variancePctText(variance, targetValue)}
-      />
-    </HeroCard.Figures>
+    <>
+      <HeroCard.Figures noBottomDivider>
+        <HeroCard.Figure
+          value={formatINR(actualValue)}
+          cap={achievedLabel}
+        />
+        <HeroCard.FigureDivider />
+        <HeroCard.Figure
+          value={formatINR(targetValue)}
+          cap={targetLabel}
+        />
+      </HeroCard.Figures>
+      <HeroCard.Caption>
+        <strong>{formatSignedINR(variance)}</strong>
+        <span>{varianceLabel(variance)}</span>
+        {pctText && <em>{pctText}</em>}
+        {extraCaption && <>{extraCaption}</>}
+      </HeroCard.Caption>
+    </>
   );
 }

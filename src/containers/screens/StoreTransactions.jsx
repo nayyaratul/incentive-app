@@ -101,11 +101,6 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
     return list;
   }, [allTx, period, txType, empFilter, query, empLookup, today]);
 
-  const txCount     = filtered.length;
-  const grossTotal  = filtered.reduce((s, tx) => s + (Number(tx.grossAmount) || 0), 0);
-  const finalTotal  = filtered.reduce((s, tx) => s + (Number(tx.incentiveAmount) || 0), 0);
-  const excludedCount = filtered.filter((tx) => tx.transactionType !== 'NORMAL').length;
-
   const grouped = useMemo(() => {
     const groups = new Map();
     for (const tx of filtered) {
@@ -204,29 +199,6 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
           ))}
       </div>
 
-      {/* Summary strip */}
-      <section className={`${styles.summaryRow4} rise rise-4`}>
-        <div>
-          <div className={styles.summaryVal}>{txCount}</div>
-          <div className={styles.summaryCap}>tx</div>
-        </div>
-        <div className={styles.summaryDiv} />
-        <div>
-          <div className={styles.summaryVal}>{formatINR(grossTotal)}</div>
-          <div className={styles.summaryCap}>gross</div>
-        </div>
-        <div className={styles.summaryDiv} />
-        <div>
-          <div className={styles.summaryVal} style={{ color: 'var(--brand-70)' }}>{formatINR(finalTotal)}</div>
-          <div className={styles.summaryCap}>incentive</div>
-        </div>
-        <div className={styles.summaryDiv} />
-        <div>
-          <div className={styles.summaryVal} style={{ color: excludedCount > 0 ? 'var(--color-text-warning)' : 'var(--color-text-primary)' }}>{excludedCount}</div>
-          <div className={styles.summaryCap}>excluded</div>
-        </div>
-      </section>
-
       {filtered.length === 0 ? (
         <div className={`${styles.empty} rise rise-5`}>
           <Info size={16} strokeWidth={2.2} />
@@ -251,7 +223,7 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
             <section key={day} className={styles.dayGroup}>
               <div className={styles.dayHead}>
                 <span>{dayHeading(day, today)}</span>
-                <span className={styles.dayMeta}>{txs.length} tx · {formatINR(txs.reduce((s, t) => s + (Number(t.incentiveAmount) || 0), 0))}</span>
+                <span className={styles.dayMeta}>{txs.length} tx</span>
               </div>
               <div className={styles.txList}>
                 {txs.map((tx) => (
@@ -269,7 +241,7 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
       )}
 
       <TransactionDetailSheet
-        tx={selectedTx ? { ...selectedTx, finalIncentive: selectedTx.incentiveAmount ?? 0 } : null}
+        tx={selectedTx}
         open={!!selectedTx}
         onClose={() => setSelectedTx(null)}
       />
@@ -278,7 +250,6 @@ export default function StoreTransactions({ storeCode, initialEmployeeFilter = '
 }
 
 function StoreTxRow({ tx, employee, onSelect }) {
-  const earned = typeof tx.incentiveAmount === 'number' ? tx.incentiveAmount : null;
   return (
     <button type="button" className={styles.txCardBtn} onClick={onSelect}>
       <div className={styles.txLeft}>
@@ -302,11 +273,6 @@ function StoreTxRow({ tx, employee, onSelect }) {
       </div>
       <div className={styles.txRight}>
         <div className={styles.txGross}>{formatINR(tx.grossAmount)}</div>
-        {earned !== null && (
-          <div className={`${styles.txEarn} ${earned === 0 ? styles.txZero : ''}`}>
-            {earned > 0 ? `+₹${earned}` : '₹0'}
-          </div>
-        )}
       </div>
     </button>
   );

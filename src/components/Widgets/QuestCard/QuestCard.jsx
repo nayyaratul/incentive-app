@@ -5,6 +5,8 @@ import { ProgressBar, Text, Tag } from '@/nexus/atoms';
 import styles from './QuestCard.module.scss';
 import { questsByEmployee } from '../../../data/gamification';
 
+const useMock = process.env.REACT_APP_USE_MOCK_DATA === 'true';
+
 // Sample employee per vertical — used when the API-fetched employeeId
 // isn't in the gamification mock data, so every user sees example quests.
 const VERTICAL_SAMPLE_ID = {
@@ -12,96 +14,6 @@ const VERTICAL_SAMPLE_ID = {
   GROCERY: 'GRC-2203',
   FNL: 'FNL-3103',
 };
-
-/**
- * Build grocery quests dynamically from live payout data so that quest
- * progress matches the hero card (same achievement %, same target).
- */
-function buildGroceryQuests(payout) {
-  if (!payout) return null;
-  const ach = Math.round(Number(payout.achievementPct) || 0);
-  const target = payout.targetSalesValue || 0;
-  const fmtTarget = target >= 1e5
-    ? `₹${(target / 1e5).toFixed(2)}L`
-    : `₹${target.toLocaleString('en-IN')}`;
-
-  const quests = [];
-
-  // Gate quest: reach 100%
-  quests.push({
-    id: 'q-store-100',
-    type: 'Store gate',
-    title: `Get store to 100% of ${fmtTarget} target`,
-    progress: { current: Math.min(ach, 100), target: 100, unit: '%' },
-    reward: '₹2 per piece across all eligible articles sold',
-    status: ach >= 100 ? 'completed' : 'active',
-  });
-
-  // Stretch: 120%
-  quests.push({
-    id: 'q-store-120',
-    type: 'Store gate',
-    title: 'Stretch — Store at 120%',
-    progress: { current: Math.min(ach, 120), target: 120, unit: '%' },
-    reward: '₹3 per piece — applies to every piece, not just above 120%',
-    status: ach >= 120 ? 'completed' : 'active',
-  });
-
-  // Stretch: 130%
-  quests.push({
-    id: 'q-store-130',
-    type: 'Store gate',
-    title: 'Stretch — Store at 130%',
-    progress: { current: Math.min(ach, 130), target: 130, unit: '%' },
-    reward: '₹4 per piece; top slab; applies to all pieces',
-    status: ach >= 130 ? 'completed' : 'active',
-  });
-
-  return quests;
-}
-
-/**
- * Build electronics quests dynamically from live payout data so quest
- * progress matches the hero card (same dept achievement %).
- */
-function buildElectronicsQuests(payout) {
-  if (!payout) return null;
-  const dept = payout.employeeDepartment || 'Dept';
-  const ach = Math.round(Number(payout.achievementPct) || 0);
-  const base = Number(payout.baseIncentive) || 0;
-  const tiers = payout.apiMultiplierTiers || [];
-
-  const quests = [];
-
-  // Sort tiers by 'from' ascending
-  const sorted = [...tiers].sort((a, b) => (Number(a.from) || 0) - (Number(b.from) || 0));
-
-  for (const tier of sorted) {
-    const from = Number(tier.from) || 0;
-    const mult = Number(tier.multiplierPct) || 0;
-    if (from <= 0) continue;
-
-    const atTier = Math.round(base * (mult / 100));
-    const done = ach >= from;
-
-    quests.push({
-      id: `q-dept-${from}`,
-      type: 'Dept multiplier',
-      title: done
-        ? `${dept} at ${from}%`
-        : from === 85
-          ? `Help ${dept} reach ${from}% of target`
-          : `Stretch — ${dept} at ${from}%`,
-      progress: { current: Math.min(ach, from), target: from, unit: '%' },
-      reward: mult === 0
-        ? `Below ${from}% — no payout on ${dept} base incentive`
-        : `Unlocks ${mult === 100 ? 'full' : `${mult}%`} payout on your ${dept} base incentive (₹${atTier.toLocaleString('en-IN')})`,
-      status: done ? 'completed' : 'active',
-    });
-  }
-
-  return quests.length > 0 ? quests : null;
-}
 
 /**
  * Brief-aligned quests only. Each quest tracks progress toward a gate/mechanic
@@ -112,14 +24,9 @@ function buildElectronicsQuests(payout) {
  * standalone Nexus Cards, one per quest. No outer card wrapping the stack.
  */
 export default function QuestCard({ employeeId, vertical, payout }) {
-  // Prefer dynamic quests built from live payout data so quest progress
-  // always matches the hero card achievement.
-  const dynamicGrocery = vertical === 'GROCERY' ? buildGroceryQuests(payout) : null;
-  const dynamicElec = vertical === 'ELECTRONICS' ? buildElectronicsQuests(payout) : null;
-
-  const direct = questsByEmployee[employeeId];
-  const fallbackId = VERTICAL_SAMPLE_ID[vertical];
-  const quests = dynamicGrocery || dynamicElec || direct || (fallbackId ? questsByEmployee[fallbackId] : null) || [];
+  const quests = useMock
+    ? getMockQuests(employeeId, vertical)
+    : buildQuestsFromPayout(vertical, payout);
 
   const activeCount = quests.filter((q) => q.status === 'active').length;
 
@@ -209,6 +116,133 @@ export default function QuestCard({ employeeId, vertical, payout }) {
       </ul>
     </section>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Mock data path
+// ---------------------------------------------------------------------------
+
+function getMockQuests(employeeId, vertical) {
+  const direct = questsByEmployee[employeeId];
+  const fallbackId = VERTICAL_SAMPLE_ID[vertical];
+  return direct || (fallbackId ? questsByEmployee[fallbackId] : null) || [];
+}
+
+// ---------------------------------------------------------------------------
+// API data path — derive quests from payout/projection data
+// ---------------------------------------------------------------------------
+
+function buildQuestsFromPayout(vertical, payout) {
+  if (!payout) return [];
+
+  if (vertical === 'GROCERY') return buildGroceryQuests(payout);
+  if (vertical === 'ELECTRONICS') return buildElectronicsQuests(payout);
+  if (vertical === 'FNL') return buildFnlQuests(payout);
+  return [];
+}
+
+function buildGroceryQuests(payout) {
+  const ach = payout.achievementPct ?? 0;
+  const projections = payout.projections || [];
+  const targetValue = payout.targetSalesValue || payout.totalTarget || 0;
+  const targetLabel = targetValue >= 1e5
+    ? `₹${(targetValue / 1e5).toFixed(2)}L`
+    : `₹${targetValue.toLocaleString('en-IN')}`;
+
+  return projections.map((p, i) => {
+    const scenarioPct = parseInt(p.scenario, 10) || 100;
+    const done = ach >= scenarioPct;
+    const isFirst = i === 0;
+
+    return {
+      id: `q-store-${scenarioPct}`,
+      type: 'Store gate',
+      title: isFirst
+        ? `Get store to ${scenarioPct}% of ${targetLabel} target`
+        : `Stretch — Store at ${scenarioPct}%`,
+      progress: { current: ach, target: scenarioPct, unit: '%' },
+      reward: `₹${p.rate} per piece${isFirst ? ' across all eligible articles sold' : ' — applies to every piece, not just above ' + scenarioPct + '%'}`,
+      status: done ? 'completed' : 'active',
+    };
+  });
+}
+
+function buildElectronicsQuests(payout) {
+  const quests = [];
+  const depts = payout.byDepartment || [];
+
+  for (const dept of depts) {
+    const ach = dept.achievementPct ?? 0;
+    // Quest for departments below 85% — first unlock gate
+    if (ach < 85) {
+      quests.push({
+        id: `q-${dept.department}-85`,
+        type: 'Dept multiplier',
+        title: `Help ${dept.department} reach 85% of target`,
+        progress: { current: ach, target: 85, unit: '%' },
+        reward: `Unlocks 50% payout on your ${dept.department} base incentive`,
+        status: 'active',
+      });
+    }
+    // Quest for departments below 100%
+    if (ach < 100 && ach >= 85) {
+      quests.push({
+        id: `q-${dept.department}-100`,
+        type: 'Dept multiplier',
+        title: `Push ${dept.department} to 100%`,
+        progress: { current: ach, target: 100, unit: '%' },
+        reward: `Unlocks full 100% payout on ${dept.department} base`,
+        status: 'active',
+      });
+    }
+    // Completed quests for departments at or above 120%
+    if (ach >= 120) {
+      quests.push({
+        id: `q-${dept.department}-120`,
+        type: 'Dept multiplier',
+        title: `${dept.department} at 120%`,
+        progress: { current: ach, target: 120, unit: '%' },
+        reward: `1.20× on your ${dept.department} base — active now`,
+        status: 'completed',
+      });
+    }
+  }
+
+  return quests;
+}
+
+function buildFnlQuests(payout) {
+  const quests = [];
+  const target = payout.weeklySalesTarget || payout.totalTarget || 0;
+  const actual = payout.actualWeeklyGrossSales || payout.totalActual || 0;
+  const qualifies = payout.storeQualifies ?? (target > 0 && actual >= target);
+  const targetLabel = target >= 1e5
+    ? `₹${Math.round(target / 1e5)}L`
+    : `₹${target.toLocaleString('en-IN')}`;
+
+  quests.push({
+    id: 'q-store-beat',
+    type: 'Store gate',
+    title: `Store beats ${targetLabel} weekly target`,
+    progress: { current: actual, target, unit: '₹' },
+    reward: 'Unlocks 1% of weekly gross as store pool',
+    status: qualifies ? 'completed' : 'active',
+  });
+
+  // 5-day attendance quest from streak data
+  if (payout.streak) {
+    const days = payout.streak.current || 0;
+    quests.push({
+      id: 'q-5-days',
+      type: 'Eligibility',
+      title: 'Be present 5+ days this week',
+      progress: { current: Math.min(days, 7), target: 5, unit: 'days' },
+      reward: "Keeps you eligible for this week's payout",
+      status: days >= 5 ? 'completed' : 'active',
+    });
+  }
+
+  return quests;
 }
 
 function formatProgress(p) {

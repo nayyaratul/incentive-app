@@ -21,7 +21,7 @@ export const electronicsPayoutsRD3675 = [
   {
     employeeId: 'EMP-0041', // Rohit Sharma (SA)
     lastMonthPayout: 3210,            // for the "vs last month" momentum pill
-    nextPayoutDate: '2026-05-07',     // Electronics: paid with next-month salary
+    nextPayoutDate: '2026-04-30',     // Electronics: paid end of month
     byDepartment: [
       { department: 'Telecom',          baseIncentive: 2750, achievementPct: 75,  multiplier: 0.00, finalPayout: 0,    note: 'Below 85% — zero' },
       { department: 'Large Appliances', baseIncentive: 1200, achievementPct: 127, multiplier: 1.20, finalPayout: 1440 },
@@ -65,7 +65,7 @@ export const electronicsPayoutsRD3675 = [
   {
     employeeId: 'EMP-0042', // Priya Desai (SA)
     lastMonthPayout: 2400,
-    nextPayoutDate: '2026-05-07',
+    nextPayoutDate: '2026-04-30',
     byDepartment: [
       { department: 'Telecom',          baseIncentive: 1950, achievementPct: 75,  multiplier: 0.00, finalPayout: 0    },
       { department: 'Large Appliances', baseIncentive: 2100, achievementPct: 127, multiplier: 1.20, finalPayout: 2520 },
@@ -83,7 +83,7 @@ export const electronicsPayoutsRD3675 = [
   {
     employeeId: 'EMP-0043', // Vikram Patil (SA) — star performer
     lastMonthPayout: 4880,
-    nextPayoutDate: '2026-05-07',
+    nextPayoutDate: '2026-04-30',
     byDepartment: [
       { department: 'ENT',              baseIncentive: 2200, achievementPct: 109, multiplier: 1.00, finalPayout: 2200 },
       { department: 'Large Appliances', baseIncentive: 1800, achievementPct: 127, multiplier: 1.20, finalPayout: 2160 },
@@ -113,7 +113,7 @@ export const electronicsPayoutsRD3675 = [
   {
     employeeId: 'EMP-0045', // Kiran Pawar (SA) — new joiner
     lastMonthPayout: 0,                 // first month — momentum pill shows "first month"
-    nextPayoutDate: '2026-05-07',
+    nextPayoutDate: '2026-04-30',
     byDepartment: [
       { department: 'AIOT',             baseIncentive: 180, achievementPct: 95,  multiplier: 0.80, finalPayout: 144 },
       { department: 'Small Appliances', baseIncentive: 260, achievementPct: 93,  multiplier: 0.80, finalPayout: 208 },
@@ -127,7 +127,7 @@ export const electronicsPayoutsRD3675 = [
   {
     employeeId: 'EMP-0046', // Sunil Kumar (SM) — receives BA-attributed sales credit
     lastMonthPayout: 580,
-    nextPayoutDate: '2026-05-07',
+    nextPayoutDate: '2026-04-30',
     byDepartment: [
       // Credits for sales made by BAs Manoj + Deepa
       { department: 'Telecom',          baseIncentive: 1850, achievementPct: 75,  multiplier: 0.00, finalPayout: 0, note: 'BA-attributed, zeroed by dept multiplier' },
@@ -194,7 +194,7 @@ export const groceryPayoutT28V = {
   individualPayout: 0,
   // Last campaign (March cake event) per-employee payout — used by momentum pill
   lastCampaignPayoutPerEmp: 175,
-  // Grocery campaign payout: 5 days after campaign end (15-25 Apr → 30 Apr)
+  // Grocery payout: end of month
   nextPayoutDate: '2026-04-30',
   streak: { current: 6, longest: 11, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
   myRank: {
@@ -245,8 +245,8 @@ export const fnlPayoutTRN0241 = {
   saPayoutEach: 1080, // 7560 / 7
   // Last week's per-SA payout — for the momentum pill
   lastWeekSaPayout: 945,
-  // F&L paid Monday after week close (week ends Sat Apr 18 → paid Mon Apr 27)
-  nextPayoutDate: '2026-04-27',
+  // F&L weekly payout: Sunday–Saturday cycle, paid end of week (Saturday)
+  nextPayoutDate: '2026-04-18',
   streak: { current: 9, longest: 15, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
   myRank: {
     rank: 4,

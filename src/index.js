@@ -14,5 +14,8 @@ const root = createRoot(container);
 root.render(<App />);
 
 if (module.hot) {
-  module.hot.accept();
+  module.hot.accept('./App', () => {
+    const NextApp = require('./App').default;
+    root.render(<NextApp />);
+  });
 }

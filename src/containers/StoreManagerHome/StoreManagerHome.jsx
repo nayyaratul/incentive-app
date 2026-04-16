@@ -6,6 +6,7 @@ import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
 import useAsync from '../../hooks/useAsync';
 import { fetchStoreIncentive, fetchLeaderboard } from '../../api/incentives';
+import { transformStoreIncentive } from '../../api/transformers/storeIncentive';
 import { fetchEmployees } from '../../api/employees';
 import { fetchRules } from '../../api/rules';
 import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
@@ -15,6 +16,8 @@ import StoreTransactions from '../screens/StoreTransactions';
 import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
 import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
+import LeaderboardPodium from '../../components/Molecule/LeaderboardPodium/LeaderboardPodium';
+import LeaderboardFocusList from '../../components/Molecule/LeaderboardFocusList/LeaderboardFocusList';
 import BadgesStrip from '../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../components/Molecule/StreakNote/StreakNote';
@@ -70,7 +73,8 @@ export default function StoreManagerHome() {
     () => {
       if (!store?.storeCode || !active?.vertical) return Promise.resolve(null);
       if (useMock) return Promise.resolve(buildMockStoreDetail(active.vertical, store.storeCode));
-      return fetchStoreIncentive(store.storeCode, active.vertical, periodStart, periodEnd);
+      return fetchStoreIncentive(store.storeCode, active.vertical, periodStart, periodEnd)
+        .then((res) => transformStoreIncentive(res, active.vertical));
     },
     [store?.storeCode, active?.vertical],
   );
@@ -223,7 +227,12 @@ export default function StoreManagerHome() {
       const deptTarget = storeDetail.departments?.reduce((s, d) => s + (Number(d.target) || 0), 0) || totalTarget;
       const deptActual = storeDetail.departments?.reduce((s, d) => s + (Number(d.actual) || 0), 0) || 0;
       const achPct = deptTarget > 0 ? Math.round((deptActual / deptTarget) * 100) : 0;
-      const piecesSold = Number(storeDetail.summary?.totalPiecesSold) || 0;
+      // Pieces sold: try summary fields, then sum from employee-level data
+      const piecesSold = Number(storeDetail.summary?.totalPiecesSold)
+        || Number(storeDetail.summary?.piecesSold)
+        || Number(storeDetail.summary?.totalPieces)
+        || (storeDetail.employees || []).reduce((s, e) => s + (Number(e.piecesSold) || Number(e.pieces) || 0), 0)
+        || 0;
       const currentSlab = slabs.find((s) => {
         const from = Number(s.achievementFrom);
         const to = Number(s.achievementTo);
@@ -284,8 +293,8 @@ export default function StoreManagerHome() {
       const totalTarget = depts.reduce((s, d) => s + (Number(d.target) || 0), 0);
       const totalActual = depts.reduce((s, d) => s + (Number(d.actual) || 0), 0);
       const totalPayout = emps.reduce((s, e) => s + (Number(e.finalIncentive) || 0), 0);
-      const weekStart = storeDetail?.summary?.weekStart || fnlPayoutTRN0241.weekStart;
-      const weekEnd = storeDetail?.summary?.weekEnd || fnlPayoutTRN0241.weekEnd;
+      const weekStart = storeDetail?.summary?.weekStart || (useMock ? fnlPayoutTRN0241.weekStart : null);
+      const weekEnd = storeDetail?.summary?.weekEnd || (useMock ? fnlPayoutTRN0241.weekEnd : null);
 
       return {
         kind: 'FNL',
@@ -306,7 +315,7 @@ export default function StoreManagerHome() {
             role: emp.role || master?.role || '—',
             payrollStatus: master?.payrollStatus || 'ACTIVE',
             daysPresent: Number(emp.daysPresent),
-            eligible: Number(emp.daysPresent) >= Number(fnlWeeklyRules.minWorkingDays || 5),
+            eligible: Number(emp.daysPresent) >= (Number(storeDetail?.summary?.minWorkingDays) || Number(fnlWeeklyRules.minWorkingDays) || 5),
             total: Number(emp.finalIncentive) || 0,
             achievementPct: Number(emp.achievementPct) || 0,
             potential: Number(emp.baseIncentive) || 0,
@@ -321,19 +330,35 @@ export default function StoreManagerHome() {
   }, [active, store, storeTeam, storeDetailResult.data, rulesResult.data]);
 
   const dataLoading = storeDetailResult.loading || employeesResult.loading || rulesResult.loading;
+  const dataError = storeDetailResult.error || employeesResult.error || rulesResult.error;
   if (!active || !employee || !store || dataLoading) {
     return <div className={styles.shell}><div className={styles.loading}>Loading...</div></div>;
   }
 
+  if (dataError) {
+    return (
+      <div className={styles.shell}>
+        <div className={styles.loading}>Something went wrong loading store data. Please try again.</div>
+      </div>
+    );
+  }
+
   if (!summary) return null;
 
-  const storeRank = active?.vertical && store?.storeCode
-    ? buildStoreLeaderboard(active.vertical, store.storeCode)
+  // Store-level leaderboard: use API data when available, otherwise mock builder
+  const storeRank = leaderboardResult.data
+    || (active?.vertical && store?.storeCode
+        ? buildStoreLeaderboard(active.vertical, store.storeCode)
+        : null);
+
+  // Store-level leaderboard (stores vs stores) — used by the board tab
+  const storeLeaderboard = active?.vertical
+    ? buildStoreLeaderboard(active.vertical, store?.storeCode)
     : null;
   const selfRow = summary.employees.find((e) => e.employeeId === employee?.employeeId) || null;
   const selfPayout = selfRow?.earned || selfRow?.total || 0;
   const myDaysPresent = Number(selfRow?.daysPresent);
-  const minWorkingDays = Number(fnlWeeklyRules.minWorkingDays || 5);
+  const minWorkingDays = Number(storeDetailResult.data?.summary?.minWorkingDays) || Number(fnlWeeklyRules.minWorkingDays) || 5;
   const eligible5Day = Number.isFinite(myDaysPresent) && myDaysPresent >= minWorkingDays;
   const cycleMeta = buildCycleMeta(active?.vertical, employee, storeDetailResult.data, summary);
 
@@ -378,21 +403,30 @@ export default function StoreManagerHome() {
             </section>
           )}
 
-          {tab === 'board' && (
-            <>
-              <div className={`${styles.datemark} rise rise-1`}>
-                <span>Leaderboard · {store.storeName}</span>
-                <span className={styles.line} />
-                <span>by sales</span>
-              </div>
-              <section className={`${styles.pad} rise rise-2`}>
-                <StoreLeaderboard
-                  leaderboardData={leaderboardResult.data}
-                  loading={leaderboardResult.loading}
-                  storeName={store.storeName}
+          {tab === 'board' && storeLeaderboard && (
+            <section className={styles.pad}>
+              <div className="rise rise-1">
+                <TabPageHeader
+                  title="Leaderboard"
+                  subtitle={`${store.storeName} · ${storeLeaderboard.scopeNote || 'store rankings'}`}
                 />
-              </section>
-            </>
+              </div>
+              <div className="rise rise-2">
+                <LeaderboardPodium
+                  entries={storeLeaderboard.top}
+                  unitLabel={storeLeaderboard.unitLabel || 'achievement'}
+                  isStoreScope
+                />
+              </div>
+              <div className="rise rise-3">
+                <LeaderboardFocusList
+                  entries={storeLeaderboard.top}
+                  selfRank={storeLeaderboard.rank}
+                  unitLabel={storeLeaderboard.unitLabel || 'achievement'}
+                  isStoreScope
+                />
+              </div>
+            </section>
           )}
 
           {tab === 'tx' && (
@@ -452,23 +486,17 @@ export default function StoreManagerHome() {
                   <TargetTrendBreakdown
                     actualValue={summary.totalActual}
                     targetValue={summary.totalTarget}
+                    extraCaption={
+                      summary.achievementPct < 100 && summary.gapToTarget > 0
+                        ? <>
+                            <span>·</span>
+                            <Target size={13} strokeWidth={2.2} />
+                            <strong>{formatINR(summary.gapToTarget)}</strong> more to hit target
+                          </>
+                        : null
+                    }
                   />
 
-                  {/* Gap to target or surplus */}
-                  {summary.achievementPct < 100 && summary.gapToTarget > 0 && (
-                    <HeroCard.Caption>
-                      <Target size={13} strokeWidth={2.2} />
-                      <strong>{formatINR(summary.gapToTarget)}</strong> more to hit target
-                    </HeroCard.Caption>
-                  )}
-
-                  {summary.kind === 'GROCERY' && (
-                    <HeroCard.Caption>
-                      <strong>{summary.piecesSoldTotal}</strong>
-                      <span>eligible pieces sold</span>
-                      <em>{summary.appliedRate > 0 ? `₹${summary.appliedRate}/piece` : 'hit 100% to unlock ₹2/piece'}</em>
-                    </HeroCard.Caption>
-                  )}
 
                   <HeroCard.FooterBlock>
                     <div>
@@ -662,11 +690,7 @@ export default function StoreManagerHome() {
               )}
 
               <section className={`rise rise-4`}>
-                <QuestCard
-                  employeeId={employee.employeeId}
-                  vertical={active.vertical}
-                  payout={summary?.kind === 'GROCERY' ? { achievementPct: summary.achievementPct, targetSalesValue: summary.totalTarget } : undefined}
-                />
+                <QuestCard employeeId={employee.employeeId} vertical={active.vertical} payout={summary} />
               </section>
 
               <section className={`rise rise-4`}>
@@ -944,21 +968,39 @@ function StoreLeaderboard({ leaderboardData, loading, storeName }) {
 }
 
 function buildCycleMeta(vertical, employee, storeDetail, summary) {
+  // Use streak from API response when available; derive from employee data if possible
+  const apiStreak = storeDetail?.summary?.streak || null;
+
+  // Derive streak from employee's daysPresent (FNL) or days elapsed (Electronics/Grocery)
+  function deriveStreak() {
+    if (apiStreak) return apiStreak;
+    const selfRow = summary?.employees?.find((e) => e.employeeId === employee?.employeeId);
+    const days = Number(selfRow?.daysPresent);
+    if (Number.isFinite(days) && days > 0) {
+      return { current: days, longest: days, label: 'working days', caption: 'present + selling' };
+    }
+    // Use days elapsed in month as a proxy when no better data exists
+    const elapsed = dayjs().date();
+    return { current: elapsed, longest: elapsed, label: 'working days', caption: 'present + selling' };
+  }
+
+  const streak = deriveStreak();
+
   const byVertical = {
     ELECTRONICS: {
-      streak: { current: 6, longest: 11, label: 'working days', caption: 'present + selling' },
+      streak,
       lastPeriodLabel: 'last month',
-      nextPayoutDate: nextMonthlyPayoutDate(),
+      nextPayoutDate: storeDetail?.summary?.nextPayoutDate || nextMonthlyPayoutDate(),
     },
     GROCERY: {
-      streak: { current: 5, longest: 9, label: 'working days', caption: 'present + selling' },
+      streak,
       lastPeriodLabel: 'last campaign',
-      nextPayoutDate: resolveGroceryPayoutDate(summary),
+      nextPayoutDate: storeDetail?.summary?.nextPayoutDate || resolveGroceryPayoutDate(),
     },
     FNL: {
-      streak: { current: 4, longest: 8, label: 'working days', caption: 'present + selling' },
+      streak,
       lastPeriodLabel: 'last week',
-      nextPayoutDate: nextMondayPayoutDate(),
+      nextPayoutDate: storeDetail?.summary?.nextPayoutDate || nextSaturdayPayoutDate(),
     },
   };
 
@@ -982,26 +1024,25 @@ function buildCycleMeta(vertical, employee, storeDetail, summary) {
   };
 }
 
-function resolveGroceryPayoutDate(summary) {
-  const end = summary?.campaign?.campaignEnd;
-  if (!end) return null;
-  const d = new Date(end);
-  if (Number.isNaN(d.getTime())) return null;
-  d.setDate(d.getDate() + 5);
+function resolveGroceryPayoutDate() {
+  // Grocery: paid end of current month
+  const d = new Date();
+  d.setMonth(d.getMonth() + 1, 0); // last day of current month
   return d.toISOString().slice(0, 10);
 }
 
 function nextMonthlyPayoutDate() {
+  // Electronics: paid end of current month
   const d = new Date();
-  d.setMonth(d.getMonth() + 1);
-  d.setDate(7);
+  d.setMonth(d.getMonth() + 1, 0); // last day of current month
   return d.toISOString().slice(0, 10);
 }
 
-function nextMondayPayoutDate() {
+function nextSaturdayPayoutDate() {
+  // F&L: Sunday–Saturday cycle, paid on Saturday
   const d = new Date();
-  const day = d.getDay(); // 0..6
-  const diff = (8 - day) % 7 || 7;
+  const day = d.getDay(); // 0=Sun..6=Sat
+  const diff = day === 6 ? 0 : 6 - day; // days until Saturday
   d.setDate(d.getDate() + diff);
   return d.toISOString().slice(0, 10);
 }

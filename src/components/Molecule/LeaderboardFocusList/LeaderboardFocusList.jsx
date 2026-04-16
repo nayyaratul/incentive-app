@@ -50,9 +50,7 @@ export default function LeaderboardFocusList({ entries, selfRank, unitLabel = 'e
             </span>
             <div className={styles.who}>
               <span className={styles.name}>
-                {r.isSelf
-                  ? `${r.name} ${isStoreScope ? '(Your store)' : '(You)'}`
-                  : r.name}
+                {r.name}
               </span>
               {r.note && <span className={styles.note}>{r.note}</span>}
             </div>
