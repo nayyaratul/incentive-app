@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogOut, Trophy, Crown, Medal, TrendingUp, Sun, Moon } from 'lucide-react';
+import { LogOut, Trophy, Crown, TrendingUp, Sun, Moon } from 'lucide-react';
 import { Heading, Text, Button } from '@/nexus/atoms';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -8,8 +8,8 @@ import styles from './HeaderBar.module.scss';
 
 const TIER_ICON = {
   gold:    Crown,
-  silver:  Medal,
-  bronze:  Medal,
+  silver:  Trophy,
+  bronze:  Trophy,
   brand:   TrendingUp,
   default: Trophy,
 };

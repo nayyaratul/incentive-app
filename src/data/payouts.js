@@ -187,6 +187,7 @@ export const groceryPayoutT28V = {
   actualSalesValue: 154000,         // 92% — below 100% → incentive is currently ₹0
   achievementPct: 92,
   piecesSoldTotal: 308,             // eligible pieces only
+  myPiecesSold: 38,                 // this employee's own pieces (matches myRank)
   appliedRate: 0,                   // no payout below 100%
   totalStoreIncentive: 0,
   staffCount: 7,                    // SM + DM + 4 SA + 1 BA

@@ -99,6 +99,11 @@
   box-shadow: 0 0 var(--space-125) var(--brand-a200);
 }
 
+.dot-live {
+  background: var(--color-text-success);
+  box-shadow: 0 0 var(--space-125) var(--color-bg-success);
+}
+
 /* ---------- Pills ---------- */
 .trendPill {
   font-family: var(--mono);
@@ -437,4 +442,11 @@
   font-size: var(--font-size-100);
   color: var(--color-text-secondary);
   text-align: right;
+}
+
+.footerMetaGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-075);
 }

@@ -414,7 +414,7 @@ export default function StoreManagerHome() {
                 <HeroCard>
                   <HeroCard.EyebrowRow>
                     {summary.kind === 'GROCERY' ? (
-                      <HeroCard.Eyebrow withDot>Live campaign</HeroCard.Eyebrow>
+                      <HeroCard.Eyebrow withDot dotTone="live">Live campaign</HeroCard.Eyebrow>
                     ) : (
                       <HeroCard.Eyebrow withDot>
                         {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
@@ -479,7 +479,7 @@ export default function StoreManagerHome() {
                         {summary.kind === 'GROCERY' ? formatINR(selfPayout) : formatINR(summary.totalPayout)}
                       </HeroCard.FooterValue>
                     </div>
-                    <div style={{ textAlign: 'right' }}>
+                    <HeroCard.FooterMetaGroup>
                       <HeroCard.FooterMeta>
                         <Users size={12} strokeWidth={2.2} />
                         <span>
@@ -494,7 +494,7 @@ export default function StoreManagerHome() {
                           <span>{summary.daysLeft} days left</span>
                         </HeroCard.FooterMeta>
                       )}
-                    </div>
+                    </HeroCard.FooterMetaGroup>
                   </HeroCard.FooterBlock>
                 </HeroCard>
               </section>

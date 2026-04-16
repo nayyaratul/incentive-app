@@ -52,10 +52,10 @@ function EyebrowRow({ children, className = '' }) {
   return <div className={cx(styles.eyebrowRow, className)}>{children}</div>;
 }
 
-function Eyebrow({ withDot = false, children }) {
+function Eyebrow({ withDot = false, dotTone, children }) {
   return (
     <span className={styles.eyebrow}>
-      {withDot && <span className={styles.dot} aria-hidden="true" />}
+      {withDot && <span className={cx(styles.dot, dotTone && styles[`dot-${dotTone}`])} aria-hidden="true" />}
       {children}
     </span>
   );
@@ -172,6 +172,10 @@ function FooterMeta({ children }) {
   return <div className={styles.footerMeta}>{children}</div>;
 }
 
+function FooterMetaGroup({ children }) {
+  return <div className={styles.footerMetaGroup}>{children}</div>;
+}
+
 HeroCard.EyebrowRow = EyebrowRow;
 HeroCard.Eyebrow = Eyebrow;
 HeroCard.TrendPill = TrendPill;
@@ -192,3 +196,4 @@ HeroCard.FooterBlock = FooterBlock;
 HeroCard.FooterLabel = FooterLabel;
 HeroCard.FooterValue = FooterValue;
 HeroCard.FooterMeta = FooterMeta;
+HeroCard.FooterMetaGroup = FooterMetaGroup;

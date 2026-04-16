@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Users } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import styles from './VerticalViews.module.scss';
 import { groceryCampaign } from '../../../data/configs';
 import { formatINR, formatDateRange } from '../../../utils/format';
@@ -16,10 +16,7 @@ import {
   AccordionContent,
 } from '@/nexus/atoms';
 
-export default function GroceryView({ payout, employee, store, role }) {
-  const appliedRate = payout.appliedRate;
-  const totalStoreIncentive = payout.totalStoreIncentive;
-  const per = payout.individualPayout;
+export default function GroceryView({ payout, employee }) {
   const achievementPct = payout.achievementPct;
 
   return (
@@ -28,7 +25,7 @@ export default function GroceryView({ payout, employee, store, role }) {
       <section className={`${styles.pad} rise rise-2`}>
         <HeroCard>
           <HeroCard.EyebrowRow>
-            <HeroCard.Eyebrow withDot>Live campaign</HeroCard.Eyebrow>
+            <HeroCard.Eyebrow withDot dotTone="live">Live campaign</HeroCard.Eyebrow>
           </HeroCard.EyebrowRow>
 
           <HeroCard.Title>{groceryCampaign.campaignName}</HeroCard.Title>
@@ -50,20 +47,19 @@ export default function GroceryView({ payout, employee, store, role }) {
           />
 
           <HeroCard.Caption>
-            <strong>{payout.piecesSoldTotal}</strong>
-            <span>eligible pieces sold</span>
-            <em>{appliedRate === 0 ? 'hit 100% to unlock ₹2/piece' : `₹${appliedRate}/piece`}</em>
+            <span>Pool unlocked</span>
+            <strong>{formatINR(payout.totalStoreIncentive)}</strong>
           </HeroCard.Caption>
 
           <HeroCard.FooterBlock>
             <div>
-              <HeroCard.FooterLabel>Your payout so far</HeroCard.FooterLabel>
-              <HeroCard.FooterValue>{formatINR(per)}</HeroCard.FooterValue>
+              <HeroCard.FooterLabel>Your pieces sold</HeroCard.FooterLabel>
+              <HeroCard.FooterValue>{payout.myPiecesSold}</HeroCard.FooterValue>
             </div>
-            <HeroCard.FooterMeta>
-              <Users size={11} strokeWidth={2.2} />
-              <span>Split equally across {payout.staffCount} staff</span>
-            </HeroCard.FooterMeta>
+            <div>
+              <HeroCard.FooterLabel>Your payout</HeroCard.FooterLabel>
+              <HeroCard.FooterValue>{formatINR(payout.individualPayout)}</HeroCard.FooterValue>
+            </div>
           </HeroCard.FooterBlock>
         </HeroCard>
       </section>
@@ -98,31 +94,9 @@ export default function GroceryView({ payout, employee, store, role }) {
         <BadgesStrip employeeId={employee.employeeId} vertical="GROCERY" />
       </section>
 
-      {/* Unified quiet disclosure — distribution rule, payout slabs, eligible articles.
-          Default (line-separated) variant + subdued trigger styling so this footer
-          metadata reads as quiet reference, not a primary content block. */}
+      {/* Quiet disclosure — payout slabs + eligible articles */}
       <section className={`${styles.pad} ${styles.compactAccordion} rise rise-5`}>
         <Accordion variant="default" type="multiple">
-          <AccordionItem value="distribution">
-            <AccordionTrigger>Distribution rule & your record</AccordionTrigger>
-            <AccordionContent>
-              <dl className={styles.compactList}>
-                {[
-                  { label: 'Store incentive', value: formatINR(totalStoreIncentive) },
-                  { label: 'Total staff',     value: String(payout.staffCount) },
-                  { label: 'Per employee',    value: formatINR(per) },
-                  { label: 'Role',            value: `${role} · ${employee?.employeeId}` },
-                  { label: 'Split rule',      value: 'Equal across SM, DM, SA, BA' },
-                ].map((it) => (
-                  <div key={it.label} className={styles.compactRow}>
-                    <dt className={styles.compactLabel}>{it.label}</dt>
-                    <dd className={styles.compactValue}>{it.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </AccordionContent>
-          </AccordionItem>
-
           <AccordionItem value="slabs">
             <AccordionTrigger>Payout slabs</AccordionTrigger>
             <AccordionContent>

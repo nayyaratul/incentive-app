@@ -124,6 +124,7 @@ export function transformGroceryPayout(detail, campaignConfig, salesRows) {
     actualSalesValue: storeActual,
     achievementPct,
     piecesSoldTotal: Number(cs.totalPiecesSold) || 0,
+    myPiecesSold: Number(cs.myPiecesSold) || 0,
     appliedRate: Number(cs.currentRate) || 0,
     totalStoreIncentive: Number(cs.totalStorePayout) || 0,
     staffCount,
