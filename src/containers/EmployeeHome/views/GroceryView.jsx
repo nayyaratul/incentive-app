@@ -42,7 +42,7 @@ export default function GroceryView({ payout, employee, store, role }) {
           </HeroCard.Meta>
 
           <HeroCard.Amount suffix="%">{achievementPct}</HeroCard.Amount>
-          <HeroCard.AmountCap>of {formatINR(payout.targetSalesValue)} store target</HeroCard.AmountCap>
+          <HeroCard.AmountCap>of {formatINR(payout.targetSalesValue)} campaign target</HeroCard.AmountCap>
 
           <TargetTrendBreakdown
             actualValue={payout.actualSalesValue}
@@ -51,8 +51,8 @@ export default function GroceryView({ payout, employee, store, role }) {
 
           <HeroCard.Caption>
             <strong>{payout.piecesSoldTotal}</strong>
-            <span>pieces sold</span>
-            <em>{appliedRate === 0 ? 'rate not unlocked' : `₹${appliedRate}/piece`}</em>
+            <span>eligible pieces sold</span>
+            <em>{appliedRate === 0 ? 'hit 100% to unlock ₹2/piece' : `₹${appliedRate}/piece`}</em>
           </HeroCard.Caption>
 
           <HeroCard.FooterBlock>

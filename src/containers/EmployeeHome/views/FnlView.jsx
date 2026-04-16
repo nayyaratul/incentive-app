@@ -20,10 +20,13 @@ export default function FnlView({ payout, employee, store, role }) {
   const myPayout = payout.myPayout ?? 0;
   const myDays = payout.myAttendanceDays ?? 0;
   const eligible5Day = payout.myAttendanceEligible ?? (myDays >= fnlWeeklyRules.minWorkingDays);
+  const achPct = payout.weeklySalesTarget > 0
+    ? Math.round((payout.actualWeeklyGrossSales / payout.weeklySalesTarget) * 100)
+    : 0;
 
   return (
     <>
-      {/* Week hero */}
+      {/* Week hero — simplified: store target, achievement %, your payout */}
       <section className={`${styles.pad} rise rise-2`}>
         <HeroCard>
           <HeroCard.EyebrowRow>
@@ -32,7 +35,7 @@ export default function FnlView({ payout, employee, store, role }) {
               Week of {payout.weekStart}
             </HeroCard.Eyebrow>
             <HeroCard.QualifyPill qualifies={qualifies}>
-              {qualifies ? 'Qualifies' : 'Missed target'}
+              {qualifies ? 'Target met' : 'Below target'}
             </HeroCard.QualifyPill>
           </HeroCard.EyebrowRow>
 
@@ -41,33 +44,19 @@ export default function FnlView({ payout, employee, store, role }) {
               ? new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(myPayout)
               : '0'}
           </HeroCard.Amount>
-          <HeroCard.AmountCap>Your share this week</HeroCard.AmountCap>
+          <HeroCard.AmountCap>Your payout this week</HeroCard.AmountCap>
 
           <HeroCard.Figures dense noBottomDivider>
-            <HeroCard.Figure value={formatINR(payout.actualWeeklyGrossSales)} cap="actual" />
+            <HeroCard.Figure value={`${achPct}%`} cap="achievement" />
             <HeroCard.FigureDivider />
-            <HeroCard.Figure value={formatINR(payout.weeklySalesTarget)} cap="target" />
+            <HeroCard.Figure value={formatINR(payout.weeklySalesTarget)} cap="store target" />
+            <HeroCard.FigureDivider />
+            <HeroCard.Figure value={formatINR(payout.actualWeeklyGrossSales)} cap="actual sales" />
           </HeroCard.Figures>
-
-          <HeroCard.FooterBlock>
-            <div>
-              <HeroCard.FooterLabel>Store incentive pool</HeroCard.FooterLabel>
-              <HeroCard.FooterValue>{formatINR(payout.totalStoreIncentive)}</HeroCard.FooterValue>
-            </div>
-            <HeroCard.FooterMeta>
-              <span>
-                {role === 'SM' ? '1 SM'
-                  : role === 'DM' ? `${payout.staffing.dms} DM${payout.staffing.dms > 1 ? 's' : ''}`
-                  : `${payout.staffing.eligibleSaCount} eligible SAs`}
-              </span>
-              <span>·</span>
-              <span>1% of gross sales</span>
-            </HeroCard.FooterMeta>
-          </HeroCard.FooterBlock>
         </HeroCard>
       </section>
 
-      {/* Streak note — always positive. Falls back to sample when API data is empty */}
+      {/* Streak note */}
       <section className={`${styles.streakRow} rise rise-2`}>
         <StreakNote
           streak={
@@ -119,31 +108,31 @@ export default function FnlView({ payout, employee, store, role }) {
         <BadgesStrip employeeId={employee.employeeId} vertical="FNL" />
       </section>
 
-      {/* Unified quiet disclosure — split matrix, past 4 weeks, eligibility.
-          Collapsed by default so these reference panels don't crowd the hero /
-          quest / badges content above. Mirrors the Grocery view pattern. */}
+      {/* Quiet disclosure — past weeks + eligibility. Split matrix only for SM/DM. */}
       <section className={`${styles.pad} ${styles.compactAccordion} rise rise-5`}>
         <Accordion variant="default" type="multiple">
-          <AccordionItem value="split">
-            <AccordionTrigger>
-              Split matrix · {payout.staffing.sms} SM · {payout.staffing.dms} DM
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className={styles.splitGrid}>
-                {fnlWeeklyRules.splitMatrix.map((m) => {
-                  const isCurrent = m.sms === payout.staffing.sms && m.dms === payout.staffing.dms;
-                  return (
-                    <div key={`${m.sms}-${m.dms}`} className={`${styles.splitRow} ${isCurrent ? styles.splitCurrent : ''}`}>
-                      <span className={styles.splitConfig}>{m.sms} SM · {m.dms} DM</span>
-                      <span className={styles.splitSA}>SA {Math.round(m.saPoolPct * 100)}%</span>
-                      <span className={styles.splitSM}>SM {Math.round(m.smSharePct * 100)}%</span>
-                      <span className={styles.splitDM}>{m.dms > 0 ? `DM ${(m.dmSharePctEach * 100).toFixed(1)}% each` : '—'}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+          {(role === 'SM' || role === 'DM') && (
+            <AccordionItem value="split">
+              <AccordionTrigger>
+                Split matrix · {payout.staffing.sms} SM · {payout.staffing.dms} DM
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className={styles.splitGrid}>
+                  {fnlWeeklyRules.splitMatrix.map((m) => {
+                    const isCurrent = m.sms === payout.staffing.sms && m.dms === payout.staffing.dms;
+                    return (
+                      <div key={`${m.sms}-${m.dms}`} className={`${styles.splitRow} ${isCurrent ? styles.splitCurrent : ''}`}>
+                        <span className={styles.splitConfig}>{m.sms} SM · {m.dms} DM</span>
+                        <span className={styles.splitSA}>SA {Math.round(m.saPoolPct * 100)}%</span>
+                        <span className={styles.splitSM}>SM {Math.round(m.smSharePct * 100)}%</span>
+                        <span className={styles.splitDM}>{m.dms > 0 ? `DM ${(m.dmSharePctEach * 100).toFixed(1)}% each` : '—'}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          )}
 
           <AccordionItem value="weeks">
             <AccordionTrigger>Past 4 weeks</AccordionTrigger>

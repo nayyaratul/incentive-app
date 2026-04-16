@@ -445,7 +445,7 @@ export default function StoreManagerHome() {
                   </HeroCard.Amount>
                   <HeroCard.AmountCap>
                     {summary.kind === 'GROCERY'
-                      ? `of ${formatINR(summary.totalTarget)} store target`
+                      ? `of ${formatINR(summary.totalTarget)} campaign target`
                       : `of store ${summary.kind === 'FNL' ? 'weekly' : 'period'} target`}
                   </HeroCard.AmountCap>
 
@@ -465,8 +465,8 @@ export default function StoreManagerHome() {
                   {summary.kind === 'GROCERY' && (
                     <HeroCard.Caption>
                       <strong>{summary.piecesSoldTotal}</strong>
-                      <span>pieces sold</span>
-                      <em>{summary.appliedRate > 0 ? `₹${summary.appliedRate}/piece` : 'rate not unlocked'}</em>
+                      <span>eligible pieces sold</span>
+                      <em>{summary.appliedRate > 0 ? `₹${summary.appliedRate}/piece` : 'hit 100% to unlock ₹2/piece'}</em>
                     </HeroCard.Caption>
                   )}
 

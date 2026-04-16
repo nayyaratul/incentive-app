@@ -171,14 +171,22 @@ export const baContributionsRD3675 = {
 };
 
 // ---------- GROCERY — SMT-Kalpetta (T28V), Cake Rush campaign ----------
-// Brief §7.3 worked example + §7.4 equal distribution
+// Brief §7.2-7.4: Multi-Article campaign incentive.
+// ALL numbers below are for campaign-eligible products ONLY (10 articles from
+// Andree, Bakemill, Kairali, Unibic). Non-campaign items are excluded.
+//
+// 3 store scenarios across the campaign:
+//   T28V  — 92% achievement → below 100% → ₹0 incentive (SA persona lives here)
+//   2536  — 109% achievement → ₹2/piece slab
+//   TGL5  — 126% achievement → ₹3/piece slab
 export const groceryPayoutT28V = {
   campaignId: 'CAMP-GRC-2026-04-CAKE',
   storeCode: 'T28V',
+  // Campaign-eligible product sales only
   targetSalesValue: 167000,
   actualSalesValue: 154000,         // 92% — below 100% → incentive is currently ₹0
   achievementPct: 92,
-  piecesSoldTotal: 308,
+  piecesSoldTotal: 308,             // eligible pieces only
   appliedRate: 0,                   // no payout below 100%
   totalStoreIncentive: 0,
   staffCount: 7,                    // SM + DM + 4 SA + 1 BA
@@ -192,7 +200,7 @@ export const groceryPayoutT28V = {
     rank: 2,
     deltaAbove: 14,
     scope: 'store',
-    scopeNote: 'by pieces sold',
+    scopeNote: 'by eligible pieces sold',
     top: [
       { rank: 1, name: 'Ravi Krishnan', earned: 45, isSelf: false },
       { rank: 2, name: 'Meena Nair',    earned: 38, isSelf: true  },
@@ -203,15 +211,19 @@ export const groceryPayoutT28V = {
     unitLabel: 'pieces',
   },
   projections: [
-    { scenario: 'Hit 100%', atSalesValue: 167000, rate: 2, estTotalIncentive: 620,  estPerEmployee: 89 },
-    { scenario: 'Hit 120%', atSalesValue: 200400, rate: 3, estTotalIncentive: 1116, estPerEmployee: 159 },
-    { scenario: 'Hit 130%', atSalesValue: 217100, rate: 4, estTotalIncentive: 1612, estPerEmployee: 230 },
+    { scenario: 'Hit 100%', atSalesValue: 167000, rate: 2, estTotalIncentive: 616,  estPerEmployee: 88 },
+    { scenario: 'Hit 120%', atSalesValue: 200400, rate: 3, estTotalIncentive: 1110, estPerEmployee: 159 },
+    { scenario: 'Hit 130%', atSalesValue: 217100, rate: 4, estTotalIncentive: 1600, estPerEmployee: 229 },
   ],
   // Leaderboard across the 3 Kerala stores in the campaign
+  // Each store's numbers are campaign-eligible product sales only
   campaignLeaderboard: [
-    { storeCode: 'TGL5', storeName: 'SMT-Edappal',   actualSalesValue: 248600, achievementPct: 110, perEmpAtCurrent: 176, rank: 1 },
-    { storeCode: '2536', storeName: 'SIG-Pottammel', actualSalesValue: 72800,  achievementPct: 109, perEmpAtCurrent: 89,  rank: 2 },
-    { storeCode: 'T28V', storeName: 'SMT-Kalpetta',  actualSalesValue: 154000, achievementPct: 92,  perEmpAtCurrent: 0,   rank: 3, isSelf: true },
+    // TGL5: target ₹2,26,000, actual ₹2,84,760 = 126% → ₹3/piece slab, 570 pieces → ₹1,710 store incentive
+    { storeCode: 'TGL5', storeName: 'SMT-Edappal',   actualSalesValue: 284760, achievementPct: 126, appliedRate: 3, piecesSold: 570, totalIncentive: 1710, staffCount: 8, perEmployee: 214, rank: 1 },
+    // 2536: target ₹67,000, actual ₹72,800 = 109% → ₹2/piece slab, 268 pieces → ₹536 store incentive
+    { storeCode: '2536', storeName: 'SIG-Pottammel', actualSalesValue: 72800,  achievementPct: 109, appliedRate: 2, piecesSold: 268, totalIncentive: 536,  staffCount: 10, perEmployee: 54, rank: 2 },
+    // T28V: target ₹1,67,000, actual ₹1,54,000 = 92% → below 100% → ₹0
+    { storeCode: 'T28V', storeName: 'SMT-Kalpetta',  actualSalesValue: 154000, achievementPct: 92,  appliedRate: 0, piecesSold: 308, totalIncentive: 0,    staffCount: 7,  perEmployee: 0,  rank: 3, isSelf: true },
   ],
 };
 
