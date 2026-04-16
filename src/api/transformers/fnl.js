@@ -116,8 +116,8 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
   const prevWeek = weeks.length >= 2 ? weeks[weeks.length - 2] : null;
   const lastWeekSaPayout = Number(prevWeek?.payout) || 0;
 
-  // Recent weeks for the trajectory section
-  const recentWeeks = weeks.map((w) => ({
+  // Recent weeks for the trajectory section (sorted chronologically)
+  const recentWeeks = [...weeks].sort((a, b) => (a.periodStart || '').localeCompare(b.periodStart || '')).map((w) => ({
     weekStart: w.periodStart,
     weekEnd: w.periodEnd,
     target: Number(w.targetValue) || 0,
@@ -126,8 +126,17 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     totalIncentive: Number(w.payout) || 0,
   }));
 
+  // Sort weeks chronologically (backend may return desc order) and filter
+  // out any entries spanning more than 10 days (monthly aggregates).
+  const sortedWeeks = [...weeks].sort((a, b) => (a.periodStart || '').localeCompare(b.periodStart || ''));
+  const weeklyOnly = sortedWeeks.filter((w) => {
+    if (!w.periodStart || !w.periodEnd) return true;
+    const span = (new Date(w.periodEnd) - new Date(w.periodStart)) / (1000 * 60 * 60 * 24);
+    return span <= 10; // weekly entries are 6-7 days
+  });
+
   // Per-week payout shapes for the period selector
-  const weekPayouts = weeks.map((w, i) => {
+  const weekPayouts = weeklyOnly.map((w, i) => {
     const wTarget = Number(w.targetValue) || 0;
     const wActual = Number(w.actualSales) || 0;
     const wExceeded = wActual >= wTarget;
@@ -149,11 +158,11 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     };
   });
 
-  // Month aggregate — sum across all weeks
+  // Month aggregate — sum across all weekly entries
   const monthAggregate = {
     isMonthView: true,
-    weekStart: weeks.length > 0 ? weeks[0].periodStart : weekStart,
-    weekEnd: weeks.length > 0 ? weeks[weeks.length - 1].periodEnd : weekEnd,
+    weekStart: weeklyOnly.length > 0 ? weeklyOnly[0].periodStart : weekStart,
+    weekEnd: weeklyOnly.length > 0 ? weeklyOnly[weeklyOnly.length - 1].periodEnd : weekEnd,
     weeklySalesTarget: weekPayouts.reduce((s, w) => s + w.weeklySalesTarget, 0),
     actualWeeklyGrossSales: weekPayouts.reduce((s, w) => s + w.actualWeeklyGrossSales, 0),
     storeQualifies: weekPayouts.some((w) => w.storeQualifies),
