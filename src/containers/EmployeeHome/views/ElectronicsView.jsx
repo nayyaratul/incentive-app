@@ -28,7 +28,9 @@ function findMultiplier(pct) {
 }
 
 export default function ElectronicsView({ payout, employee, store, role }) {
-  const finalTotal = payout.byDepartment.reduce((s, d) => s + d.finalPayout, 0);
+  /* Use the API-sourced month-to-date earned amount (not the per-department
+     finalPayout sum, which the transformer can't populate per-dept). */
+  const finalTotal = payout.monthToDateEarned || payout.byDepartment.reduce((s, d) => s + d.finalPayout, 0);
 
   const goalBlock = {
     target: payout.monthlyGoalTarget,
