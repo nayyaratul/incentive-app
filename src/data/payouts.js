@@ -284,6 +284,28 @@ export const fnlPayoutTRN0241 = {
     { weekStart: '2026-03-29', weekEnd: '2026-04-04', target: 1200000, actual: 1282000, storeQualified: true,  totalIncentive: 12820 },
     { weekStart: '2026-04-05', weekEnd: '2026-04-11', target: 1200000, actual: 1175000, storeQualified: false, totalIncentive: 0 },
   ],
+  // Per-week payout shapes for the period selector
+  weekPayouts: [
+    { weekStart: '2026-03-29', weekEnd: '2026-04-04', weeklySalesTarget: 1200000, actualWeeklyGrossSales: 1282000, storeQualifies: true, totalStoreIncentive: 12820, myPayout: 1098, lastWeekSaPayout: 0, myAttendanceDays: 6, myAttendanceEligible: true, staffing: { sms: 1, dms: 1, eligibleSaCount: 7 }, split: { saPoolPct: 0.60, smSharePct: 0.24, dmSharePctEach: 0.16 } },
+    { weekStart: '2026-04-05', weekEnd: '2026-04-11', weeklySalesTarget: 1200000, actualWeeklyGrossSales: 1175000, storeQualifies: false, totalStoreIncentive: 0, myPayout: 0, lastWeekSaPayout: 1098, myAttendanceDays: 5, myAttendanceEligible: true, staffing: { sms: 1, dms: 1, eligibleSaCount: 7 }, split: { saPoolPct: 0.60, smSharePct: 0.24, dmSharePctEach: 0.16 } },
+    { weekStart: '2026-04-12', weekEnd: '2026-04-18', weeklySalesTarget: 1200000, actualWeeklyGrossSales: 1260000, storeQualifies: true, totalStoreIncentive: 12600, myPayout: 1080, lastWeekSaPayout: 0, myAttendanceDays: 7, myAttendanceEligible: true, staffing: { sms: 1, dms: 1, eligibleSaCount: 7 }, split: { saPoolPct: 0.60, smSharePct: 0.24, dmSharePctEach: 0.16 } },
+  ],
+  monthAggregate: {
+    isMonthView: true,
+    weekStart: '2026-03-29',
+    weekEnd: '2026-04-18',
+    weeklySalesTarget: 3600000,
+    actualWeeklyGrossSales: 3717000,
+    storeQualifies: true,
+    weeksQualified: 2,
+    weeksTotal: 3,
+    totalStoreIncentive: 25420,
+    myPayout: 2178,
+    myAttendanceDays: 7,
+    myAttendanceEligible: true,
+    staffing: { sms: 1, dms: 1, eligibleSaCount: 7 },
+    split: { saPoolPct: 0.60, smSharePct: 0.24, dmSharePctEach: 0.16 },
+  },
 };
 
 // ---------- CENTRAL REPORTING roll-up (brief §2 "Central Reporting") ----------

@@ -126,6 +126,47 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     totalIncentive: Number(w.payout) || 0,
   }));
 
+  // Per-week payout shapes for the period selector
+  const weekPayouts = weeks.map((w, i) => {
+    const wTarget = Number(w.targetValue) || 0;
+    const wActual = Number(w.actualSales) || 0;
+    const wExceeded = wActual >= wTarget;
+    const wPayout = Number(w.payout) || 0;
+    const prevW = i > 0 ? weeks[i - 1] : null;
+    return {
+      weekStart: w.periodStart,
+      weekEnd: w.periodEnd,
+      weeklySalesTarget: wTarget,
+      actualWeeklyGrossSales: wActual,
+      storeQualifies: wExceeded,
+      totalStoreIncentive: wExceeded ? Math.round(wActual * 0.01) : 0,
+      myPayout: wPayout,
+      lastWeekSaPayout: Number(prevW?.payout) || 0,
+      myAttendanceDays: Number(cs.yourAttendanceDays) || 0,
+      myAttendanceEligible: Boolean(cs.attendanceEligible),
+      staffing: { sms: 0, dms: 0, eligibleSaCount },
+      split: { saPoolPct, smSharePct, dmSharePctEach },
+    };
+  });
+
+  // Month aggregate — sum across all weeks
+  const monthAggregate = {
+    isMonthView: true,
+    weekStart: weeks.length > 0 ? weeks[0].periodStart : weekStart,
+    weekEnd: weeks.length > 0 ? weeks[weeks.length - 1].periodEnd : weekEnd,
+    weeklySalesTarget: weekPayouts.reduce((s, w) => s + w.weeklySalesTarget, 0),
+    actualWeeklyGrossSales: weekPayouts.reduce((s, w) => s + w.actualWeeklyGrossSales, 0),
+    storeQualifies: weekPayouts.some((w) => w.storeQualifies),
+    weeksQualified: weekPayouts.filter((w) => w.storeQualifies).length,
+    weeksTotal: weekPayouts.length,
+    totalStoreIncentive: weekPayouts.reduce((s, w) => s + w.totalStoreIncentive, 0),
+    myPayout: weekPayouts.reduce((s, w) => s + w.myPayout, 0),
+    myAttendanceDays: Number(cs.yourAttendanceDays) || 0,
+    myAttendanceEligible: Boolean(cs.attendanceEligible),
+    staffing: { sms: 0, dms: 0, eligibleSaCount },
+    split: { saPoolPct, smSharePct, dmSharePctEach },
+  };
+
   return {
     weekStart,
     weekEnd,
@@ -156,5 +197,7 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     myRank: buildFnlMyRank(detail, saPayoutEach),
     employees: [], // needs attendance endpoint
     recentWeeks,
+    weekPayouts,
+    monthAggregate,
   };
 }

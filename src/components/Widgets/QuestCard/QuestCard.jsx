@@ -213,6 +213,7 @@ function buildElectronicsQuests(payout) {
 
 function buildFnlQuests(payout) {
   const quests = [];
+  const isMonth = Boolean(payout.isMonthView);
   const target = payout.weeklySalesTarget || payout.totalTarget || 0;
   const actual = payout.actualWeeklyGrossSales || payout.totalActual || 0;
   const qualifies = payout.storeQualifies ?? (target > 0 && actual >= target);
@@ -220,26 +221,40 @@ function buildFnlQuests(payout) {
     ? `₹${Math.round(target / 1e5)}L`
     : `₹${target.toLocaleString('en-IN')}`;
 
-  quests.push({
-    id: 'q-store-beat',
-    type: 'Store gate',
-    title: `Store beats ${targetLabel} weekly target`,
-    progress: { current: actual, target, unit: '₹' },
-    reward: 'Unlocks 1% of weekly gross as store pool',
-    status: qualifies ? 'completed' : 'active',
-  });
-
-  // 5-day attendance quest from streak data
-  if (payout.streak) {
-    const days = payout.streak.current || 0;
+  if (isMonth) {
+    // Month view: show aggregate quest
+    const wQ = payout.weeksQualified || 0;
+    const wT = payout.weeksTotal || 0;
     quests.push({
-      id: 'q-5-days',
-      type: 'Eligibility',
-      title: 'Be present 5+ days this week',
-      progress: { current: Math.min(days, 7), target: 5, unit: 'days' },
-      reward: "Keeps you eligible for this week's payout",
-      status: days >= 5 ? 'completed' : 'active',
+      id: 'q-month-summary',
+      type: 'Monthly',
+      title: `${wQ} of ${wT} weeks qualified this month`,
+      progress: { current: wQ, target: wT, unit: 'weeks' },
+      reward: `Total month payout: ₹${(payout.myPayout || 0).toLocaleString('en-IN')}`,
+      status: wQ === wT ? 'completed' : 'active',
     });
+  } else {
+    quests.push({
+      id: 'q-store-beat',
+      type: 'Store gate',
+      title: `Store beats ${targetLabel} weekly target`,
+      progress: { current: actual, target, unit: '₹' },
+      reward: 'Unlocks 1% of weekly gross as store pool',
+      status: qualifies ? 'completed' : 'active',
+    });
+
+    // 5-day attendance quest
+    const days = payout.myAttendanceDays ?? (payout.streak?.current || 0);
+    if (days > 0 || !qualifies) {
+      quests.push({
+        id: 'q-5-days',
+        type: 'Eligibility',
+        title: 'Be present 5+ days this week',
+        progress: { current: Math.min(days, 7), target: 5, unit: 'days' },
+        reward: "Keeps you eligible for this week's payout",
+        status: days >= 5 ? 'completed' : 'active',
+      });
+    }
   }
 
   return quests;
@@ -248,6 +263,7 @@ function buildFnlQuests(payout) {
 function formatProgress(p) {
   if (p.unit === '%') return `${p.current}% / ${p.target}%`;
   if (p.unit === 'days') return `${p.current}/${p.target} days`;
+  if (p.unit === 'weeks') return `${p.current}/${p.target} weeks`;
   if (p.unit === '₹') return `${lakh(p.current)} / ${lakh(p.target)}`;
   return `${p.current}/${p.target}`;
 }

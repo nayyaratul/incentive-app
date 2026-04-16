@@ -30,6 +30,8 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
+  ToggleGroup,
+  ToggleGroupItem,
 } from '@/nexus/atoms';
 import { employees as staticEmployees } from '../../data/masters';
 import {
@@ -51,6 +53,7 @@ export default function StoreManagerHome() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [txEmpFilter, setTxEmpFilter] = useState('ALL');
+  const [fnlPeriod, setFnlPeriod] = useState(null); // null = auto-detect current week
   const { active, employee, store } = usePersona();
 
   const handleViewAllTransactions = (employeeId) => {
@@ -296,6 +299,10 @@ export default function StoreManagerHome() {
       const weekStart = storeDetail?.summary?.weekStart || (useMock ? fnlPayoutTRN0241.weekStart : null);
       const weekEnd = storeDetail?.summary?.weekEnd || (useMock ? fnlPayoutTRN0241.weekEnd : null);
 
+      // Week payouts from API/transformer for the period selector
+      const weekPayouts = storeDetail?.weekPayouts || (useMock ? fnlPayoutTRN0241.weekPayouts : null) || [];
+      const monthAggregate = storeDetail?.monthAggregate || (useMock ? fnlPayoutTRN0241.monthAggregate : null) || null;
+
       return {
         kind: 'FNL',
         week: { start: weekStart, end: weekEnd },
@@ -307,6 +314,8 @@ export default function StoreManagerHome() {
         daysLeft: 7 - dayjs().day(), // days left in week
         gapToTarget: totalTarget > totalActual ? totalTarget - totalActual : 0,
         unlockPct: 100,
+        weekPayouts,
+        monthAggregate,
         employees: emps.map((emp) => {
           const master = storeTeam.find((x) => x.employeeId === emp.employeeId);
           return {
@@ -444,6 +453,41 @@ export default function StoreManagerHome() {
                 rank={storeRank?.rank}
                 onOpenLeaderboard={() => setLeaderboardOpen(true)}
               />
+              {/* F&L period selector */}
+              {summary.kind === 'FNL' && summary.weekPayouts && summary.weekPayouts.length > 0 && (
+                <section className={`${styles.pad} rise rise-1`}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
+                    <ToggleGroup
+                      type="single"
+                      value={fnlPeriod || (() => {
+                        const today = dayjs();
+                        const idx = summary.weekPayouts.findIndex(
+                          (w) => today.isAfter(dayjs(w.weekStart).subtract(1, 'day')) && today.isBefore(dayjs(w.weekEnd).add(1, 'day')),
+                        );
+                        return idx >= 0 ? `w${idx}` : `w${summary.weekPayouts.length - 1}`;
+                      })()}
+                      onValueChange={(val) => { if (val) setFnlPeriod(val); }}
+                      size="sm"
+                      variant="outline"
+                    >
+                      <ToggleGroupItem value="month">Month</ToggleGroupItem>
+                      {summary.weekPayouts.map((w, i) => (
+                        <ToggleGroupItem key={w.weekStart} value={`w${i}`}>W{i + 1}</ToggleGroupItem>
+                      ))}
+                    </ToggleGroup>
+                    <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
+                      {(() => {
+                        const sel = fnlPeriod || `w${summary.weekPayouts.length - 1}`;
+                        if (sel === 'month') return `${dayjs(summary.weekPayouts[0]?.weekStart).format('MMM D')} – ${dayjs(summary.weekPayouts[summary.weekPayouts.length - 1]?.weekEnd).format('MMM D')}`;
+                        const idx = parseInt(sel.replace('w', ''), 10);
+                        const w = summary.weekPayouts[idx];
+                        return w ? `${dayjs(w.weekStart).format('MMM D')} – ${dayjs(w.weekEnd).format('MMM D')}` : '';
+                      })()}
+                    </span>
+                  </div>
+                </section>
+              )}
+
               <section className={`${styles.pad} rise rise-2`}>
                 <HeroCard>
                   <HeroCard.EyebrowRow>
@@ -452,7 +496,10 @@ export default function StoreManagerHome() {
                     ) : (
                       <HeroCard.Eyebrow withDot>
                         {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
-                        {summary.kind === 'FNL' && `Week of ${summary.week.start}`}
+                        {summary.kind === 'FNL' && (() => {
+                          const sel = fnlPeriod || `w${(summary.weekPayouts || []).length - 1}`;
+                          return sel === 'month' ? 'Month to date' : `Week of ${summary.week.start}`;
+                        })()}
                       </HeroCard.Eyebrow>
                     )}
                     {summary.achievementPct >= 100 && (

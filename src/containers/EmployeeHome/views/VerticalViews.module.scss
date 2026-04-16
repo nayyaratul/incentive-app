@@ -751,6 +751,28 @@ details[open] .tierSummary::before { content: '–  '; }
 .splitConfig { font-weight: 600; color: var(--color-text-primary); }
 .splitSA, .splitSM, .splitDM { text-align: center; }
 
+/* Period selector (F&L Month/Week toggle) */
+.periodSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+.periodCaption {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+}
+.currentDot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--brand, #BD2925);
+  margin-left: 3px;
+  vertical-align: middle;
+}
+
 /* Recent weeks */
 .weeksList {
   display: flex;
@@ -764,8 +786,17 @@ details[open] .tierSummary::before { content: '–  '; }
   padding: 10px 0;
   border-bottom: 1px solid var(--color-border-subtle);
   font-size: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s;
 
+  &:hover { background: var(--color-bg-hover, rgba(0,0,0,0.03)); }
   &:last-child { border-bottom: none; }
+}
+.weekRowActive {
+  background: var(--color-bg-selected, rgba(189, 41, 37, 0.06));
+  border-left: 3px solid var(--brand, #BD2925);
+  padding-left: 8px;
 }
 .weekDates {
   font-family: var(--mono);
