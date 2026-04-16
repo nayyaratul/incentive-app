@@ -15,13 +15,8 @@ import {
   AccordionContent,
 } from '@/nexus/atoms';
 
-function findSplit(sms, dms) {
-  return fnlWeeklyRules.splitMatrix.find((m) => m.sms === sms && m.dms === dms) || fnlWeeklyRules.splitMatrix[0];
-}
-
 export default function FnlView({ payout, employee, store, role }) {
   const qualifies = payout.storeQualifies;
-  const split = findSplit(payout.staffing.sms, payout.staffing.dms);
   const myPayout = payout.myPayout ?? 0;
   const myDays = payout.myAttendanceDays ?? 0;
   const eligible5Day = payout.myAttendanceEligible ?? (myDays >= fnlWeeklyRules.minWorkingDays);
@@ -52,27 +47,21 @@ export default function FnlView({ payout, employee, store, role }) {
             <HeroCard.Figure value={formatINR(payout.actualWeeklyGrossSales)} cap="actual" />
             <HeroCard.FigureDivider />
             <HeroCard.Figure value={formatINR(payout.weeklySalesTarget)} cap="target" />
-            <HeroCard.FigureDivider />
-            <HeroCard.Figure value={formatINR(payout.totalStoreIncentive)} cap="pool · 1%" />
           </HeroCard.Figures>
 
           <HeroCard.FooterBlock>
             <div>
-              <HeroCard.FooterLabel>Your pool share</HeroCard.FooterLabel>
-              <HeroCard.FooterValue>
-                {role === 'SM' ? `${Math.round(split.smSharePct * 100)}%` :
-                 role === 'DM' ? `${Math.round(split.dmSharePctEach * 100)}%` :
-                 `${Math.round(split.saPoolPct * 100)}%`}
-              </HeroCard.FooterValue>
+              <HeroCard.FooterLabel>Store incentive pool</HeroCard.FooterLabel>
+              <HeroCard.FooterValue>{formatINR(payout.totalStoreIncentive)}</HeroCard.FooterValue>
             </div>
             <HeroCard.FooterMeta>
-              <span>{role}</span>
-              <span>·</span>
               <span>
-                {role === 'SM' ? 'of pool' :
-                 role === 'DM' ? 'per DM' :
-                 `÷ ${payout.staffing.eligibleSaCount} SAs`}
+                {role === 'SM' ? '1 SM'
+                  : role === 'DM' ? `${payout.staffing.dms} DM${payout.staffing.dms > 1 ? 's' : ''}`
+                  : `${payout.staffing.eligibleSaCount} eligible SAs`}
               </span>
+              <span>·</span>
+              <span>1% of gross sales</span>
             </HeroCard.FooterMeta>
           </HeroCard.FooterBlock>
         </HeroCard>
