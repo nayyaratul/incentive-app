@@ -662,7 +662,11 @@ export default function StoreManagerHome() {
               )}
 
               <section className={`rise rise-4`}>
-                <QuestCard employeeId={employee.employeeId} vertical={active.vertical} />
+                <QuestCard
+                  employeeId={employee.employeeId}
+                  vertical={active.vertical}
+                  payout={summary?.kind === 'GROCERY' ? { achievementPct: summary.achievementPct, targetSalesValue: summary.totalTarget } : undefined}
+                />
               </section>
 
               <section className={`rise rise-4`}>
