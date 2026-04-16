@@ -591,19 +591,20 @@ export default function StoreManagerHome() {
                           }
                         />
 
-                        {summary.kind === 'GROCERY' && summary.piecesSoldTotal > 0 && (
+                        {summary.kind === 'GROCERY' && (
                           <HeroCard.Caption>
                             <Package size={13} strokeWidth={2.2} />
-                            <strong>{summary.piecesSoldTotal.toLocaleString('en-IN')}</strong> pcs sold
-                            {summary.appliedRate > 0 && (
+                            <strong>{(summary.piecesSoldTotal || 0).toLocaleString('en-IN')}</strong> pcs sold
+                            {summary.appliedRate > 0 ? (
                               <>
                                 <span>×</span>
                                 <strong>₹{summary.appliedRate}/pc</strong>
                                 <span>=</span>
                                 <strong>{formatINR(summary.totalPayout)}</strong> store pool
                               </>
+                            ) : (
+                              <span>· below 100% — no payout yet</span>
                             )}
-                            {!summary.appliedRate && <span>· below 100% — no payout yet</span>}
                           </HeroCard.Caption>
                         )}
                       </>

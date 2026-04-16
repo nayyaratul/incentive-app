@@ -45,21 +45,20 @@ export default function GroceryView({ payout, employee }) {
             targetValue={payout.targetSalesValue}
           />
 
-          {payout.piecesSoldTotal > 0 && (
-            <HeroCard.Caption>
-              <Package size={13} strokeWidth={2.2} />
-              <strong>{payout.piecesSoldTotal.toLocaleString('en-IN')}</strong> pcs sold
-              {payout.appliedRate > 0 && (
-                <>
-                  <span>×</span>
-                  <strong>₹{payout.appliedRate}/pc</strong>
-                  <span>=</span>
-                  <strong>{formatINR(payout.totalStoreIncentive)}</strong> store pool
-                </>
-              )}
-              {!payout.appliedRate && <span>· below 100% — no payout yet</span>}
-            </HeroCard.Caption>
-          )}
+          <HeroCard.Caption>
+            <Package size={13} strokeWidth={2.2} />
+            <strong>{(payout.piecesSoldTotal || 0).toLocaleString('en-IN')}</strong> pcs sold
+            {payout.appliedRate > 0 ? (
+              <>
+                <span>×</span>
+                <strong>₹{payout.appliedRate}/pc</strong>
+                <span>=</span>
+                <strong>{formatINR(payout.totalStoreIncentive)}</strong> store pool
+              </>
+            ) : (
+              <span>· below 100% — no payout yet</span>
+            )}
+          </HeroCard.Caption>
 
           <HeroCard.FooterBlock>
             <div>
