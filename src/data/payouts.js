@@ -23,12 +23,12 @@ export const electronicsPayoutsRD3675 = [
     lastMonthPayout: 3210,            // for the "vs last month" momentum pill
     nextPayoutDate: '2026-04-30',     // Electronics: paid end of month
     byDepartment: [
-      { department: 'Telecom',          baseIncentive: 2750, achievementPct: 75,  multiplier: 0.00, finalPayout: 0,    note: 'Below 85% — zero' },
-      { department: 'Large Appliances', baseIncentive: 1200, achievementPct: 127, multiplier: 1.20, finalPayout: 1440 },
-      { department: 'ENT',              baseIncentive: 800,  achievementPct: 109, multiplier: 1.00, finalPayout: 800 },
-      { department: 'AIOT',             baseIncentive: 480,  achievementPct: 95,  multiplier: 0.80, finalPayout: 384 },
-      { department: 'IT',               baseIncentive: 900,  achievementPct: 92,  multiplier: 0.80, finalPayout: 720 },
-      { department: 'Small Appliances', baseIncentive: 520,  achievementPct: 93,  multiplier: 0.80, finalPayout: 416 },
+      { department: 'Telecom',          baseIncentive: 2750, achievementPct: 75,  multiplier: 0.00, finalPayout: 0,    target: 3532421, actual: 2650000, note: 'Below 85% — zero' },
+      { department: 'Large Appliances', baseIncentive: 1200, achievementPct: 127, multiplier: 1.20, finalPayout: 1440, target: 3018889, actual: 3850000 },
+      { department: 'ENT',              baseIncentive: 800,  achievementPct: 109, multiplier: 1.00, finalPayout: 800,  target: 1533654, actual: 1690000 },
+      { department: 'AIOT',             baseIncentive: 480,  achievementPct: 95,  multiplier: 0.80, finalPayout: 384,  target: 183916,  actual: 175000  },
+      { department: 'IT',               baseIncentive: 900,  achievementPct: 92,  multiplier: 0.80, finalPayout: 720,  target: 1048506, actual: 928000  },
+      { department: 'Small Appliances', baseIncentive: 520,  achievementPct: 93,  multiplier: 0.80, finalPayout: 416,  target: 467671,  actual: 430000  },
     ],
     // Today / MTD rollups for the hero
     todayEarned: 180,

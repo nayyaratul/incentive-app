@@ -13,7 +13,7 @@ export default function MomentumPills({
   lastPeriodAmount,
   lastPeriodLabel = 'last month',
   nextPayoutDate,
-  payoutAsOf = '2026-04-13',
+  payoutAsOf = new Date().toISOString().slice(0, 10),
 }) {
   const days = daysBetween(payoutAsOf, nextPayoutDate);
   const showCountdown = typeof days === 'number' && days >= 0;
@@ -31,46 +31,38 @@ export default function MomentumPills({
 
   if (!showCountdown && !showMomentum) return null;
 
-  const cycleDays = estimateCycleDays(nextPayoutDate);
-  const elapsed = cycleDays > 0 ? Math.max(0, cycleDays - (days || 0)) : 0;
-  const progressPct = cycleDays > 0 ? Math.min(100, Math.round((elapsed / cycleDays) * 100)) : 0;
-
   return (
-    <div className={styles.card}>
-      <div className={styles.body}>
-        {showCountdown && (
-          <div className={styles.countdown}>
-            <CalendarDays size={12} strokeWidth={2.2} className={styles.iconMuted} />
-            <span className={styles.label}>Payout in</span>
-            <span className={styles.days}>{days === 0 ? 'today' : `${days}d`}</span>
-          </div>
-        )}
-
-        {showMomentum && (
-          <div className={`${styles.momentum} ${styles[`tone-${momentumKind}`]}`}>
-            <div className={styles.deltaRow}>
-              {momentumKind === 'up' && <TrendingUp size={12} strokeWidth={2.4} />}
-              {momentumKind === 'down' && <TrendingDown size={12} strokeWidth={2.4} />}
-              {momentumKind === 'flat' && (
-                <TrendingUp size={12} strokeWidth={2.4} className={styles.iconMuted} />
-              )}
-              <span className={styles.deltaPct}>
-                {momentumKind === 'up' ? '+' : ''}
-                {pctDelta.toFixed(0)}%
-              </span>
+    <div className={styles.row}>
+      {showCountdown && (
+        <div className={styles.card}>
+          <div className={styles.body}>
+            <div className={styles.countdown}>
+              <CalendarDays size={12} strokeWidth={2.2} className={styles.iconMuted} />
+              <span className={styles.label}>Payout in</span>
+              <span className={styles.days}>{days === 0 ? 'today' : `${days}d`}</span>
             </div>
-            <span className={styles.deltaLabel}>vs {lastPeriodLabel}</span>
           </div>
-        )}
+        </div>
+      )}
 
-        {showCountdown && (
-          <span className={styles.date}>{formatDateWithDay(nextPayoutDate)}</span>
-        )}
-      </div>
-
-      {showCountdown && cycleDays > 0 && (
-        <div className={styles.track}>
-          <div className={styles.trackFill} style={{ width: `${progressPct}%` }} />
+      {showMomentum && (
+        <div className={`${styles.card} ${styles[`tone-${momentumKind}`]}`}>
+          <div className={styles.body}>
+            <div className={styles.momentum}>
+              <div className={styles.deltaRow}>
+                {momentumKind === 'up' && <TrendingUp size={14} strokeWidth={2.4} />}
+                {momentumKind === 'down' && <TrendingDown size={14} strokeWidth={2.4} />}
+                {momentumKind === 'flat' && (
+                  <TrendingUp size={14} strokeWidth={2.4} className={styles.iconMuted} />
+                )}
+                <span className={styles.deltaPct}>
+                  {momentumKind === 'up' ? '+' : ''}
+                  {pctDelta.toFixed(0)}%
+                </span>
+              </div>
+              <span className={styles.deltaLabel}>vs {lastPeriodLabel}</span>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -79,31 +71,9 @@ export default function MomentumPills({
 
 /* ------------------------------------------------------------------ */
 
-const DAY_ABBR = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-function formatDateWithDay(dateStr) {
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return '';
-  const day = DAY_ABBR[d.getDay()];
-  const dd = String(d.getDate()).padStart(2, '0');
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const yy = String(d.getFullYear()).slice(-2);
-  return `${day}, ${dd}-${mm}-${yy}`;
-}
-
 function daysBetween(from, to) {
   if (!from || !to) return null;
   const ms = new Date(to).getTime() - new Date(from).getTime();
   if (Number.isNaN(ms)) return null;
   return Math.max(0, Math.round(ms / (1000 * 60 * 60 * 24)));
-}
-
-function estimateCycleDays(payoutDate) {
-  if (!payoutDate) return 0;
-  const d = new Date(payoutDate);
-  if (Number.isNaN(d.getTime())) return 0;
-  if (d.getDay() === 6) return 7;
-  const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-  if (d.getDate() === lastDay) return lastDay;
-  return 30;
 }

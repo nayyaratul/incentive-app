@@ -105,7 +105,7 @@ export default function EmployeeHome() {
                 onOpenLeaderboard={() => setLeaderboardOpen(true)}
               />
               {active.vertical === VERTICALS.ELECTRONICS && (
-                <ElectronicsView payout={myPayout} employee={employee} store={store} role={active.role} />
+                <ElectronicsView payout={myPayout} employee={employee} store={store} role={active.role} multiplierTiers={elec.multiplierTiers} />
               )}
               {active.vertical === VERTICALS.GROCERY && (
                 <GroceryView payout={myPayout} employee={employee} store={store} role={active.role} />

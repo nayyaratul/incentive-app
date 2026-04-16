@@ -25,7 +25,6 @@ export default function TargetTrendBreakdown({
   targetValue,
   achievedLabel = 'sales achieved',
   targetLabel = 'target',
-  extraCaption,
 }) {
   const variance = (Number(actualValue) || 0) - (Number(targetValue) || 0);
   const pctText = variancePctText(variance, targetValue);
@@ -47,7 +46,6 @@ export default function TargetTrendBreakdown({
         <strong>{formatSignedINR(variance)}</strong>
         <span>{varianceLabel(variance)}</span>
         {pctText && <em>{pctText}</em>}
-        {extraCaption && <>{extraCaption}</>}
       </HeroCard.Caption>
     </>
   );

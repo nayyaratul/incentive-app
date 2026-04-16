@@ -1,6 +1,6 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import { Calendar, Users, Clock } from 'lucide-react';
+import { Calendar, Users, Clock, Package } from 'lucide-react';
 import styles from './VerticalViews.module.scss';
 import { groceryCampaign } from '../../../data/configs';
 import { formatINR, formatDateRange } from '../../../utils/format';
@@ -44,6 +44,19 @@ export default function GroceryView({ payout, employee }) {
             actualValue={payout.actualSalesValue}
             targetValue={payout.targetSalesValue}
           />
+
+          {payout.piecesSoldTotal > 0 && (
+            <HeroCard.Caption>
+              <Package size={13} strokeWidth={2.2} />
+              <strong>{payout.piecesSoldTotal.toLocaleString('en-IN')}</strong> units sold
+              {payout.appliedRate > 0 && (
+                <>
+                  <span>·</span>
+                  <em>₹{payout.appliedRate}/pc</em>
+                </>
+              )}
+            </HeroCard.Caption>
+          )}
 
           <HeroCard.FooterBlock>
             <div>

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { Users, TrendingUp, AlertTriangle, Calendar, Check, X as XIcon, Target, Zap, Clock, Trophy, Medal } from 'lucide-react';
+import { Users, TrendingUp, AlertTriangle, Calendar, Check, X as XIcon, Target, Zap, Clock, Trophy, Medal, Package } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
@@ -24,6 +24,7 @@ import StreakNote from '../../components/Molecule/StreakNote/StreakNote';
 import MomentumPills from '../../components/Molecule/MomentumPills/MomentumPills';
 import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
 import TargetTrendBreakdown from '../../components/Molecule/TargetTrendBreakdown/TargetTrendBreakdown';
+import DepartmentMultipliers from '../../components/Molecule/DepartmentMultipliers/DepartmentMultipliers';
 import { formatINR, formatDateRange } from '../../utils/format';
 import {
   Accordion,
@@ -589,6 +590,19 @@ export default function StoreManagerHome() {
                               : null
                           }
                         />
+
+                        {summary.kind === 'GROCERY' && summary.piecesSoldTotal > 0 && (
+                          <HeroCard.Caption>
+                            <Package size={13} strokeWidth={2.2} />
+                            <strong>{summary.piecesSoldTotal.toLocaleString('en-IN')}</strong> units sold
+                            {summary.appliedRate > 0 && (
+                              <>
+                                <span>·</span>
+                                <em>₹{summary.appliedRate}/pc</em>
+                              </>
+                            )}
+                          </HeroCard.Caption>
+                        )}
                       </>
                     );
                   })()}
@@ -630,6 +644,12 @@ export default function StoreManagerHome() {
                   </HeroCard.FooterBlock>
                 </HeroCard>
               </section>
+
+              {summary.kind === 'ELECTRONICS' && (
+                <section className={`${styles.pad} rise rise-3`}>
+                  <DepartmentMultipliers departments={summary.departments} />
+                </section>
+              )}
 
               <section className={`${styles.streakRow} rise rise-3`}>
                 <StreakNote streak={cycleMeta.streak} />
@@ -713,41 +733,6 @@ export default function StoreManagerHome() {
                 </section>
               )}
 
-              {summary.kind === 'ELECTRONICS' && (
-                <section className={`${styles.pad} rise rise-4`}>
-                  <div className={styles.cardDark}>
-                    <div className={styles.cardHead}>
-                      <span className={styles.eyebrow}>Department multipliers</span>
-                    </div>
-                    <div className={styles.deptList}>
-                      {summary.departments.map((d) => {
-                        const mPct = Math.round(d.multiplier * 100);
-                        const isClose = d.nextTier && d.gapToNext != null && d.gapToNext > 0 && (d.nextTier.pct - d.achievementPct) <= 15;
-
-                        return (
-                          <div key={d.department} className={styles.deptRow}>
-                            <div className={styles.deptInfo}>
-                              <div className={styles.deptName}>{d.department}</div>
-                              <div className={styles.deptSub}>{formatINR(d.actualSales)} of {formatINR(d.target)}</div>
-                              {isClose && (
-                                <div className={styles.deptNudge}>
-                                  <Zap size={11} strokeWidth={2.4} />
-                                  {formatINR(d.gapToNext)} to unlock {d.nextTier.mult}%
-                                </div>
-                              )}
-                            </div>
-                            <div className={styles.deptAch}>{d.achievementPct}%</div>
-                            <div className={`${styles.deptMult} ${d.multiplier === 0 ? styles.multZero : ''}`}>
-                              {d.multiplier === 0 ? 'NO PAYOUT' : `${mPct}%`}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </section>
-              )}
-
               {/* What If Simulator */}
               {summary.kind === 'ELECTRONICS' && summary.departments.some((d) => d.payoutUplift > 0) && (
                 <section className={`${styles.pad} rise rise-5`}>
@@ -813,28 +798,6 @@ export default function StoreManagerHome() {
               {summary.kind === 'ELECTRONICS' && (
                 <section className={`${styles.pad} ${styles.compactAccordion} rise rise-5`}>
                   <Accordion variant="default" type="multiple">
-                    <AccordionItem value="dept-multipliers">
-                      <AccordionTrigger>Department multipliers</AccordionTrigger>
-                      <AccordionContent>
-                        <div className={styles.deptList}>
-                          {summary.departments.map((d) => {
-                            const mPct = Math.round(d.multiplier * 100);
-                            return (
-                              <div key={d.department} className={styles.deptRow}>
-                                <div>
-                                  <div className={styles.deptName}>{d.department}</div>
-                                  <div className={styles.deptSub}>{formatINR(d.actualSales)} of {formatINR(d.target)}</div>
-                                </div>
-                                <div className={styles.deptAch}>{d.achievementPct}%</div>
-                                <div className={`${styles.deptMult} ${d.multiplier === 0 ? styles.multZero : ''}`}>
-                                  {d.multiplier === 0 ? 'NO PAYOUT' : `${mPct}%`}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
                     <AccordionItem value="eligibility">
                       <AccordionTrigger>Store eligibility</AccordionTrigger>
                       <AccordionContent>

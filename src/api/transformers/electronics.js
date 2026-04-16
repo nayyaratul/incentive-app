@@ -68,8 +68,7 @@ function buildMyRank(storeEmployees, employeeId) {
   return {
     rank,
     deltaAbove,
-    /** Simulated rank change from yesterday — positive = improved */
-    deltaRank: rank > 0 ? Math.floor(Math.random() * 3) : 0,
+    deltaRank: 0,
     scope: 'store',
     top: ranked.slice(0, 5),
   };
@@ -92,12 +91,15 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
   // -- byDepartment --
   const byDepartment = departments.map((d) => {
     const aPct = Number(d.achievementPct) || 0;
+    const dMultPct = Number(d.multiplierPct ?? d.currentMultiplierPct ?? cs.currentMultiplierPct) || 0;
     return {
       department: d.department ?? '',
-      baseIncentive: 0,         // not available per-dept from API
+      target: Number(d.target) || 0,
+      actual: Number(d.actual) || 0,
+      baseIncentive: Number(d.baseIncentive) || 0,
       achievementPct: aPct,
-      multiplier: (Number(cs.currentMultiplierPct) || 0) / 100,
-      finalPayout: 0,           // not available per-dept from API
+      multiplier: dMultPct / 100,
+      finalPayout: Number(d.finalIncentive ?? d.finalPayout) || 0,
       note: aPct < 85 ? 'Below 85% \u2014 zero' : null,
     };
   });
@@ -137,14 +139,14 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
     apiMultiplierTiers,
     apiMessage,
     employeeDepartment: cs.employeeDepartment || null,
-    monthlyGoalTarget: Number(cs.departmentTarget) || 0,
+    monthlyGoalTarget: Number(cs.departmentTarget) || baseIncentive || 0,
     lastMonthPayout: Number(prevPeriod?.currentStanding?.finalIncentive) || 0,
     nextPayoutDate: nextPayoutDate(),
     overallMultiplier: (Number(cs.currentMultiplierPct) || 0) / 100,
     streak: buildStreakShape(salesRows),
     myRank: buildMyRank(storeEmployees, employeeId),
     milestones,
-    ineligibleReason: null,
+    ineligibleReason: detail?.employee?.ineligibleReason ?? cs.ineligibleReason ?? null,
   };
 }
 
