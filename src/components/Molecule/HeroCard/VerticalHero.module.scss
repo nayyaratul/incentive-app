@@ -1,4 +1,13 @@
-/* Milestone countdown nudge — sits below the progress bar */
+/* ============================================================================
+ * VerticalHero extras — styles that the per-vertical hero components add on
+ * top of the shared HeroCard shell.
+ *
+ * The HeroCard shell owns: container, eyebrow, amount, progress bar, figures,
+ * footer block. These extras live here because they are hero-specific but not
+ * part of the compound-atom API.
+ * ========================================================================== */
+
+/* ---------- Milestone countdown (Electronics SA) ------------------------- */
 
 .milestone {
   display: flex;
@@ -70,7 +79,7 @@
   letter-spacing: -0.02em;
 }
 
-/* Milestone dots — small progress indicators */
+/* ---------- Milestone dots ----------------------------------------------- */
 
 .milestoneDots {
   display: flex;
@@ -107,7 +116,7 @@
   margin-left: 2px;
 }
 
-/* ---------- Zero-state explainer — WHY is payout ₹0? -------------------- */
+/* ---------- Zero-state explainer (Electronics SA) ------------------------ */
 
 .zeroExplainer {
   display: flex;
@@ -159,7 +168,7 @@
   font-size: 11.5px;
   font-weight: 500;
   color: var(--color-text-tertiary);
-  padding-left: 19px; /* align with text after icon */
+  padding-left: 19px;
 
   strong {
     color: var(--color-text-warning);
@@ -167,7 +176,7 @@
   }
 }
 
-/* ---------- Potential row — shown when earning but multiplier < 100% ----- */
+/* ---------- Potential row (Electronics SA when multiplier < 100%) -------- */
 
 .potentialRow {
   display: flex;

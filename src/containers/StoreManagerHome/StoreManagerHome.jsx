@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { Users, TrendingUp, AlertTriangle, Calendar, Check, X as XIcon, Target, Zap, Clock, Trophy, Medal, Package } from 'lucide-react';
+import { TrendingUp, AlertTriangle, Check, X as XIcon, Target, Zap, Trophy, Medal } from 'lucide-react';
 import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
@@ -13,7 +13,6 @@ import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/H
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
 import StoreTransactions from '../screens/StoreTransactions';
-import HeroCard from '../../components/Molecule/HeroCard/HeroCard';
 import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
 import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
 import LeaderboardPodium from '../../components/Molecule/LeaderboardPodium/LeaderboardPodium';
@@ -23,9 +22,13 @@ import QuestCard from '../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../components/Molecule/StreakNote/StreakNote';
 import MomentumPills from '../../components/Molecule/MomentumPills/MomentumPills';
 import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
-import TargetTrendBreakdown from '../../components/Molecule/TargetTrendBreakdown/TargetTrendBreakdown';
 import DepartmentMultipliers from '../../components/Molecule/DepartmentMultipliers/DepartmentMultipliers';
-import { formatINR, formatDateRange } from '../../utils/format';
+import { formatINR } from '../../utils/format';
+import VerticalHero from '../../components/Molecule/HeroCard/VerticalHero';
+import { toSMHero as toElectronicsSMHero } from '../../components/Molecule/HeroCard/mappers/electronics';
+import { toSMHero as toGrocerySMHero } from '../../components/Molecule/HeroCard/mappers/grocery';
+import { toSMHero as toFnlSMHero } from '../../components/Molecule/HeroCard/mappers/fnl';
+import WidgetBoundary from '../../components/Atom/WidgetBoundary/WidgetBoundary';
 import {
   Accordion,
   AccordionItem,
@@ -397,6 +400,17 @@ export default function StoreManagerHome() {
     ? storeTeam.find((e) => e.employeeId === selectedRow.employeeId) || null
     : null;
 
+  // Map the store-level summary into unified hero props. Memoised so the hero
+  // only re-renders when the underlying data/period actually changes.
+  const heroProps = (() => {
+    if (!summary) return null;
+    const common = { role: active.role, selfPayout };
+    if (summary.kind === 'ELECTRONICS') return toElectronicsSMHero(summary, common);
+    if (summary.kind === 'GROCERY') return toGrocerySMHero(summary, common);
+    if (summary.kind === 'FNL') return toFnlSMHero(summary, fnlActive, common);
+    return null;
+  })();
+
   return (
     <div className={styles.shell}>
       <BottomNav active={tab} role={active.role} onNavigate={handleNavigate} />
@@ -510,154 +524,16 @@ export default function StoreManagerHome() {
               )}
 
               <section className={`${styles.pad} rise rise-2`}>
-                <HeroCard>
-                  <HeroCard.EyebrowRow>
-                    {summary.kind === 'GROCERY' ? (
-                      <HeroCard.Eyebrow withDot dotTone="live">Live campaign</HeroCard.Eyebrow>
-                    ) : (
-                      <HeroCard.Eyebrow withDot>
-                        {summary.kind === 'ELECTRONICS' && 'April 2026 · Month to date'}
-                        {summary.kind === 'FNL' && (() => {
-                          if (fnlActive?.isMonthView) return 'Month to date';
-                          const ws = fnlActive?.weekStart || summary.week.start;
-                          const we = fnlActive?.weekEnd;
-                          return we
-                            ? `${dayjs(ws).format('MMM D')} – ${dayjs(we).format('MMM D')}`
-                            : `Week of ${ws}`;
-                        })()}
-                      </HeroCard.Eyebrow>
-                    )}
-                    {(() => {
-                      const isFnl = summary.kind === 'FNL' && fnlActive;
-                      const achPct = isFnl
-                        ? (fnlActive.weeklySalesTarget > 0
-                            ? Math.round((fnlActive.actualWeeklyGrossSales / fnlActive.weeklySalesTarget) * 100)
-                            : 0)
-                        : summary.achievementPct;
-                      return achPct >= 100 ? <HeroCard.TrendPill>Target exceeded!</HeroCard.TrendPill> : null;
-                    })()}
-                  </HeroCard.EyebrowRow>
-
-                  {summary.kind === 'GROCERY' && (
-                    <>
-                      <HeroCard.Title>{summary.campaign.campaignName}</HeroCard.Title>
-                      <HeroCard.Meta>
-                        <Calendar size={11} strokeWidth={2.2} />
-                        <span>{formatDateRange(summary.campaign.campaignStart, summary.campaign.campaignEnd)}</span>
-                        <HeroCard.MetaDot />
-                        <span>{summary.campaign.geography}</span>
-                        <HeroCard.MetaDot />
-                        <span>{summary.campaign.channel}</span>
-                      </HeroCard.Meta>
-                    </>
-                  )}
-
-                  {(() => {
-                    const isFnl = summary.kind === 'FNL' && fnlActive;
-                    const achPct = isFnl
-                      ? (fnlActive.weeklySalesTarget > 0
-                          ? Math.round((fnlActive.actualWeeklyGrossSales / fnlActive.weeklySalesTarget) * 100)
-                          : 0)
-                      : summary.achievementPct;
-                    const tgt = isFnl ? fnlActive.weeklySalesTarget : summary.totalTarget;
-                    const act = isFnl ? fnlActive.actualWeeklyGrossSales : summary.totalActual;
-                    const gap = tgt > act ? tgt - act : 0;
-                    const periodLabel = isFnl
-                      ? (fnlActive.isMonthView ? 'monthly' : 'weekly')
-                      : (summary.kind === 'GROCERY' ? 'campaign' : 'period');
-
-                    return (
-                      <>
-                        <HeroCard.Amount suffix="%" tone={achPct >= 100 ? 'success' : undefined}>
-                          {achPct}
-                        </HeroCard.Amount>
-                        <HeroCard.AmountCap>
-                          {summary.kind === 'GROCERY'
-                            ? `of ${formatINR(tgt)} campaign target`
-                            : `of store ${periodLabel} target`}
-                        </HeroCard.AmountCap>
-
-                        <TargetTrendBreakdown
-                          actualValue={act}
-                          targetValue={tgt}
-                          extraCaption={
-                            achPct < 100 && gap > 0
-                              ? <>
-                                  <span>·</span>
-                                  <Target size={13} strokeWidth={2.2} />
-                                  <strong>{formatINR(gap)}</strong> more to hit target
-                                </>
-                              : null
-                          }
-                        />
-
-                        {summary.kind === 'GROCERY' && (
-                          <HeroCard.Caption>
-                            <Package size={13} strokeWidth={2.2} />
-                            <strong>{(summary.piecesSoldTotal || 0).toLocaleString('en-IN')}</strong> pcs sold
-                            {summary.appliedRate > 0 ? (
-                              <>
-                                <span>×</span>
-                                <strong>₹{summary.appliedRate}/pc</strong>
-                                <span>=</span>
-                                <strong>{formatINR(summary.totalPayout)}</strong> store pool
-                              </>
-                            ) : (
-                              <span>· below 100% — no payout yet</span>
-                            )}
-                          </HeroCard.Caption>
-                        )}
-                      </>
-                    );
-                  })()}
-
-
-                  <HeroCard.FooterBlock>
-                    <div>
-                      <HeroCard.FooterLabel>
-                        {summary.kind === 'GROCERY'
-                          ? 'Your payout so far'
-                          : summary.kind === 'FNL' && fnlActive
-                            ? (fnlActive.isMonthView ? 'Total month payout' : 'Total week payout')
-                            : 'Total store payout'}
-                      </HeroCard.FooterLabel>
-                      <HeroCard.FooterValue>
-                        {summary.kind === 'GROCERY'
-                          ? formatINR(selfPayout)
-                          : summary.kind === 'FNL' && fnlActive
-                            ? formatINR(fnlActive.myPayout || 0)
-                            : formatINR(summary.totalPayout)}
-                      </HeroCard.FooterValue>
-                    </div>
-                    <HeroCard.FooterMetaGroup>
-                      {summary.kind === 'GROCERY' && summary.totalPayout > 0 && (
-                        <HeroCard.FooterMeta>
-                          <Package size={12} strokeWidth={2.2} />
-                          <span>Store pool {formatINR(summary.totalPayout)} ÷ {summary.employees.length} staff</span>
-                        </HeroCard.FooterMeta>
-                      )}
-                      <HeroCard.FooterMeta>
-                        <Users size={12} strokeWidth={2.2} />
-                        <span>
-                          {summary.kind === 'GROCERY'
-                            ? `Split equally across ${summary.employees.length} staff`
-                            : `${summary.employees.length} staff`}
-                        </span>
-                      </HeroCard.FooterMeta>
-                      {typeof summary.daysLeft === 'number' && (
-                        <HeroCard.FooterMeta>
-                          <Clock size={12} strokeWidth={2.2} />
-                          <span>{summary.daysLeft} days left</span>
-                        </HeroCard.FooterMeta>
-                      )}
-                    </HeroCard.FooterMetaGroup>
-                  </HeroCard.FooterBlock>
-                </HeroCard>
+                <WidgetBoundary name="sm-hero">
+                  <VerticalHero vertical={summary.kind} heroProps={heroProps} />
+                </WidgetBoundary>
               </section>
 
               {summary.kind === 'ELECTRONICS' && (
                 <section className={`${styles.pad} rise rise-3`}>
-                  <DepartmentMultipliers departments={summary.departments} />
+                  <WidgetBoundary name="sm-dept-multipliers">
+                    <DepartmentMultipliers departments={summary.departments} />
+                  </WidgetBoundary>
                 </section>
               )}
 

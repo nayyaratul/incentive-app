@@ -1,39 +1,48 @@
+import { safeNum, safeArray, heroWarn } from '@/components/Molecule/HeroCard/safe';
+
 /**
  * Transforms the flat { level, rows[] } response from
  *   GET /api/incentives?storeCode=…&vertical=…
  * into the nested { departments[], employees[], summary{} } shape that
  * StoreManagerHome's summary builder expects.
  *
+ * Null-safe: when the API returns null/undefined, an empty-but-shaped object
+ * is returned so the summary builder still produces a valid summary.
+ *
  * Fields the API doesn't provide (target, actual, piecesSold, daysPresent)
- * are omitted — the summary builder already has fallback logic for those via
+ * are omitted — the summary builder has fallback logic for those via
  * rulesResult / storeTeam data.
  */
 export function transformStoreIncentive(response, vertical) {
-  // Already in the expected shape (mock mode) or null — pass through
-  if (!response || response.departments || response.employees) return response;
+  if (!response) {
+    heroWarn('storeIncentive:null-response', { vertical });
+    return { departments: [], employees: [], summary: {}, weekPayouts: [], monthAggregate: null };
+  }
 
-  const rows = response.rows || [];
-  if (rows.length === 0) return { departments: [], employees: [], summary: {} };
+  // Already in the expected shape (mock mode) — pass through
+  if (response.departments || response.employees) return response;
+
+  const rows = safeArray(response.rows);
+  if (rows.length === 0) {
+    return { departments: [], employees: [], summary: {}, weekPayouts: [], monthAggregate: null };
+  }
 
   // ---- employees ----
   const employees = rows.map((r) => ({
     employeeId: r.employeeId,
     employeeName: r.employeeName,
     role: r.role,
-    baseIncentive: Number(r.baseIncentive) || 0,
-    finalIncentive: Number(r.finalIncentive) || 0,
-    achievementPct: Number(r.achievementPct) || 0,
-    // Pass through optional fields when the backend includes them
-    ...(r.daysPresent != null && { daysPresent: Number(r.daysPresent) }),
+    baseIncentive: safeNum(r.baseIncentive, 0),
+    finalIncentive: safeNum(r.finalIncentive, 0),
+    achievementPct: safeNum(r.achievementPct, 0),
+    ...(r.daysPresent != null && { daysPresent: safeNum(r.daysPresent, 0) }),
     ...(r.department && { department: r.department }),
-    ...(r.piecesSold != null && { piecesSold: Number(r.piecesSold) }),
+    ...(r.piecesSold != null && { piecesSold: safeNum(r.piecesSold, 0) }),
   }));
 
   const totalIncentive = employees.reduce((s, e) => s + e.finalIncentive, 0);
 
   // ---- departments ----
-  // Group by department when the backend supplies per-row department fields,
-  // otherwise create a single aggregate entry.
   const hasDepts = employees.some((e) => e.department);
   let departments;
 
@@ -62,11 +71,11 @@ export function transformStoreIncentive(response, vertical) {
   }
 
   // ---- summary ----
-  const totalPiecesSold = employees.reduce((s, e) => s + (e.piecesSold || 0), 0) || undefined;
+  const totalPiecesSold = employees.reduce((s, e) => s + safeNum(e.piecesSold, 0), 0) || undefined;
   const summary = { totalIncentive, ...(totalPiecesSold && { totalPiecesSold }) };
 
   // ---- FNL week payouts (pass-through from backend) ----
-  const weekPayouts = response.weekPayouts || [];
+  const weekPayouts = safeArray(response.weekPayouts);
   let monthAggregate = null;
 
   if (weekPayouts.length > 0) {
@@ -74,13 +83,13 @@ export function transformStoreIncentive(response, vertical) {
       isMonthView: true,
       weekStart: weekPayouts[0].weekStart,
       weekEnd: weekPayouts[weekPayouts.length - 1].weekEnd,
-      weeklySalesTarget: weekPayouts.reduce((s, w) => s + (Number(w.weeklySalesTarget) || 0), 0),
-      actualWeeklyGrossSales: weekPayouts.reduce((s, w) => s + (Number(w.actualWeeklyGrossSales) || 0), 0),
+      weeklySalesTarget: weekPayouts.reduce((s, w) => s + safeNum(w.weeklySalesTarget, 0), 0),
+      actualWeeklyGrossSales: weekPayouts.reduce((s, w) => s + safeNum(w.actualWeeklyGrossSales, 0), 0),
       storeQualifies: weekPayouts.some((w) => w.storeQualifies),
       weeksQualified: weekPayouts.filter((w) => w.storeQualifies).length,
       weeksTotal: weekPayouts.length,
-      totalStoreIncentive: weekPayouts.reduce((s, w) => s + (Number(w.totalStoreIncentive) || 0), 0),
-      myPayout: weekPayouts.reduce((s, w) => s + (Number(w.myPayout) || 0), 0),
+      totalStoreIncentive: weekPayouts.reduce((s, w) => s + safeNum(w.totalStoreIncentive, 0), 0),
+      myPayout: weekPayouts.reduce((s, w) => s + safeNum(w.myPayout, 0), 0),
     };
   }
 

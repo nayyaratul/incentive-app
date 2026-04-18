@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import {
   Accordion,
@@ -7,7 +7,8 @@ import {
   AccordionContent,
 } from '@/nexus/atoms';
 import styles from './VerticalViews.module.scss';
-import EarningsHero from '../../../components/Molecule/EarningsHero/EarningsHero';
+import VerticalHero from '../../../components/Molecule/HeroCard/VerticalHero';
+import { toSAHero as toElectronicsSAHero } from '../../../components/Molecule/HeroCard/mappers/electronics';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
 import MomentumPills from '../../../components/Molecule/MomentumPills/MomentumPills';
 import DepartmentMultipliers from '../../../components/Molecule/DepartmentMultipliers/DepartmentMultipliers';
@@ -15,17 +16,15 @@ import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import LevelUpToast from '../../../components/Organism/LevelUpToast/LevelUpToast';
 import WeeklyChallenge from '../../../components/Widgets/WeeklyChallenge/WeeklyChallenge';
+import { safeArray, safeNum } from '../../../components/Molecule/HeroCard/safe';
+import WidgetBoundary from '../../../components/Atom/WidgetBoundary/WidgetBoundary';
 
 export default function ElectronicsView({ payout, employee, store, role, multiplierTiers }) {
-  const deptSum = payout.byDepartment.reduce((s, d) => s + d.finalPayout, 0);
-  const finalTotal = payout.monthToDateEarned || deptSum;
+  const byDepartment = safeArray(payout?.byDepartment);
+  const deptSum = byDepartment.reduce((s, d) => s + safeNum(d.finalPayout, 0), 0);
+  const finalTotal = safeNum(payout?.monthToDateEarned, 0) || deptSum;
 
-  const goalBlock = {
-    target: payout.monthlyGoalTarget,
-    pct: payout.monthlyGoalTarget ? finalTotal / payout.monthlyGoalTarget : 0,
-  };
-
-  const departments = payout.byDepartment || [];
+  const heroProps = useMemo(() => toElectronicsSAHero(payout), [payout]);
 
   const complianceItems = [
     { label: 'Role',                        value: `${role} · ${employee?.employeeId}` },
@@ -50,45 +49,48 @@ export default function ElectronicsView({ payout, employee, store, role, multipl
       )}
 
       <section className={`${styles.heroPad} rise rise-2`}>
-        <EarningsHero
-          thisMonth={{ amount: finalTotal }}
-          today={{ amount: payout.todayEarned }}
-          goal={goalBlock}
-          milestones={payout.milestones}
-          potential={payout.baseIncentive}
-          achievementPct={payout.achievementPct}
-          multiplierPct={payout.currentMultiplierPct}
-          apiTiers={payout.apiMultiplierTiers}
-        />
+        <WidgetBoundary name="electronics-hero">
+          <VerticalHero vertical="ELECTRONICS" heroProps={heroProps} />
+        </WidgetBoundary>
       </section>
 
       <section className={`${styles.pad} rise rise-3`}>
-        <DepartmentMultipliers departments={departments} tiers={multiplierTiers} />
+        <WidgetBoundary name="dept-multipliers">
+          <DepartmentMultipliers departments={byDepartment} tiers={multiplierTiers} />
+        </WidgetBoundary>
       </section>
 
       <section className={`${styles.streakRow} rise rise-3`}>
-        <StreakNote streak={payout.streak} />
+        <WidgetBoundary name="streak"><StreakNote streak={payout.streak} /></WidgetBoundary>
       </section>
 
       <section className={`${styles.streakRow} rise rise-4`}>
-        <MomentumPills
-          thisPeriodAmount={finalTotal}
-          lastPeriodAmount={payout.lastMonthPayout}
-          lastPeriodLabel="last month"
-          nextPayoutDate={payout.nextPayoutDate}
-        />
+        <WidgetBoundary name="momentum">
+          <MomentumPills
+            thisPeriodAmount={finalTotal}
+            lastPeriodAmount={payout.lastMonthPayout}
+            lastPeriodLabel="last month"
+            nextPayoutDate={payout.nextPayoutDate}
+          />
+        </WidgetBoundary>
       </section>
 
       <section className={`rise rise-4`}>
-        <WeeklyChallenge vertical="ELECTRONICS" payout={payout} />
+        <WidgetBoundary name="weekly-challenge">
+          <WeeklyChallenge vertical="ELECTRONICS" payout={payout} />
+        </WidgetBoundary>
       </section>
 
       <section className={`rise rise-5`}>
-        <QuestCard employeeId={employee.employeeId} vertical="ELECTRONICS" payout={payout} />
+        <WidgetBoundary name="quests">
+          <QuestCard employeeId={employee.employeeId} vertical="ELECTRONICS" payout={payout} />
+        </WidgetBoundary>
       </section>
 
       <section className={`rise rise-5`}>
-        <BadgesStrip employeeId={employee.employeeId} vertical="ELECTRONICS" />
+        <WidgetBoundary name="badges">
+          <BadgesStrip employeeId={employee.employeeId} vertical="ELECTRONICS" />
+        </WidgetBoundary>
       </section>
 
       {/* Eligibility & exclusions accordion — closed by default. */}

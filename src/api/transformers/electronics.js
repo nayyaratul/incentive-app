@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { computeStreak } from '@/services/GamificationEngine/computeStreak';
+import { safeNum, safeArray, heroWarn } from '@/components/Molecule/HeroCard/safe';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -13,16 +14,14 @@ function todayISODate() {
 
 /** 7th of the month *after* today. */
 function nextPayoutDate() {
+  // TODO(api): backend should return authoritative payout date per vertical
   return dayjs().add(1, 'month').startOf('month').date(7).format('YYYY-MM-DD');
 }
 
-/**
- * Build the streak shape the UI expects from the raw computeStreak output.
- */
 function buildStreakShape(salesRows) {
-  const mapped = (salesRows ?? []).map((r) => ({
-    earned: Number(r.incentiveAmount) || 0,
-    soldAt: r.transactionDate,
+  const mapped = safeArray(salesRows).map((r) => ({
+    earned: safeNum(r?.incentiveAmount, 0),
+    soldAt: r?.transactionDate,
   }));
   const result = computeStreak(mapped, new Date());
   return {
@@ -39,12 +38,13 @@ function buildStreakShape(salesRows) {
  * Rank the current employee within the store leaderboard.
  */
 function buildMyRank(storeEmployees, employeeId) {
-  if (!storeEmployees || storeEmployees.length === 0) {
+  const roster = safeArray(storeEmployees);
+  if (roster.length === 0) {
     return { rank: 0, deltaAbove: 0, scope: 'store', top: [] };
   }
 
-  const sorted = [...storeEmployees].sort(
-    (a, b) => (b.finalIncentive ?? 0) - (a.finalIncentive ?? 0),
+  const sorted = [...roster].sort(
+    (a, b) => safeNum(b.finalIncentive, 0) - safeNum(a.finalIncentive, 0),
   );
 
   let selfIdx = -1;
@@ -54,23 +54,49 @@ function buildMyRank(storeEmployees, employeeId) {
     return {
       rank: i + 1,
       name: e.employeeName ?? e.employeeId,
-      earned: e.finalIncentive ?? 0,
+      earned: safeNum(e.finalIncentive, 0),
       isSelf,
     };
   });
 
   const rank = selfIdx >= 0 ? selfIdx + 1 : 0;
-  const deltaAbove =
-    selfIdx > 0
-      ? (sorted[selfIdx - 1].finalIncentive ?? 0) - (sorted[selfIdx].finalIncentive ?? 0)
-      : 0;
+  const deltaAbove = selfIdx > 0
+    ? safeNum(sorted[selfIdx - 1].finalIncentive, 0) - safeNum(sorted[selfIdx].finalIncentive, 0)
+    : 0;
 
+  return { rank, deltaAbove, deltaRank: 0, scope: 'store', top: ranked.slice(0, 5) };
+}
+
+// ---------------------------------------------------------------------------
+// Default shape — returned when input is missing / malformed. Hero card
+// renders safely from this (all numbers are finite, all arrays exist).
+// ---------------------------------------------------------------------------
+
+function defaultShape() {
   return {
-    rank,
-    deltaAbove,
-    deltaRank: 0,
-    scope: 'store',
-    top: ranked.slice(0, 5),
+    employeeId: '',
+    byDepartment: [],
+    todayEarned: 0,
+    monthToDateEarned: 0,
+    baseIncentive: 0,
+    achievementPct: 0,
+    currentMultiplierPct: 0,
+    apiMultiplierTiers: [],
+    apiMessage: '',
+    employeeDepartment: null,
+    monthlyGoalTarget: 0,
+    lastMonthPayout: 0,
+    nextPayoutDate: nextPayoutDate(),
+    overallMultiplier: 0,
+    streak: { current: 0, longest: 0, lastActiveDay: null, kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
+    myRank: { rank: 0, deltaAbove: 0, scope: 'store', top: [] },
+    milestones: MILESTONE_THRESHOLDS.map((t, i) => ({
+      id: `ms-${i}`,
+      threshold: t,
+      label: `\u20B9${t.toLocaleString('en-IN')}`,
+      crossed: false,
+    })),
+    ineligibleReason: null,
   };
 }
 
@@ -81,25 +107,37 @@ function buildMyRank(storeEmployees, employeeId) {
 /**
  * Maps the API employeeDetail (ELECTRONICS) response to the payout shape
  * that ElectronicsView expects.
+ *
+ * Null-safe: returns a fully-formed default shape when `detail` is missing,
+ * so the UI can render without crashing. Warnings are logged once per key.
  */
 export function transformElectronicsPayout(detail, storeEmployees, salesRows, prevPeriod) {
-  const cs = detail?.currentStanding ?? {};
-  const departments = detail?.departments ?? [];
-  const recentSales = detail?.recentSales ?? [];
-  const employeeId = detail?.employee?.employeeId ?? '';
+  if (!detail) {
+    heroWarn('electronics:transform:null-detail', { hasDetail: false });
+    return defaultShape();
+  }
+
+  const cs = detail.currentStanding ?? {};
+  const departments = safeArray(detail.departments);
+  const recentSales = safeArray(detail.recentSales);
+  const employeeId = detail.employee?.employeeId ?? '';
+
+  if (!cs || Object.keys(cs).length === 0) {
+    heroWarn('electronics:transform:empty-currentStanding', { employeeId });
+  }
 
   // -- byDepartment --
   const byDepartment = departments.map((d) => {
-    const aPct = Number(d.achievementPct) || 0;
-    const dMultPct = Number(d.multiplierPct ?? d.currentMultiplierPct ?? cs.currentMultiplierPct) || 0;
+    const aPct = safeNum(d.achievementPct, 0);
+    const dMultPct = safeNum(d.multiplierPct ?? d.currentMultiplierPct ?? cs.currentMultiplierPct, 0);
     return {
       department: d.department ?? '',
-      target: Number(d.target) || 0,
-      actual: Number(d.actual) || 0,
-      baseIncentive: Number(d.baseIncentive) || 0,
+      target: safeNum(d.target, 0),
+      actual: safeNum(d.actual, 0),
+      baseIncentive: safeNum(d.baseIncentive, 0),
       achievementPct: aPct,
       multiplier: dMultPct / 100,
-      finalPayout: Number(d.finalIncentive ?? d.finalPayout) || 0,
+      finalPayout: safeNum(d.finalIncentive ?? d.finalPayout, 0),
       note: aPct < 85 ? 'Below 85% \u2014 zero' : null,
     };
   });
@@ -108,13 +146,13 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
   const today = todayISODate();
   const todayEarned = recentSales
     .filter((s) => s && (s.date ?? '').startsWith(today))
-    .reduce((sum, s) => sum + (Number(s.incentiveEarned) || 0), 0);
+    .reduce((sum, s) => sum + safeNum(s.incentiveEarned, 0), 0);
 
   // -- month-to-date --
-  const monthToDateEarned = Number(cs.finalIncentive) || 0;
-  const baseIncentive = Number(cs.baseIncentive) || 0;
-  const achievementPct = Number(cs.achievementPct) || 0;
-  const currentMultiplierPct = Number(cs.currentMultiplierPct) || 0;
+  const monthToDateEarned = safeNum(cs.finalIncentive, 0);
+  const baseIncentive = safeNum(cs.baseIncentive, 0);
+  const achievementPct = safeNum(cs.achievementPct, 0);
+  const currentMultiplierPct = safeNum(cs.currentMultiplierPct, 0);
 
   // -- milestones --
   const milestones = MILESTONE_THRESHOLDS.map((t, i) => ({
@@ -124,9 +162,8 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
     crossed: monthToDateEarned >= t,
   }));
 
-  // -- nudge / multiplier tiers from API --
-  const apiMultiplierTiers = detail?.multiplierTiers ?? [];
-  const apiMessage = detail?.message ?? '';
+  const apiMultiplierTiers = safeArray(detail.multiplierTiers);
+  const apiMessage = detail.message ?? '';
 
   return {
     employeeId,
@@ -139,14 +176,14 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
     apiMultiplierTiers,
     apiMessage,
     employeeDepartment: cs.employeeDepartment || null,
-    monthlyGoalTarget: Number(cs.departmentTarget) || baseIncentive || 0,
-    lastMonthPayout: Number(prevPeriod?.currentStanding?.finalIncentive) || 0,
+    monthlyGoalTarget: safeNum(cs.departmentTarget, baseIncentive),
+    lastMonthPayout: safeNum(prevPeriod?.currentStanding?.finalIncentive, 0),
     nextPayoutDate: nextPayoutDate(),
-    overallMultiplier: (Number(cs.currentMultiplierPct) || 0) / 100,
+    overallMultiplier: currentMultiplierPct / 100,
     streak: buildStreakShape(salesRows),
     myRank: buildMyRank(storeEmployees, employeeId),
     milestones,
-    ineligibleReason: detail?.employee?.ineligibleReason ?? cs.ineligibleReason ?? null,
+    ineligibleReason: detail.employee?.ineligibleReason ?? cs.ineligibleReason ?? null,
   };
 }
 
@@ -154,16 +191,11 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
 // Multiplier tiers
 // ---------------------------------------------------------------------------
 
-/**
- * Maps API multiplier tiers to frontend shape.
- */
 export function transformMultiplierTiers(apiTiers) {
-  if (!apiTiers || !Array.isArray(apiTiers)) return [];
-
-  return apiTiers.map((t) => ({
-    gateFromPct: Number(t.achievementFrom ?? t.from),
-    gateToPct: Number(t.achievementTo ?? t.to),
-    multiplier: Number(t.multiplierPct) / 100,
+  return safeArray(apiTiers).map((t) => ({
+    gateFromPct: safeNum(t.achievementFrom ?? t.from, 0),
+    gateToPct: safeNum(t.achievementTo ?? t.to, 0),
+    multiplier: safeNum(t.multiplierPct, 0) / 100,
     label: '',
   }));
 }

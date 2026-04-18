@@ -1,11 +1,9 @@
-import React from 'react';
-import dayjs from 'dayjs';
-import { Calendar, Users, Clock, Package } from 'lucide-react';
+import React, { useMemo } from 'react';
 import styles from './VerticalViews.module.scss';
 import { groceryCampaign } from '../../../data/configs';
-import { formatINR, formatDateRange } from '../../../utils/format';
-import HeroCard from '../../../components/Molecule/HeroCard/HeroCard';
-import TargetTrendBreakdown from '../../../components/Molecule/TargetTrendBreakdown/TargetTrendBreakdown';
+import { formatINR } from '../../../utils/format';
+import VerticalHero from '../../../components/Molecule/HeroCard/VerticalHero';
+import { toSAHero as toGrocerySAHero } from '../../../components/Molecule/HeroCard/mappers/grocery';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
@@ -16,103 +14,57 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/nexus/atoms';
+import WidgetBoundary from '../../../components/Atom/WidgetBoundary/WidgetBoundary';
+import { safeArray } from '../../../components/Molecule/HeroCard/safe';
 
 export default function GroceryView({ payout, employee }) {
-  const achievementPct = payout.achievementPct;
+  const heroProps = useMemo(() => toGrocerySAHero(payout, groceryCampaign), [payout]);
 
   return (
     <>
       {/* Campaign hero */}
       <section className={`${styles.pad} rise rise-2`}>
-        <HeroCard>
-          <HeroCard.EyebrowRow>
-            <HeroCard.Eyebrow withDot dotTone="live">Live campaign</HeroCard.Eyebrow>
-          </HeroCard.EyebrowRow>
-
-          <HeroCard.Title>{groceryCampaign.campaignName}</HeroCard.Title>
-          <HeroCard.Meta>
-            <Calendar size={11} strokeWidth={2.2} />
-            <span>{formatDateRange(groceryCampaign.campaignStart, groceryCampaign.campaignEnd)}</span>
-            <HeroCard.MetaDot />
-            <span>{groceryCampaign.geography}</span>
-          </HeroCard.Meta>
-
-          <HeroCard.Amount suffix="%">{achievementPct}</HeroCard.Amount>
-          <HeroCard.AmountCap>of {formatINR(payout.targetSalesValue)} campaign target</HeroCard.AmountCap>
-
-          <TargetTrendBreakdown
-            actualValue={payout.actualSalesValue}
-            targetValue={payout.targetSalesValue}
-          />
-
-          <HeroCard.Caption>
-            <Package size={13} strokeWidth={2.2} />
-            <strong>{(payout.piecesSoldTotal || 0).toLocaleString('en-IN')}</strong> pcs sold
-            {payout.appliedRate > 0 ? (
-              <>
-                <span>×</span>
-                <strong>₹{payout.appliedRate}/pc</strong>
-                <span>=</span>
-                <strong>{formatINR(payout.totalStoreIncentive)}</strong> store pool
-              </>
-            ) : (
-              <span>· below 100% — no payout yet</span>
-            )}
-          </HeroCard.Caption>
-
-          <HeroCard.FooterBlock>
-            <div>
-              <HeroCard.FooterLabel>Your payout</HeroCard.FooterLabel>
-              <HeroCard.FooterValue>{formatINR(payout.individualPayout)}</HeroCard.FooterValue>
-            </div>
-            <HeroCard.FooterMetaGroup>
-              {payout.totalStoreIncentive > 0 && (
-                <HeroCard.FooterMeta>
-                  <Package size={12} strokeWidth={2.2} />
-                  <span>Store pool {formatINR(payout.totalStoreIncentive)} ÷ {payout.staffCount} staff</span>
-                </HeroCard.FooterMeta>
-              )}
-              <HeroCard.FooterMeta>
-                <Users size={12} strokeWidth={2.2} />
-                <span>Split equally across {payout.staffCount} staff</span>
-              </HeroCard.FooterMeta>
-              <HeroCard.FooterMeta>
-                <Clock size={12} strokeWidth={2.2} />
-                <span>{dayjs(groceryCampaign.campaignEnd).diff(dayjs(), 'day')} days left</span>
-              </HeroCard.FooterMeta>
-            </HeroCard.FooterMetaGroup>
-          </HeroCard.FooterBlock>
-        </HeroCard>
+        <WidgetBoundary name="grocery-hero">
+          <VerticalHero vertical="GROCERY" heroProps={heroProps} />
+        </WidgetBoundary>
       </section>
 
       {/* Streak note — always positive. Falls back to sample when API data is empty */}
       <section className={`${styles.streakRow} rise rise-2`}>
-        <StreakNote
-          streak={
-            payout.streak && payout.streak.current > 0
-              ? payout.streak
-              : { current: 5, longest: 9, label: 'working days', caption: 'present + selling' }
-          }
-        />
+        <WidgetBoundary name="streak">
+          <StreakNote
+            streak={
+              payout.streak && payout.streak.current > 0
+                ? payout.streak
+                : { current: 5, longest: 9, label: 'working days', caption: 'present + selling' }
+            }
+          />
+        </WidgetBoundary>
       </section>
 
       <section className={`${styles.streakRow} rise rise-3`}>
-        <MomentumPills
-          thisPeriodAmount={payout.individualPayout}
-          lastPeriodAmount={payout.lastCampaignPayoutPerEmp}
-          lastPeriodLabel="last campaign"
-          nextPayoutDate={payout.nextPayoutDate}
-        />
+        <WidgetBoundary name="momentum">
+          <MomentumPills
+            thisPeriodAmount={payout.individualPayout}
+            lastPeriodAmount={payout.lastCampaignPayoutPerEmp}
+            lastPeriodLabel="last campaign"
+            nextPayoutDate={payout.nextPayoutDate}
+          />
+        </WidgetBoundary>
       </section>
 
       {/* Active quest — component owns its own horizontal padding (matches BadgesStrip) */}
       <section className={`rise rise-3`}>
-        <QuestCard employeeId={employee.employeeId} vertical="GROCERY" payout={payout} />
+        <WidgetBoundary name="quests">
+          <QuestCard employeeId={employee.employeeId} vertical="GROCERY" payout={payout} />
+        </WidgetBoundary>
       </section>
 
       {/* Badges */}
       <section className={`rise rise-4`}>
-        <BadgesStrip employeeId={employee.employeeId} vertical="GROCERY" />
+        <WidgetBoundary name="badges">
+          <BadgesStrip employeeId={employee.employeeId} vertical="GROCERY" />
+        </WidgetBoundary>
       </section>
 
       {/* Quiet disclosure — payout slabs + eligible articles */}
@@ -122,7 +74,7 @@ export default function GroceryView({ payout, employee }) {
             <AccordionTrigger>Payout slabs</AccordionTrigger>
             <AccordionContent>
               <div className={styles.slabGrid}>
-                {payout.projections.map((p) => (
+                {safeArray(payout?.projections).map((p) => (
                   <div key={p.scenario} className={styles.slabRow}>
                     <div className={styles.slabLeft}>
                       <span className={styles.slabTitle}>{p.scenario}</span>

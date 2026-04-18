@@ -1,18 +1,20 @@
 import dayjs from 'dayjs';
 import { computeStreak } from '@/services/GamificationEngine/computeStreak';
+import { safeNum, safeArray, heroWarn } from '@/components/Molecule/HeroCard/safe';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 function nextPayoutDate() {
+  // TODO(api): backend should return authoritative payout date
   return dayjs().add(1, 'month').startOf('month').date(7).format('YYYY-MM-DD');
 }
 
 function buildStreakShape(salesRows) {
-  const mapped = (salesRows ?? []).map((r) => ({
-    earned: Number(r.incentiveAmount) || 0,
-    soldAt: r.transactionDate,
+  const mapped = safeArray(salesRows).map((r) => ({
+    earned: safeNum(r?.incentiveAmount, 0),
+    soldAt: r?.transactionDate,
   }));
   const result = computeStreak(mapped, new Date());
   return {
@@ -28,8 +30,7 @@ function buildStreakShape(salesRows) {
 // ---------------------------------------------------------------------------
 // Leaderboard synthesis (mock) — peers and ranks are fabricated from the
 // current user's individual payout since the API doesn't yet return peers.
-// MOCK-TODO: Remove this synthesiser and consume real peer data from the
-//            API when the grocery peers endpoint ships.
+// TODO(api): remove this synthesiser when the grocery peers endpoint ships.
 // ---------------------------------------------------------------------------
 
 const GROCERY_PEER_NAMES = [
@@ -41,11 +42,8 @@ const GROCERY_PEER_NAMES = [
 ];
 
 function buildGroceryMyRank(individualPayout, selfName) {
-  const myEarned = Math.max(0, Math.round(Number(individualPayout) || 0));
-
-  // Synthesise 4 peer earnings around the user's payout (two above, two below),
-  // then sort desc and assign ranks. If individualPayout is 0, put the user last.
-  const peerDeltas = [0.32, 0.12, -0.15, -0.28]; // fractional adjustments
+  const myEarned = Math.max(0, Math.round(safeNum(individualPayout, 0)));
+  const peerDeltas = [0.32, 0.12, -0.15, -0.28];
   const fallbackBase = myEarned > 0 ? myEarned : 800;
   const peers = GROCERY_PEER_NAMES.slice(0, 4).map((name, i) => ({
     name,
@@ -54,15 +52,13 @@ function buildGroceryMyRank(individualPayout, selfName) {
   }));
 
   const selfEntry = { name: selfName || 'You', earned: myEarned, isSelf: true };
-
   const sorted = [...peers, selfEntry]
     .sort((a, b) => b.earned - a.earned)
     .map((e, i) => ({ ...e, rank: i + 1 }));
 
   const self = sorted.find((e) => e.isSelf);
   const selfIdx = sorted.findIndex((e) => e.isSelf);
-  const deltaAbove =
-    selfIdx > 0 ? sorted[selfIdx - 1].earned - self.earned : 0;
+  const deltaAbove = selfIdx > 0 ? sorted[selfIdx - 1].earned - self.earned : 0;
 
   return {
     rank: self.rank,
@@ -74,35 +70,60 @@ function buildGroceryMyRank(individualPayout, selfName) {
   };
 }
 
+function defaultShape() {
+  return {
+    campaignId: null,
+    storeCode: null,
+    targetSalesValue: 0,
+    actualSalesValue: 0,
+    achievementPct: 0,
+    piecesSoldTotal: 0,
+    myPiecesSold: 0,
+    appliedRate: 0,
+    totalStoreIncentive: 0,
+    staffCount: 1,
+    individualPayout: 0,
+    lastCampaignPayoutPerEmp: 0,
+    nextPayoutDate: nextPayoutDate(),
+    streak: { current: 0, longest: 0, lastActiveDay: null, kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
+    myRank: { rank: 0, deltaAbove: 0, scope: 'store', top: [] },
+    projections: [],
+    campaignLeaderboard: [],
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Main transformer
 // ---------------------------------------------------------------------------
 
-/**
- * Maps the API employeeDetail (GROCERY) response to the payout shape
- * that GroceryView expects.
- */
 export function transformGroceryPayout(detail, campaignConfig, salesRows) {
-  const cs = detail?.currentStanding ?? {};
-  const slabs = detail?.payoutSlabs ?? [];
-  const employee = detail?.employee ?? {};
+  if (!detail) {
+    heroWarn('grocery:transform:null-detail', { hasDetail: false });
+    return defaultShape();
+  }
 
-  const storeTarget = Number(cs.campaignTarget) || Number(cs.storeTarget) || 0;
-  const storeActual = Number(cs.campaignActual) || Number(cs.storeActual) || 0;
-  const achievementPct = Number(cs.achievementPct) || 0;
-  const staffCount = Number(cs.employeeCount) || 1;
+  const cs = detail.currentStanding ?? {};
+  const slabs = safeArray(detail.payoutSlabs);
+  const employee = detail.employee ?? {};
+
+  const storeTarget = safeNum(cs.campaignTarget, safeNum(cs.storeTarget, 0));
+  const storeActual = safeNum(cs.campaignActual, safeNum(cs.storeActual, 0));
+  const achievementPct = safeNum(cs.achievementPct, 0);
+  const staffCount = Math.max(1, safeNum(cs.employeeCount, 1));
+
+  const piecesSold = safeNum(cs.totalPiecesSold, 0)
+    || safeNum(cs.piecesSold, 0)
+    || safeNum(cs.totalPieces, 0);
 
   // -- projections: what-if for slabs at or above 100% achievement --
   const projections = slabs
-    .filter((s) => Number(s.from) >= 100)
+    .filter((s) => safeNum(s.from, 0) >= 100)
     .map((s) => {
-      const scenarioPct = Number(s.from);
+      const scenarioPct = safeNum(s.from, 0);
       const atSalesValue = storeTarget > 0
         ? Math.round((scenarioPct / 100) * storeTarget)
         : 0;
-      const rate = Number(s.rate) || 0;
-      const piecesSold = Number(cs.totalPiecesSold) || Number(cs.piecesSold) || Number(cs.totalPieces) || 0;
-      // estimate at that slab
+      const rate = safeNum(s.rate, 0);
       const estTotalIncentive = rate * piecesSold;
       const estPerEmployee = staffCount > 0
         ? Math.round(estTotalIncentive / staffCount)
@@ -123,20 +144,20 @@ export function transformGroceryPayout(detail, campaignConfig, salesRows) {
     targetSalesValue: storeTarget,
     actualSalesValue: storeActual,
     achievementPct,
-    piecesSoldTotal: Number(cs.totalPiecesSold) || Number(cs.piecesSold) || Number(cs.totalPieces) || 0,
-    myPiecesSold: Number(cs.myPiecesSold) || Number(cs.piecesSold) || 0,
-    appliedRate: Number(cs.currentRate) || Number(cs.appliedRate) || Number(cs.rate) || 0,
-    totalStoreIncentive: Number(cs.totalStorePayout) || 0,
+    piecesSoldTotal: piecesSold,
+    myPiecesSold: safeNum(cs.myPiecesSold, safeNum(cs.piecesSold, 0)),
+    appliedRate: safeNum(cs.currentRate, safeNum(cs.appliedRate, safeNum(cs.rate, 0))),
+    totalStoreIncentive: safeNum(cs.totalStorePayout, 0),
     staffCount,
-    individualPayout: Number(cs.yourPayout) || 0,
-    lastCampaignPayoutPerEmp: 0, // not available yet
+    individualPayout: safeNum(cs.yourPayout, 0),
+    lastCampaignPayoutPerEmp: 0, // TODO(api): not available yet
     nextPayoutDate: nextPayoutDate(),
     streak: buildStreakShape(salesRows),
     myRank: buildGroceryMyRank(
-      Number(cs.yourPayout) || 0,
+      safeNum(cs.yourPayout, 0),
       employee.employeeName || employee.employeeId || 'You',
     ),
     projections,
-    campaignLeaderboard: [], // not available yet
+    campaignLeaderboard: [], // TODO(api): not available yet
   };
 }

@@ -1,11 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { Calendar, Check, X as XIcon } from 'lucide-react';
+import { Check, X as XIcon } from 'lucide-react';
 import { ToggleGroup, ToggleGroupItem } from '@/nexus/atoms';
 import styles from './VerticalViews.module.scss';
 import { formatINR } from '../../../utils/format';
 import { fnlWeeklyRules } from '../../../data/configs';
-import HeroCard from '../../../components/Molecule/HeroCard/HeroCard';
+import VerticalHero from '../../../components/Molecule/HeroCard/VerticalHero';
+import { toSAHero as toFnlSAHero, resolveActivePeriod } from '../../../components/Molecule/HeroCard/mappers/fnl';
+import { safeArray, safeNum } from '../../../components/Molecule/HeroCard/safe';
+import WidgetBoundary from '../../../components/Atom/WidgetBoundary/WidgetBoundary';
 import BadgesStrip from '../../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../../components/Widgets/QuestCard/QuestCard';
 import StreakNote from '../../../components/Molecule/StreakNote/StreakNote';
@@ -17,9 +20,7 @@ import {
   AccordionContent,
 } from '@/nexus/atoms';
 
-/**
- * Determine which week index is "this week" based on today's date.
- */
+/** Determine which week index is "this week" based on today's date. */
 function findCurrentWeekIndex(weekPayouts) {
   if (!weekPayouts || weekPayouts.length === 0) return -1;
   const today = dayjs();
@@ -28,42 +29,31 @@ function findCurrentWeekIndex(weekPayouts) {
   );
 }
 
-/**
- * Format a week date range for display.
- */
-function weekLabel(w) {
-  if (!w?.weekStart) return '';
-  const s = dayjs(w.weekStart);
-  const e = dayjs(w.weekEnd);
-  return `${s.format('MMM D')} – ${e.format('MMM D')}`;
-}
-
 export default function FnlView({ payout, employee, store, role }) {
-  const weekPayouts = payout.weekPayouts ?? [];
-  const monthAgg = payout.monthAggregate ?? null;
+  const weekPayouts = safeArray(payout?.weekPayouts);
+  const monthAgg = payout?.monthAggregate ?? null;
 
-  // Default to this week, fall back to latest week, fall back to month
   const currentIdx = findCurrentWeekIndex(weekPayouts);
-  const defaultKey = currentIdx >= 0 ? `w${currentIdx}` : weekPayouts.length > 0 ? `w${weekPayouts.length - 1}` : 'month';
+  const defaultKey = currentIdx >= 0
+    ? `w${currentIdx}`
+    : weekPayouts.length > 0 ? `w${weekPayouts.length - 1}` : 'month';
   const [selectedPeriod, setSelectedPeriod] = useState(defaultKey);
 
-  // Derive active data from selection
-  const active = useMemo(() => {
-    if (selectedPeriod === 'month' && monthAgg) return monthAgg;
-    const idx = parseInt(selectedPeriod.replace('w', ''), 10);
-    if (weekPayouts[idx]) return weekPayouts[idx];
-    // Fall back to the original payout (latest week)
-    return payout;
-  }, [selectedPeriod, weekPayouts, monthAgg, payout]);
+  const active = useMemo(
+    () => resolveActivePeriod(payout, selectedPeriod),
+    [selectedPeriod, payout],
+  );
 
-  const isMonth = selectedPeriod === 'month';
-  const qualifies = active.storeQualifies;
-  const myPayout = active.myPayout ?? 0;
-  const myDays = active.myAttendanceDays ?? 0;
-  const eligible5Day = active.myAttendanceEligible ?? (myDays >= fnlWeeklyRules.minWorkingDays);
-  const achPct = active.weeklySalesTarget > 0
-    ? Math.round((active.actualWeeklyGrossSales / active.weeklySalesTarget) * 100)
-    : 0;
+  const heroProps = useMemo(
+    () => toFnlSAHero(payout, active, { role }),
+    [payout, active, role],
+  );
+
+  const isMonth = Boolean(active.isMonthView);
+  const qualifies = Boolean(active.storeQualifies);
+  const myPayout = safeNum(active.myPayout, 0);
+  const myDays = safeNum(active.myAttendanceDays, 0);
+  const eligible5Day = Boolean(active.myAttendanceEligible) || myDays >= fnlWeeklyRules.minWorkingDays;
 
   return (
     <>
@@ -89,7 +79,7 @@ export default function FnlView({ payout, employee, store, role }) {
             <div className={styles.periodCaption}>
               {isMonth
                 ? `${dayjs(monthAgg?.weekStart).format('MMM D')} – ${dayjs(monthAgg?.weekEnd).format('MMM D')}`
-                : weekLabel(active)}
+                : (active.weekStart ? `${dayjs(active.weekStart).format('MMM D')} – ${dayjs(active.weekEnd).format('MMM D')}` : '')}
             </div>
           </div>
         </section>
@@ -97,67 +87,33 @@ export default function FnlView({ payout, employee, store, role }) {
 
       {/* ── Hero card ── */}
       <section className={`${styles.pad} rise rise-2`}>
-        <HeroCard>
-          <HeroCard.EyebrowRow>
-            <HeroCard.Eyebrow withDot>
-              <Calendar size={11} strokeWidth={2.2} />
-              {isMonth ? 'Month to date' : `Week of ${active.weekStart}`}
-            </HeroCard.Eyebrow>
-            {!isMonth && (
-              <HeroCard.QualifyPill qualifies={qualifies}>
-                {qualifies ? 'Target met' : 'Below target'}
-              </HeroCard.QualifyPill>
-            )}
-            {isMonth && (
-              <HeroCard.QualifyPill qualifies={active.weeksQualified > 0}>
-                {active.weeksQualified}/{active.weeksTotal} weeks qualified
-              </HeroCard.QualifyPill>
-            )}
-          </HeroCard.EyebrowRow>
-
-          <HeroCard.Amount prefix="₹">
-            {(isMonth || (qualifies && eligible5Day))
-              ? new Intl.NumberFormat('en-IN', { maximumFractionDigits: 0 }).format(myPayout)
-              : '0'}
-          </HeroCard.Amount>
-          <HeroCard.AmountCap>
-            {isMonth ? 'Your payout this month' : 'Your payout this week'}
-          </HeroCard.AmountCap>
-
-          <HeroCard.Figures dense noBottomDivider>
-            <HeroCard.Figure value={`${achPct}%`} cap="achievement" />
-            <HeroCard.FigureDivider />
-            <HeroCard.Figure
-              value={formatINR(active.weeklySalesTarget)}
-              cap={isMonth ? 'total target' : 'store target'}
-            />
-            <HeroCard.FigureDivider />
-            <HeroCard.Figure
-              value={formatINR(active.actualWeeklyGrossSales)}
-              cap="actual sales"
-            />
-          </HeroCard.Figures>
-        </HeroCard>
+        <WidgetBoundary name="fnl-hero">
+          <VerticalHero vertical="FNL" heroProps={heroProps} />
+        </WidgetBoundary>
       </section>
 
       {/* Streak note */}
       <section className={`${styles.streakRow} rise rise-2`}>
-        <StreakNote
-          streak={
-            payout.streak && payout.streak.current > 0
-              ? payout.streak
-              : { current: 3, longest: 5, label: 'weeks qualified', caption: 'store beat target' }
-          }
-        />
+        <WidgetBoundary name="streak">
+          <StreakNote
+            streak={
+              payout.streak && payout.streak.current > 0
+                ? payout.streak
+                : { current: 3, longest: 5, label: 'weeks qualified', caption: 'store beat target' }
+            }
+          />
+        </WidgetBoundary>
       </section>
 
       <section className={`${styles.streakRow} rise rise-3`}>
-        <MomentumPills
-          thisPeriodAmount={myPayout}
-          lastPeriodAmount={isMonth ? payout.lastWeekSaPayout : (active.lastWeekSaPayout ?? payout.lastWeekSaPayout)}
-          lastPeriodLabel={isMonth ? 'last month' : 'last week'}
-          nextPayoutDate={payout.nextPayoutDate}
-        />
+        <WidgetBoundary name="momentum">
+          <MomentumPills
+            thisPeriodAmount={myPayout}
+            lastPeriodAmount={isMonth ? payout.lastWeekSaPayout : (active.lastWeekSaPayout ?? payout.lastWeekSaPayout)}
+            lastPeriodLabel={isMonth ? 'last month' : 'last week'}
+            nextPayoutDate={payout.nextPayoutDate}
+          />
+        </WidgetBoundary>
       </section>
 
       {/* 5-day eligibility card — hide in month view */}
@@ -191,7 +147,7 @@ export default function FnlView({ payout, employee, store, role }) {
             <div className={styles.noticeTitle}>Store didn&rsquo;t beat target</div>
             <div className={styles.noticeBody}>
               No payout for any role — the store needed to beat the weekly target.
-              Gap: {formatINR(active.weeklySalesTarget - active.actualWeeklyGrossSales)}.
+              Gap: {formatINR(Math.max(0, safeNum(active.weeklySalesTarget) - safeNum(active.actualWeeklyGrossSales)))}.
             </div>
           </div>
         </section>
@@ -199,12 +155,16 @@ export default function FnlView({ payout, employee, store, role }) {
 
       {/* Active quest — pass the active period's data */}
       <section className={`rise rise-4`}>
-        <QuestCard employeeId={employee.employeeId} vertical="FNL" payout={active} />
+        <WidgetBoundary name="quests">
+          <QuestCard employeeId={employee.employeeId} vertical="FNL" payout={active} />
+        </WidgetBoundary>
       </section>
 
       {/* Badges */}
       <section className={`rise rise-4`}>
-        <BadgesStrip employeeId={employee.employeeId} vertical="FNL" />
+        <WidgetBoundary name="badges">
+          <BadgesStrip employeeId={employee.employeeId} vertical="FNL" />
+        </WidgetBoundary>
       </section>
 
       {/* Quiet disclosure — past weeks + eligibility. Split matrix only for SM/DM. */}
