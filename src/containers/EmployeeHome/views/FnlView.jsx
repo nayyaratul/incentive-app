@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { Check, X as XIcon } from 'lucide-react';
+import { Check, X as XIcon, AlertTriangle } from 'lucide-react';
+import { fetchAttendanceStatus } from '../../../api/incentives';
 import { ToggleGroup, ToggleGroupItem } from '@/nexus/atoms';
 import styles from './VerticalViews.module.scss';
 import { formatINR } from '../../../utils/format';
@@ -49,6 +50,16 @@ export default function FnlView({ payout, employee, store, role }) {
     [payout, active, role],
   );
 
+  const [attendanceStatus, setAttendanceStatus] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetchAttendanceStatus()
+      .then((payload) => { if (!cancelled) setAttendanceStatus(payload); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+  const attendanceMissing = attendanceStatus && !attendanceStatus.isConnected;
+
   const isMonth = Boolean(active.isMonthView);
   const qualifies = Boolean(active.storeQualifies);
   const myPayout = safeNum(active.myPayout, 0);
@@ -57,6 +68,20 @@ export default function FnlView({ payout, employee, store, role }) {
 
   return (
     <>
+      {attendanceMissing && (
+        <section className={`${styles.pad} rise rise-1`}>
+          <div className={styles.attendanceBanner} role="status">
+            <AlertTriangle size={16} strokeWidth={2.4} />
+            <div>
+              <div className={styles.attendanceTitle}>Attendance data not connected</div>
+              <div className={styles.attendanceSub}>
+                Weekly payouts stay pending until your store manager uploads attendance.
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── Period selector ── */}
       {weekPayouts.length > 0 && (
         <section className={`${styles.pad} rise rise-1`}>

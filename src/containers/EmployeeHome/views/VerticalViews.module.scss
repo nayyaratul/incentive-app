@@ -509,6 +509,37 @@ details[open] .tierSummary::before { content: '–  '; }
 }
 
 /* ---------- F&L ---------- */
+/* Attendance-not-connected banner */
+.attendanceBanner {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(217, 119, 6, 0.08);
+  border: 1px solid rgba(217, 119, 6, 0.32);
+  color: #92400e;
+
+  > :first-child {
+    margin-top: 2px;
+    color: #b45309;
+  }
+}
+.attendanceTitle {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.attendanceSub {
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.4;
+  margin-top: 2px;
+  color: #78350f;
+}
+
 /* 5-day eligibility */
 .eligibleOk, .eligibleNo {
   display: grid;

@@ -32,3 +32,13 @@ export async function fetchAllStoreIncentives(vertical) {
 export async function fetchStoreLeaderboard(params = {}) {
   return api.get('/leaderboard', { params });
 }
+
+/**
+ * Attendance connection status for F&L. Returns:
+ *   { isConnected, currentMonthCovered, lastUploadWithinDays, latestUpload }
+ * The app shows a banner when !isConnected so F&L users know why the weekly
+ * pool is blocked.
+ */
+export async function fetchAttendanceStatus() {
+  return api.get('/attendance/status');
+}
