@@ -116,6 +116,8 @@ export function toSAHero(payout, active, opts = {}) {
     },
     temporal: {
       payoutDate: payout.nextPayoutDate,
+      daysLeftInPeriod: safeNum(payout.workingDays?.daysLeft, 0),
+      workingDays: payout.workingDays,
     },
     comparison: !isMonth && safeNum(active.lastWeekSaPayout ?? payout.lastWeekSaPayout, 0) > 0
       ? {

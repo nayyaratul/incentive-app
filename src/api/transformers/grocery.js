@@ -6,8 +6,7 @@ import { safeNum, safeArray, heroWarn } from '@/components/Molecule/HeroCard/saf
 // Helpers
 // ---------------------------------------------------------------------------
 
-function nextPayoutDate() {
-  // TODO(api): backend should return authoritative payout date
+function fallbackPayoutDate() {
   return dayjs().add(1, 'month').startOf('month').date(7).format('YYYY-MM-DD');
 }
 
@@ -27,52 +26,10 @@ function buildStreakShape(salesRows) {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Leaderboard synthesis (mock) — peers and ranks are fabricated from the
-// current user's individual payout since the API doesn't yet return peers.
-// TODO(api): remove this synthesiser when the grocery peers endpoint ships.
-// ---------------------------------------------------------------------------
-
-const GROCERY_PEER_NAMES = [
-  'Meena Joshi',
-  'Sneha Iyer',
-  'Rahul Kulkarni',
-  'Anjali Nair',
-  'Vivek Menon',
-];
-
-function buildGroceryMyRank(individualPayout, selfName) {
-  const myEarned = Math.max(0, Math.round(safeNum(individualPayout, 0)));
-  const peerDeltas = [0.32, 0.12, -0.15, -0.28];
-  const fallbackBase = myEarned > 0 ? myEarned : 800;
-  const peers = GROCERY_PEER_NAMES.slice(0, 4).map((name, i) => ({
-    name,
-    earned: Math.max(0, Math.round(fallbackBase * (1 + peerDeltas[i]))),
-    isSelf: false,
-  }));
-
-  const selfEntry = { name: selfName || 'You', earned: myEarned, isSelf: true };
-  const sorted = [...peers, selfEntry]
-    .sort((a, b) => b.earned - a.earned)
-    .map((e, i) => ({ ...e, rank: i + 1 }));
-
-  const self = sorted.find((e) => e.isSelf);
-  const selfIdx = sorted.findIndex((e) => e.isSelf);
-  const deltaAbove = selfIdx > 0 ? sorted[selfIdx - 1].earned - self.earned : 0;
-
-  return {
-    rank: self.rank,
-    deltaAbove,
-    scope: 'store',
-    scopeNote: 'by money earned',
-    unitLabel: 'earned',
-    top: sorted,
-  };
-}
-
 function defaultShape() {
   return {
     campaignId: null,
+    campaign: null,
     storeCode: null,
     targetSalesValue: 0,
     actualSalesValue: 0,
@@ -84,11 +41,10 @@ function defaultShape() {
     staffCount: 1,
     individualPayout: 0,
     lastCampaignPayoutPerEmp: 0,
-    nextPayoutDate: nextPayoutDate(),
+    nextPayoutDate: fallbackPayoutDate(),
+    workingDays: { current: 0, total: 0, daysLeft: 0 },
     streak: { current: 0, longest: 0, lastActiveDay: null, kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
-    myRank: { rank: 0, deltaAbove: 0, scope: 'store', top: [] },
     projections: [],
-    campaignLeaderboard: [],
   };
 }
 
@@ -96,7 +52,7 @@ function defaultShape() {
 // Main transformer
 // ---------------------------------------------------------------------------
 
-export function transformGroceryPayout(detail, campaignConfig, salesRows) {
+export function transformGroceryPayout(detail, _fallbackCampaign, salesRows) {
   if (!detail) {
     heroWarn('grocery:transform:null-detail', { hasDetail: false });
     return defaultShape();
@@ -105,6 +61,7 @@ export function transformGroceryPayout(detail, campaignConfig, salesRows) {
   const cs = detail.currentStanding ?? {};
   const slabs = safeArray(detail.payoutSlabs);
   const employee = detail.employee ?? {};
+  const apiCampaign = detail.campaign ?? null;
 
   const storeTarget = safeNum(cs.campaignTarget, safeNum(cs.storeTarget, 0));
   const storeActual = safeNum(cs.campaignActual, safeNum(cs.storeActual, 0));
@@ -138,8 +95,19 @@ export function transformGroceryPayout(detail, campaignConfig, salesRows) {
       };
     });
 
+  const wd = detail.workingDays ?? {};
+
   return {
-    campaignId: cs.campaignName ?? campaignConfig?.campaignId ?? null,
+    campaignId: apiCampaign?.campaignId ?? cs.campaignName ?? null,
+    campaign: apiCampaign
+      ? {
+          campaignId: apiCampaign.campaignId,
+          campaignName: apiCampaign.campaignName,
+          campaignStart: apiCampaign.startDate,
+          campaignEnd: apiCampaign.endDate,
+          channel: apiCampaign.channel,
+        }
+      : null,
     storeCode: employee.storeCode ?? null,
     targetSalesValue: storeTarget,
     actualSalesValue: storeActual,
@@ -150,14 +118,14 @@ export function transformGroceryPayout(detail, campaignConfig, salesRows) {
     totalStoreIncentive: safeNum(cs.totalStorePayout, 0),
     staffCount,
     individualPayout: safeNum(cs.yourPayout, 0),
-    lastCampaignPayoutPerEmp: 0, // TODO(api): not available yet
-    nextPayoutDate: nextPayoutDate(),
+    lastCampaignPayoutPerEmp: safeNum(cs.lastCampaignPayoutPerEmp, 0),
+    nextPayoutDate: detail.payoutDate || fallbackPayoutDate(),
+    workingDays: {
+      current: safeNum(wd.current, 0),
+      total: safeNum(wd.total, 0),
+      daysLeft: safeNum(wd.daysLeft, 0),
+    },
     streak: buildStreakShape(salesRows),
-    myRank: buildGroceryMyRank(
-      safeNum(cs.yourPayout, 0),
-      employee.employeeName || employee.employeeId || 'You',
-    ),
     projections,
-    campaignLeaderboard: [], // TODO(api): not available yet
   };
 }

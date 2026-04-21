@@ -24,6 +24,11 @@ export async function fetchAllStoreIncentives(vertical) {
   return api.get('/incentives/stores', { params: { vertical } });
 }
 
-export async function fetchLeaderboard(storeCode, scope = 'store') {
-  return api.get('/leaderboard', { params: { storeCode, scope } });
+/**
+ * Store-level leaderboard. Backend returns stores ranked by achievement%.
+ * Callers pass `{ vertical, city, month?, monthsBack? }` — when omitted the
+ * backend falls back to the authenticated viewer's store vertical/city.
+ */
+export async function fetchStoreLeaderboard(params = {}) {
+  return api.get('/leaderboard', { params });
 }

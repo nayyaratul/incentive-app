@@ -12,9 +12,8 @@ function todayISODate() {
   return dayjs().format('YYYY-MM-DD');
 }
 
-/** 7th of the month *after* today. */
-function nextPayoutDate() {
-  // TODO(api): backend should return authoritative payout date per vertical
+/** Client-side fallback — backend is authoritative via `payoutDate`. */
+function fallbackPayoutDate() {
   return dayjs().add(1, 'month').startOf('month').date(7).format('YYYY-MM-DD');
 }
 
@@ -34,39 +33,6 @@ function buildStreakShape(salesRows) {
   };
 }
 
-/**
- * Rank the current employee within the store leaderboard.
- */
-function buildMyRank(storeEmployees, employeeId) {
-  const roster = safeArray(storeEmployees);
-  if (roster.length === 0) {
-    return { rank: 0, deltaAbove: 0, scope: 'store', top: [] };
-  }
-
-  const sorted = [...roster].sort(
-    (a, b) => safeNum(b.finalIncentive, 0) - safeNum(a.finalIncentive, 0),
-  );
-
-  let selfIdx = -1;
-  const ranked = sorted.map((e, i) => {
-    const isSelf = String(e.employeeId) === String(employeeId);
-    if (isSelf) selfIdx = i;
-    return {
-      rank: i + 1,
-      name: e.employeeName ?? e.employeeId,
-      earned: safeNum(e.finalIncentive, 0),
-      isSelf,
-    };
-  });
-
-  const rank = selfIdx >= 0 ? selfIdx + 1 : 0;
-  const deltaAbove = selfIdx > 0
-    ? safeNum(sorted[selfIdx - 1].finalIncentive, 0) - safeNum(sorted[selfIdx].finalIncentive, 0)
-    : 0;
-
-  return { rank, deltaAbove, deltaRank: 0, scope: 'store', top: ranked.slice(0, 5) };
-}
-
 // ---------------------------------------------------------------------------
 // Default shape — returned when input is missing / malformed. Hero card
 // renders safely from this (all numbers are finite, all arrays exist).
@@ -79,6 +45,7 @@ function defaultShape() {
     todayEarned: 0,
     monthToDateEarned: 0,
     baseIncentive: 0,
+    maxPotentialIncentive: 0,
     achievementPct: 0,
     currentMultiplierPct: 0,
     apiMultiplierTiers: [],
@@ -86,10 +53,11 @@ function defaultShape() {
     employeeDepartment: null,
     monthlyGoalTarget: 0,
     lastMonthPayout: 0,
-    nextPayoutDate: nextPayoutDate(),
+    nextPayoutDate: fallbackPayoutDate(),
+    workingDays: { current: 0, total: 0, daysLeft: 0 },
+    runRate: { perDay: 0, projected: 0, projectedPct: 0 },
     overallMultiplier: 0,
     streak: { current: 0, longest: 0, lastActiveDay: null, kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
-    myRank: { rank: 0, deltaAbove: 0, scope: 'store', top: [] },
     milestones: MILESTONE_THRESHOLDS.map((t, i) => ({
       id: `ms-${i}`,
       threshold: t,
@@ -111,7 +79,7 @@ function defaultShape() {
  * Null-safe: returns a fully-formed default shape when `detail` is missing,
  * so the UI can render without crashing. Warnings are logged once per key.
  */
-export function transformElectronicsPayout(detail, storeEmployees, salesRows, prevPeriod) {
+export function transformElectronicsPayout(detail, _storeEmployees, salesRows, prevPeriod) {
   if (!detail) {
     heroWarn('electronics:transform:null-detail', { hasDetail: false });
     return defaultShape();
@@ -151,6 +119,7 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
   // -- month-to-date --
   const monthToDateEarned = safeNum(cs.finalIncentive, 0);
   const baseIncentive = safeNum(cs.baseIncentive, 0);
+  const maxPotentialIncentive = safeNum(cs.maxPotentialIncentive, baseIncentive);
   const achievementPct = safeNum(cs.achievementPct, 0);
   const currentMultiplierPct = safeNum(cs.currentMultiplierPct, 0);
 
@@ -165,12 +134,16 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
   const apiMultiplierTiers = safeArray(detail.multiplierTiers);
   const apiMessage = detail.message ?? '';
 
+  const wd = detail.workingDays ?? {};
+  const rr = detail.runRate ?? {};
+
   return {
     employeeId,
     byDepartment,
     todayEarned,
     monthToDateEarned,
     baseIncentive,
+    maxPotentialIncentive,
     achievementPct,
     currentMultiplierPct,
     apiMultiplierTiers,
@@ -178,10 +151,19 @@ export function transformElectronicsPayout(detail, storeEmployees, salesRows, pr
     employeeDepartment: cs.employeeDepartment || null,
     monthlyGoalTarget: safeNum(cs.departmentTarget, baseIncentive),
     lastMonthPayout: safeNum(prevPeriod?.currentStanding?.finalIncentive, 0),
-    nextPayoutDate: nextPayoutDate(),
+    nextPayoutDate: detail.payoutDate || fallbackPayoutDate(),
+    workingDays: {
+      current: safeNum(wd.current, 0),
+      total: safeNum(wd.total, 0),
+      daysLeft: safeNum(wd.daysLeft, 0),
+    },
+    runRate: {
+      perDay: safeNum(rr.perDay, 0),
+      projected: safeNum(rr.projected, 0),
+      projectedPct: safeNum(rr.projectedPct, 0),
+    },
     overallMultiplier: currentMultiplierPct / 100,
     streak: buildStreakShape(salesRows),
-    myRank: buildMyRank(storeEmployees, employeeId),
     milestones,
     ineligibleReason: detail.employee?.ineligibleReason ?? cs.ineligibleReason ?? null,
   };

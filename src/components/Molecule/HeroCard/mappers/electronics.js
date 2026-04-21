@@ -102,8 +102,9 @@ export function toSAHero(payout, opts = {}) {
       : undefined,
     temporal: {
       payoutDate: payout.nextPayoutDate,
-      // TODO(api): daysLeftInPeriod — backend should expose working-days-left in period
-      // TODO(api): runRate object for SA (projectedTotal / perDay)
+      daysLeftInPeriod: safeNum(payout.workingDays?.daysLeft, 0),
+      workingDays: payout.workingDays,
+      runRate: payout.runRate,
     },
     comparison: safeNum(payout.lastMonthPayout, 0) > 0
       ? {

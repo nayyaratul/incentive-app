@@ -5,13 +5,13 @@ import styles from './StoreManagerHome.module.scss';
 import { usePersona } from '../../context/PersonaContext';
 import { VERTICALS } from '../../data/masters';
 import useAsync from '../../hooks/useAsync';
-import { fetchStoreIncentive, fetchLeaderboard } from '../../api/incentives';
+import { fetchStoreIncentive, fetchStoreLeaderboard } from '../../api/incentives';
 import { transformStoreIncentive } from '../../api/transformers/storeIncentive';
 import { fetchEmployees } from '../../api/employees';
 import { fetchRules } from '../../api/rules';
 import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
-import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
+import { buildStoreLeaderboard, mapStoreLeaderboardResponse } from '../../data/storeLeaderboard';
 import StoreTransactions from '../screens/StoreTransactions';
 import EmployeeDetailDrawer from '../../components/Organism/EmployeeDetailDrawer/EmployeeDetailDrawer';
 import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
@@ -108,11 +108,11 @@ export default function StoreManagerHome() {
 
   const leaderboardResult = useAsync(
     () => {
-      if (!store?.storeCode) return Promise.resolve(null);
+      if (!active?.vertical || !store?.city) return Promise.resolve(null);
       if (useMock) return Promise.resolve(null);
-      return fetchLeaderboard(store.storeCode, 'store');
+      return fetchStoreLeaderboard({ vertical: active.vertical, city: store.city });
     },
-    [store?.storeCode],
+    [active?.vertical, store?.city],
   );
 
   const storeTeam = useMemo(() => employeesResult.data || [], [employeesResult.data]);
@@ -360,16 +360,15 @@ export default function StoreManagerHome() {
 
   if (!summary) return null;
 
-  // Store-level leaderboard: use API data when available, otherwise mock builder
-  const storeRank = leaderboardResult.data
+  // Store-level leaderboard: prefer API response, fall back to local mock.
+  const apiStoreLeaderboard = leaderboardResult.data
+    ? mapStoreLeaderboardResponse(leaderboardResult.data, { vertical: active?.vertical })
+    : null;
+  const storeRank = apiStoreLeaderboard
     || (active?.vertical && store?.storeCode
         ? buildStoreLeaderboard(active.vertical, store.storeCode)
         : null);
-
-  // Store-level leaderboard (stores vs stores) — used by the board tab
-  const storeLeaderboard = active?.vertical
-    ? buildStoreLeaderboard(active.vertical, store?.storeCode)
-    : null;
+  const storeLeaderboard = storeRank;
   const selfRow = summary.employees.find((e) => e.employeeId === employee?.employeeId) || null;
   const selfPayout = selfRow?.earned || selfRow?.total || 0;
   const myDaysPresent = Number(selfRow?.daysPresent);

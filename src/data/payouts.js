@@ -43,19 +43,6 @@ export const electronicsPayoutsRD3675 = [
       label: 'working days',
       caption: 'present + selling',
     },
-    // Rank within store (among SA peers)
-    myRank: {
-      rank: 3,
-      deltaAbove: 40,
-      scope: 'store',
-      top: [
-        { rank: 1, name: 'Vikram Patil',  earned: 5480, isSelf: false },
-        { rank: 2, name: 'Priya Desai',   earned: 3800, isSelf: false },
-        { rank: 3, name: 'Rohit Sharma',  earned: 3760, isSelf: true  },
-        { rank: 4, name: 'Kiran Pawar',   earned: 2210, isSelf: false },
-        { rank: 5, name: 'Anita Reddy',   earned: 0,    isSelf: false, note: 'On notice' },
-      ],
-    },
     milestones: [
       { id: 'MS-1000', threshold: 1000, label: '₹1,000 this month', crossed: true  },
       { id: 'MS-3000', threshold: 3000, label: '₹3,000 this month', crossed: true  },
@@ -197,20 +184,6 @@ export const groceryPayoutT28V = {
   // Grocery payout: end of month
   nextPayoutDate: '2026-04-30',
   streak: { current: 6, longest: 11, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
-  myRank: {
-    rank: 2,
-    deltaAbove: 14,
-    scope: 'store',
-    scopeNote: 'by eligible pieces sold',
-    top: [
-      { rank: 1, name: 'Ravi Krishnan', earned: 45, isSelf: false },
-      { rank: 2, name: 'Meena Nair',    earned: 38, isSelf: true  },
-      { rank: 3, name: 'Soumya George', earned: 31, isSelf: false },
-      { rank: 4, name: 'Ajit Pillai',   earned: 27, isSelf: false },
-      { rank: 5, name: 'Thomas Jacob',  earned: 19, isSelf: false },
-    ],
-    unitLabel: 'pieces',
-  },
   projections: [
     { scenario: 'Hit 100%', atSalesValue: 167000, rate: 2, estTotalIncentive: 616,  estPerEmployee: 88 },
     { scenario: 'Hit 120%', atSalesValue: 200400, rate: 3, estTotalIncentive: 1110, estPerEmployee: 159 },
@@ -248,20 +221,6 @@ export const fnlPayoutTRN0241 = {
   // F&L weekly payout: Sunday–Saturday cycle, paid end of week (Saturday)
   nextPayoutDate: '2026-04-18',
   streak: { current: 9, longest: 15, lastActiveDay: '2026-04-13', kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
-  myRank: {
-    rank: 4,
-    deltaAbove: 6,
-    scope: 'store',
-    scopeNote: 'by units this week',
-    top: [
-      { rank: 1, name: 'Rahul Shetty',   earned: 48, isSelf: false },
-      { rank: 2, name: 'Ishaan Joshi',   earned: 42, isSelf: false },
-      { rank: 3, name: 'Dhruv Joshi',    earned: 39, isSelf: false },
-      { rank: 4, name: 'Sara Khan',      earned: 33, isSelf: true  },
-      { rank: 5, name: 'Pooja Kulkarni', earned: 29, isSelf: false },
-    ],
-    unitLabel: 'units',
-  },
   // Per-employee breakdown for the SM view
   employees: [
     { employeeId: 'FNL-3101', role: 'SM', daysPresent: 7, eligible: true, payout: 3024 },

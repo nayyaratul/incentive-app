@@ -13,9 +13,10 @@ const GROCERY_MARKERS = [
 /**
  * Map Grocery SA payout → hero props.
  * @param {object} payout - output of transformGroceryPayout
- * @param {object} campaign - campaign config (name, start, end, geography...) from data/configs or API
+ * @param {object} [fallbackCampaign] - optional client-side fallback (used when
+ *   the API response is missing campaign info, e.g. during mock runs)
  */
-export function toSAHero(payout, campaign = {}) {
+export function toSAHero(payout, fallbackCampaign = {}) {
   if (!payout) {
     heroWarn('grocery:sa:null-payout', { payout });
     return null;
@@ -30,20 +31,23 @@ export function toSAHero(payout, campaign = {}) {
   const staffCount = Math.max(1, safeNum(payout.staffCount, 1));
   const individualPayout = safeNum(payout.individualPayout, 0);
 
+  // Prefer API-sourced campaign; fall back to whatever the caller supplied
+  const campaign = payout.campaign ?? fallbackCampaign ?? {};
+  const campaignStart = campaign.campaignStart || campaign.startDate;
+  const campaignEnd = campaign.campaignEnd || campaign.endDate;
+
   return {
     context: {
       vertical: 'GROCERY',
       role: 'SA',
       periodKind: 'campaign',
-      periodStart: campaign.campaignStart,
-      periodEnd: campaign.campaignEnd,
-      // TODO(api): campaign dates should come from API so hero works without
-      // data/configs.js fallback
+      periodStart: campaignStart,
+      periodEnd: campaignEnd,
     },
     campaign: {
       title: campaign.campaignName || 'Live campaign',
-      start: campaign.campaignStart,
-      end: campaign.campaignEnd,
+      start: campaignStart,
+      end: campaignEnd,
       geography: campaign.geography,
       channel: campaign.channel,
     },
@@ -66,10 +70,10 @@ export function toSAHero(payout, campaign = {}) {
     },
     rate: {
       unitsSold: piecesSoldTotal,
+      myUnitsSold: safeNum(payout.myPiecesSold, 0),
       unitLabel: 'pcs',
       appliedRate,
       rateUnit: '/pc',
-      // TODO(api): myUnitsSold (per-employee pieces) not yet in API; using store total
     },
     pool: {
       storePool: totalStoreIncentive,
@@ -80,7 +84,8 @@ export function toSAHero(payout, campaign = {}) {
     },
     temporal: {
       payoutDate: payout.nextPayoutDate,
-      // TODO(api): daysLeftInCampaign — derived from campaign.campaignEnd client-side
+      daysLeftInPeriod: safeNum(payout.workingDays?.daysLeft, 0),
+      workingDays: payout.workingDays,
     },
     comparison: safeNum(payout.lastCampaignPayoutPerEmp, 0) > 0
       ? {

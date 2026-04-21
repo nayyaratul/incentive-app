@@ -5,14 +5,14 @@ import { usePersona } from '../../context/PersonaContext';
 import useAsync from '../../hooks/useAsync';
 import { fetchSales } from '../../api/sales';
 import { fetchEmployees } from '../../api/employees';
-import { fetchStoreIncentive } from '../../api/incentives';
+import { fetchStoreIncentive, fetchStoreLeaderboard } from '../../api/incentives';
 import HeaderBar, { HeaderGreeting } from '../../components/Organism/HeaderBar/HeaderBar';
 import BottomNav from '../../components/Organism/BottomNav/BottomNav';
 import LeaderboardDrawer from '../../components/Organism/LeaderboardDrawer/LeaderboardDrawer';
 import LeaderboardPodium from '../../components/Molecule/LeaderboardPodium/LeaderboardPodium';
 import LeaderboardFocusList from '../../components/Molecule/LeaderboardFocusList/LeaderboardFocusList';
 import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader';
-import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
+import { buildStoreLeaderboard, mapStoreLeaderboardResponse } from '../../data/storeLeaderboard';
 import ComplianceLink from '../../components/Molecule/ComplianceLink/ComplianceLink';
 import BadgesStrip from '../../components/Widgets/BadgesStrip/BadgesStrip';
 import QuestCard from '../../components/Widgets/QuestCard/QuestCard';
@@ -72,10 +72,21 @@ export default function BrandAssociateHome() {
     [employee, active?.vertical, salesResult.data, myContribution]
   );
 
-  // Store-level leaderboard (stores vs stores)
-  const storeRank = active?.vertical && store?.storeCode
-    ? buildStoreLeaderboard(active.vertical, store.storeCode)
+  const leaderboardResult = useAsync(
+    () => {
+      if (!active?.vertical || !store?.city) return Promise.resolve(null);
+      return fetchStoreLeaderboard({ vertical: active.vertical, city: store.city });
+    },
+    [active?.vertical, store?.city],
+  );
+
+  const apiStoreLeaderboard = leaderboardResult.data
+    ? mapStoreLeaderboardResponse(leaderboardResult.data, { vertical: active?.vertical })
     : null;
+  const storeRank = apiStoreLeaderboard
+    || (active?.vertical && store?.storeCode
+        ? buildStoreLeaderboard(active.vertical, store.storeCode)
+        : null);
   const storeLeaderboard = storeRank;
 
   const dataLoading = salesResult.loading || teamResult.loading || storeDetailResult.loading;

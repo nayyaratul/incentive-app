@@ -6,9 +6,9 @@ import { safeNum, safeArray, heroWarn } from '@/components/Molecule/HeroCard/saf
 // Helpers
 // ---------------------------------------------------------------------------
 
-function nextPayoutDate() {
-  // TODO(api): backend should return authoritative payout date (weekly for F&L)
-  return dayjs().add(1, 'month').startOf('month').date(7).format('YYYY-MM-DD');
+/** Backend is authoritative via `payoutDate`; this is a soft fallback. */
+function fallbackPayoutDate() {
+  return dayjs().add(1, 'week').day(5).format('YYYY-MM-DD');
 }
 
 function buildStreakShape(weeks) {
@@ -27,54 +27,6 @@ function buildStreakShape(weeks) {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Leaderboard synthesis (mock). TODO(api): replace with peers endpoint.
-// ---------------------------------------------------------------------------
-
-const FNL_PEER_NAMES = [
-  'Rahul Shetty',
-  'Ishaan Joshi',
-  'Dhruv Joshi',
-  'Pooja Kulkarni',
-  'Kavya Sen',
-];
-
-function buildFnlMyRank(detail, saPayoutEach) {
-  const cs = detail?.currentStanding ?? {};
-  const employee = detail?.employee ?? {};
-  const myName = employee.employeeName || employee.employeeId || 'You';
-  const myPayout = safeNum(cs.yourPayout, 0)
-    || safeNum(cs.currentPayout, 0)
-    || safeNum(cs.currentWeekPayout, 0)
-    || safeNum(saPayoutEach, 0);
-
-  const peerDeltas = [0.35, 0.18, -0.08, -0.2];
-  const fallbackBase = myPayout > 0 ? myPayout : 1100;
-  const peers = FNL_PEER_NAMES.slice(0, 4).map((name, i) => ({
-    name,
-    earned: Math.max(0, Math.round(fallbackBase * (1 + peerDeltas[i]))),
-    isSelf: false,
-  }));
-
-  const selfEntry = { name: myName, earned: Math.max(0, Math.round(myPayout)), isSelf: true };
-  const sorted = [...peers, selfEntry]
-    .sort((a, b) => b.earned - a.earned)
-    .map((e, i) => ({ ...e, rank: i + 1 }));
-
-  const self = sorted.find((e) => e.isSelf);
-  const selfIdx = sorted.findIndex((e) => e.isSelf);
-  const deltaAbove = selfIdx > 0 ? sorted[selfIdx - 1].earned - self.earned : 0;
-
-  return {
-    rank: self.rank,
-    deltaAbove,
-    scope: 'store',
-    scopeNote: 'by weekly payout',
-    unitLabel: 'earned',
-    top: sorted,
-  };
-}
-
 function defaultShape() {
   return {
     weekStart: null,
@@ -83,7 +35,7 @@ function defaultShape() {
     actualWeeklyGrossSales: 0,
     storeQualifies: false,
     totalStoreIncentive: 0,
-    staffing: { sms: 0, dms: 0, eligibleSaCount: 0 },
+    staffing: { sms: 0, dms: 0, eligibleSaCount: 0, minWorkingDays: 5 },
     split: { saPoolPct: 0, smSharePct: 0, dmSharePctEach: 0 },
     saPool: 0,
     smPayout: 0,
@@ -93,9 +45,9 @@ function defaultShape() {
     myAttendanceDays: 0,
     myAttendanceEligible: false,
     lastWeekSaPayout: 0,
-    nextPayoutDate: nextPayoutDate(),
+    nextPayoutDate: fallbackPayoutDate(),
+    workingDays: { current: 0, total: 0, daysLeft: 0 },
     streak: { current: 0, longest: 0, lastActiveDay: null, kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
-    myRank: { rank: 0, deltaAbove: 0, scope: 'store', top: [] },
     employees: [],
     recentWeeks: [],
     weekPayouts: [],
@@ -145,6 +97,14 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
   const dmSharePctEach = safeNum(roleSplit.dmSharePerDmPct, 0);
   const eligibleSaCount = safeNum(cs.eligibleSAs, 0);
 
+  const apiStaffing = detail.staffing ?? {};
+  const staffing = {
+    sms: safeNum(apiStaffing.sms, 0),
+    dms: safeNum(apiStaffing.dms, 0),
+    eligibleSaCount: safeNum(apiStaffing.eligibleSAs, eligibleSaCount),
+    minWorkingDays: safeNum(apiStaffing.minWorkingDays, 5),
+  };
+
   const saPool = storePool * (saPoolPct / 100);
   const smPayout = storePool * (smSharePct / 100);
   const dmPayoutEach = storePool * (dmSharePctEach / 100);
@@ -169,8 +129,7 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     totalIncentive: safeNum(w.payout, 0),
   }));
 
-  // Per-week payout shapes for the period selector. Reads `weeklyOnly[i-1]`
-  // for prevW instead of the old `weeks[i-1]` (which was the pre-sort array).
+  // Per-week payout shapes for the period selector.
   const weekPayouts = weeklyOnly.map((w, i) => {
     const wTarget = safeNum(w.targetValue, 0);
     const wActual = safeNum(w.actualSales, 0);
@@ -188,7 +147,7 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
       lastWeekSaPayout: safeNum(prevW?.payout, 0),
       myAttendanceDays: safeNum(cs.yourAttendanceDays, 0),
       myAttendanceEligible: Boolean(cs.attendanceEligible),
-      staffing: { sms: 0, dms: 0, eligibleSaCount },
+      staffing,
       split: { saPoolPct, smSharePct, dmSharePctEach },
     };
   });
@@ -207,9 +166,11 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     myPayout: weekPayouts.reduce((s, w) => s + w.myPayout, 0),
     myAttendanceDays: safeNum(cs.yourAttendanceDays, 0),
     myAttendanceEligible: Boolean(cs.attendanceEligible),
-    staffing: { sms: 0, dms: 0, eligibleSaCount },
+    staffing,
     split: { saPoolPct, smSharePct, dmSharePctEach },
   };
+
+  const wd = detail.workingDays ?? {};
 
   return {
     weekStart,
@@ -218,11 +179,7 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     actualWeeklyGrossSales: weeklyActual,
     storeQualifies: exceeded,
     totalStoreIncentive: storePool,
-    staffing: {
-      sms: 0,  // TODO(api): needs attendance endpoint
-      dms: 0,  // TODO(api): needs attendance endpoint
-      eligibleSaCount,
-    },
+    staffing,
     split: { saPoolPct, smSharePct, dmSharePctEach },
     saPool,
     smPayout,
@@ -232,10 +189,14 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     myAttendanceDays: safeNum(cs.yourAttendanceDays, 0),
     myAttendanceEligible: Boolean(cs.attendanceEligible),
     lastWeekSaPayout,
-    nextPayoutDate: nextPayoutDate(),
+    nextPayoutDate: detail.payoutDate || fallbackPayoutDate(),
+    workingDays: {
+      current: safeNum(wd.current, 0),
+      total: safeNum(wd.total, 0),
+      daysLeft: safeNum(wd.daysLeft, 0),
+    },
     streak: buildStreakShape(rawWeeks),
-    myRank: buildFnlMyRank(detail, saPayoutEach),
-    employees: [], // TODO(api): needs attendance endpoint
+    employees: safeArray(detail.roster),
     recentWeeks,
     weekPayouts,
     monthAggregate,

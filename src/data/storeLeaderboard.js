@@ -1,7 +1,56 @@
 /**
- * Mock store-level leaderboard data — ranked by achievement %.
- * Grouped by vertical. The user's current store is marked with `isSelf: true`.
+ * Store leaderboard helpers.
+ *
+ * Primary path: map a backend `StoreLeaderboardResult` into the UI shape
+ * consumed by `LeaderboardDrawer` / `LeaderboardPodium` / `LeaderboardFocusList`.
+ *
+ * Fallback path (`buildStoreLeaderboard`): builds the same shape from local
+ * mocks. Used only when the API is unreachable or mock mode is forced.
  */
+
+const SCOPE_NOTE_BY_VERTICAL = {
+  ELECTRONICS: 'Reliance Digital stores',
+  GROCERY: 'Grocery stores',
+  FNL: 'Trends stores',
+};
+
+/**
+ * Convert a backend `/api/leaderboard` response into the shape the drawer /
+ * podium / focus list consume.
+ */
+export function mapStoreLeaderboardResponse(response, { vertical } = {}) {
+  if (!response || !Array.isArray(response.leaderboard)) return null;
+  const board = response.leaderboard;
+  const viewerStoreCode = response.viewer?.storeCode ?? response.myRank?.storeCode ?? null;
+
+  const top = board.map((row) => ({
+    rank: row.rank,
+    name: row.storeName,
+    earned: Number(row.achievementPct) || 0,
+    isSelf: Boolean(row.isViewerStore) || row.storeCode === viewerStoreCode,
+    storeCode: row.storeCode,
+    city: row.city,
+  }));
+
+  const selfIdx = top.findIndex((r) => r.isSelf);
+  const deltaAbove = selfIdx > 0 ? top[selfIdx - 1].earned - top[selfIdx].earned : 0;
+  const resolvedVertical = vertical || response.vertical;
+
+  return {
+    rank: response.myRank?.rank ?? (selfIdx >= 0 ? top[selfIdx].rank : 0),
+    deltaAbove,
+    scope: 'stores',
+    scopeNote: SCOPE_NOTE_BY_VERTICAL[resolvedVertical] || 'store rankings',
+    unitLabel: 'achievement',
+    top,
+    city: response.city,
+    periodLabel: response.period?.label,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Local mock fallback — used only when the API is unreachable.
+// ---------------------------------------------------------------------------
 
 export const storeLeaderboards = {
   ELECTRONICS: [
@@ -35,15 +84,10 @@ export const storeLeaderboards = {
   ],
 };
 
-/**
- * Build the leaderboard shape that LeaderboardDrawer expects,
- * for the given vertical and current store.
- */
 export function buildStoreLeaderboard(vertical, storeCode) {
   const stores = storeLeaderboards[vertical];
   if (!stores || stores.length === 0) return null;
 
-  // Sort by achievement % descending, assign ranks
   const sorted = [...stores]
     .sort((a, b) => b.achievementPct - a.achievementPct)
     .map((s, i) => ({
@@ -57,20 +101,13 @@ export function buildStoreLeaderboard(vertical, storeCode) {
 
   const selfIdx = sorted.findIndex((s) => s.isSelf);
   const selfRank = selfIdx >= 0 ? selfIdx + 1 : 0;
-  const deltaAbove =
-    selfIdx > 0
-      ? sorted[selfIdx - 1].earned - sorted[selfIdx].earned
-      : 0;
+  const deltaAbove = selfIdx > 0 ? sorted[selfIdx - 1].earned - sorted[selfIdx].earned : 0;
 
   return {
     rank: selfRank,
     deltaAbove,
     scope: 'stores',
-    scopeNote: vertical === 'ELECTRONICS'
-      ? 'Reliance Digital stores'
-      : vertical === 'GROCERY'
-        ? 'Grocery stores'
-        : 'Trends stores',
+    scopeNote: SCOPE_NOTE_BY_VERTICAL[vertical] || 'store rankings',
     unitLabel: 'achievement',
     top: sorted,
   };

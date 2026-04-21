@@ -16,7 +16,9 @@ import TabPageHeader from '../../components/Molecule/TabPageHeader/TabPageHeader
 import ElectronicsView from './views/ElectronicsView';
 import GroceryView from './views/GroceryView';
 import FnlView from './views/FnlView';
-import { buildStoreLeaderboard } from '../../data/storeLeaderboard';
+import { buildStoreLeaderboard, mapStoreLeaderboardResponse } from '../../data/storeLeaderboard';
+import { fetchStoreLeaderboard } from '../../api/incentives';
+import useAsync from '../../hooks/useAsync';
 import HistoryScreen from '../screens/HistoryScreen';
 
 const useMock = process.env.REACT_APP_USE_MOCK_DATA === 'true';
@@ -42,16 +44,24 @@ export default function EmployeeHome() {
   const activeDataReady = isElec ? !!elec.payout : isGroc ? !!groc.payout : isFnl ? !!fnl.payout : false;
   const myPayout = isElec ? elec.payout : isGroc ? groc.payout : isFnl ? fnl.payout : null;
 
-  // Employee rank within store — used by drawer and header pill
-  const storeRank = myPayout?.myRank
+  // Store leaderboard: API first, local mock as fallback.
+  const leaderboardResult = useAsync(
+    () => {
+      if (!active?.vertical || !store?.city) return Promise.resolve(null);
+      if (useMock) return Promise.resolve(null);
+      return fetchStoreLeaderboard({ vertical: active.vertical, city: store.city });
+    },
+    [active?.vertical, store?.city, refreshKey],
+  );
+
+  const apiStoreLeaderboard = leaderboardResult.data
+    ? mapStoreLeaderboardResponse(leaderboardResult.data, { vertical: active?.vertical })
+    : null;
+  const storeRank = apiStoreLeaderboard
     || (active?.vertical && store?.storeCode
         ? buildStoreLeaderboard(active.vertical, store.storeCode)
         : null);
-
-  // Store-level leaderboard (stores vs stores) — used by the board tab
-  const storeLeaderboard = active?.vertical
-    ? buildStoreLeaderboard(active.vertical, store?.storeCode)
-    : null;
+  const storeLeaderboard = storeRank;
 
   /* Pull-to-refresh — triggers a re-render that reloads data hooks */
   const handleRefresh = useCallback(() => {
