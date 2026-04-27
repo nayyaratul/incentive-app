@@ -51,12 +51,18 @@ export function toSAHero(payout, fallbackCampaign = {}) {
       geography: campaign.geography,
       channel: campaign.channel,
     },
+    // Round-1 testing comment E087: "SA's primary number should be their own
+    // incentive in ₹, not the store's achievement %." Achievement % moves into
+    // the progress bar / label below; the hero's eye-catching number is now
+    // what they actually earn. Falls back to 0 — UI handles the empty state.
     primary: {
-      amount: achievementPct,
-      label: `of ${target > 0 ? '₹' + target.toLocaleString('en-IN') : 'campaign target'}`,
-      prefix: '',
-      suffix: '%',
-      tone: achievementPct >= 100 ? 'success' : undefined,
+      amount: individualPayout,
+      label: achievementPct >= 100
+        ? `at ${achievementPct}% of campaign`
+        : `${achievementPct}% of campaign so far`,
+      prefix: '₹',
+      suffix: '',
+      tone: individualPayout > 0 ? 'success' : undefined,
     },
     progress: {
       achievementPct,
@@ -67,6 +73,9 @@ export function toSAHero(payout, fallbackCampaign = {}) {
       max: 130,
       banner: pickBannerTone(achievementPct, 100),
       unlockPct: 100,
+      // E121: surface incomplete state explicitly — VerticalHero renders a
+      // muted/red bar segment when this is true and achievementPct < 100.
+      incomplete: achievementPct < 100,
     },
     rate: {
       unitsSold: piecesSoldTotal,

@@ -137,11 +137,16 @@ function Figures({ children, dense = false, noBottomDivider = false }) {
   );
 }
 
-function Figure({ label, value, cap, sub }) {
+function Figure({ label, value, cap, sub, tone }) {
+  // E121: optional `tone="danger"` to call out an incomplete/short figure
+  // (used when the achieved sales is short of target on Grocery campaigns).
+  const valueClass = tone === 'danger'
+    ? `${styles.figValue} ${styles.figValueDanger}`
+    : styles.figValue;
   return (
     <div className={styles.figure}>
       {label && <div className={styles.figLabel}>{label}</div>}
-      <div className={styles.figValue}>{value}</div>
+      <div className={valueClass}>{value}</div>
       {cap && <div className={styles.figCap}>{cap}</div>}
       {sub && <div className={styles.figSub}>{sub}</div>}
     </div>

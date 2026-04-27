@@ -94,3 +94,42 @@
   padding: 3px 6px;
   border-radius: 4px;
 }
+
+/* E005: highlight the SA's own department row with a subtle accent border so
+   "this one is yours" is unmistakable when this card co-exists with other
+   department rows. */
+.rowMine {
+  border-color: var(--color-brand, #BD2925);
+  background: var(--color-bg-card, var(--color-bg-elevated));
+}
+
+.youTag {
+  margin-left: 8px;
+  display: inline-block;
+  padding: 1px 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-brand, #BD2925);
+  background: rgba(189, 41, 37, 0.10);
+  border: 1px solid rgba(189, 41, 37, 0.22);
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+/* E005: explicit Base × Multiplier = Final calc, shown under the SA's own
+   department only. Mono font keeps the math visually scannable. */
+.calc {
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.01em;
+  span { color: var(--color-text-tertiary); margin: 0 2px; }
+  strong {
+    font-family: var(--sans);
+    color: var(--color-text-primary);
+    font-weight: 700;
+  }
+}

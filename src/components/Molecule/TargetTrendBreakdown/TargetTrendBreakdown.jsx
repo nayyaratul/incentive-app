@@ -25,20 +25,30 @@ export default function TargetTrendBreakdown({
   targetValue,
   achievedLabel = 'sales achieved',
   targetLabel = 'target',
+  // Round-1 testing comment E121: "When campaign is below 100%, the visual
+  // doesn't make incompleteness obvious." When `incomplete` is true and the
+  // actual is short of target, render the achieved figure with a danger tone
+  // so it pops out against the target — calibrated to the existing design
+  // tokens (--danger / --danger-text).
+  incomplete = false,
 }) {
-  const variance = (Number(actualValue) || 0) - (Number(targetValue) || 0);
-  const pctText = variancePctText(variance, targetValue);
+  const target = Number(targetValue) || 0;
+  const actual = Number(actualValue) || 0;
+  const variance = actual - target;
+  const pctText = variancePctText(variance, target);
+  const showIncomplete = incomplete && actual < target;
 
   return (
     <>
       <HeroCard.Figures noBottomDivider>
         <HeroCard.Figure
-          value={formatINR(actualValue)}
+          value={formatINR(actual)}
           cap={achievedLabel}
+          tone={showIncomplete ? 'danger' : undefined}
         />
         <HeroCard.FigureDivider />
         <HeroCard.Figure
-          value={formatINR(targetValue)}
+          value={formatINR(target)}
           cap={targetLabel}
         />
       </HeroCard.Figures>

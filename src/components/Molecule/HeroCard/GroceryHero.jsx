@@ -50,8 +50,17 @@ function GroceryHero(props) {
         </>
       )}
 
-      <HeroCard.Amount suffix="%" tone={primary.tone}>
-        {primary.amount}
+      {/* E087: SA primary now shows ₹ payout (mapper sets prefix='₹'); SM/DM
+          still passes %. We honor whatever the mapper set instead of hard-
+          coding suffix here — keeps the hero one component for both roles. */}
+      <HeroCard.Amount
+        prefix={primary.prefix}
+        suffix={primary.suffix}
+        tone={primary.tone}
+      >
+        {primary.prefix === '₹'
+          ? (primary.amount || 0).toLocaleString('en-IN')
+          : primary.amount}
       </HeroCard.Amount>
       <HeroCard.AmountCap>
         {primary.label || (progress.target > 0 ? `of ${formatINR(progress.target)} campaign target` : 'campaign target')}
@@ -61,6 +70,7 @@ function GroceryHero(props) {
         <TargetTrendBreakdown
           actualValue={progress.actual}
           targetValue={progress.target}
+          incomplete={progress.incomplete}
         />
       )}
 

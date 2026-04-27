@@ -364,6 +364,14 @@
   font-variant-numeric: tabular-nums;
 }
 
+// E121: when actual is short of target on a Grocery campaign, render the
+// achieved figure in the danger token so the incomplete state is visually
+// loud — was previously the same colour as the target, which made the gap
+// invisible at a glance on the hero.
+.figValueDanger {
+  color: var(--color-danger, #BD2925);
+}
+
 // Dense variant — used when 3+ figures share a narrow row. Reduces the value
 // size from 24 → 18 so long INR strings don't overflow their column.
 .figures.dense {

@@ -81,7 +81,15 @@ export default function ElectronicsView({ payout, employee, store, role, multipl
       {!isIneligible && (
         <section className={`${styles.pad} rise rise-3`}>
           <WidgetBoundary name="dept-multipliers">
-            <DepartmentMultipliers departments={byDepartment} tiers={multiplierTiers} />
+            {/* E005: pass the SA's own department so the matching row is
+                highlighted with a "you" tag and shows the explicit
+                Base × Multiplier = Final calc beneath it. SM/DM views omit
+                this prop and continue to see the full table. */}
+            <DepartmentMultipliers
+              departments={byDepartment}
+              tiers={multiplierTiers}
+              myDepartment={role === 'SA' ? employee?.department : undefined}
+            />
           </WidgetBoundary>
         </section>
       )}
