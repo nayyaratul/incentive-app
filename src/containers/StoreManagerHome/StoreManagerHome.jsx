@@ -692,7 +692,7 @@ export default function StoreManagerHome() {
                             { label: 'Format', value: store.storeFormat },
                             { label: 'City · State', value: `${store.city}, ${store.state}` },
                             { label: 'Status', value: store.storeStatus },
-                            { label: 'Operational days', value: `${store.operationalDaysInMonth} / 30` },
+                            { label: 'Operational days', value: `${store.operationalDaysInMonth ?? '—'} / 30` },
                           ].map((it) => (
                             <div key={it.label} className={styles.compactRow}>
                               <dt className={styles.compactLabel}>{it.label}</dt>
@@ -739,7 +739,7 @@ export default function StoreManagerHome() {
                             { label: 'Format', value: store.storeFormat },
                             { label: 'City · State', value: `${store.city}, ${store.state}` },
                             { label: 'Status', value: store.storeStatus },
-                            { label: 'Operational days', value: `${store.operationalDaysInMonth} / 30` },
+                            { label: 'Operational days', value: `${store.operationalDaysInMonth ?? '—'} / 30` },
                           ].map((it) => (
                             <div key={it.label} className={styles.compactRow}>
                               <dt className={styles.compactLabel}>{it.label}</dt>
@@ -765,7 +765,7 @@ export default function StoreManagerHome() {
                             { label: 'Format', value: store.storeFormat },
                             { label: 'City · State', value: `${store.city}, ${store.state}` },
                             { label: 'Status', value: store.storeStatus },
-                            { label: 'Operational days', value: `${store.operationalDaysInMonth} / 30` },
+                            { label: 'Operational days', value: `${store.operationalDaysInMonth ?? '—'} / 30` },
                           ].map((it) => (
                             <div key={it.label} className={styles.compactRow}>
                               <dt className={styles.compactLabel}>{it.label}</dt>

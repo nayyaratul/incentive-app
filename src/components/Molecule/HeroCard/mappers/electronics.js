@@ -54,14 +54,20 @@ export function toSAHero(payout, opts = {}) {
   const unlockTier = firstUnlockTier(payout.apiMultiplierTiers);
   const unlockPct = safeNum(unlockTier?.from ?? unlockTier?.achievementFrom, 85);
 
-  // Gap to next tier (client-derived)
+  // Gap to next tier (client-derived). Suppressed when the backend says the
+  // achievement nudge wouldn't help — e.g. NOTICE_PERIOD or DEPT_NO_SLABS.
+  // (The mobile used to show "reach 85%" even for AIOT employees who have no
+  // slabs in the plan — this is the bug fix.)
+  const showNudge = payout.eligibility
+    ? Boolean(payout.eligibility.showAchievementNudge)
+    : true;
   const apiTiers = safeArray(payout.apiMultiplierTiers);
   const sorted = [...apiTiers].sort(
     (a, b) => safeNum(a.from ?? a.achievementFrom) - safeNum(b.from ?? b.achievementFrom),
   );
   const nextTier = sorted.find((t) => achievementPct < safeNum(t.from ?? t.achievementFrom));
   const nextTierPct = nextTier ? safeNum(nextTier.from ?? nextTier.achievementFrom) : null;
-  const gapToNext = nextTierPct != null
+  const gapToNext = showNudge && nextTierPct != null
     ? {
         atPct: nextTierPct,
         nextMultiplierPct: safeNum(nextTier.multiplierPct),

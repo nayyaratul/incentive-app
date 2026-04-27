@@ -119,21 +119,30 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
   const prevWeek = weeklyOnly.length >= 2 ? weeklyOnly[weeklyOnly.length - 2] : null;
   const lastWeekSaPayout = safeNum(prevWeek?.payout, 0);
 
-  // Recent weeks for trajectory section
+  // Recent weeks for trajectory section.
+  //
+  // BUG FIX (round-1 testing E183): the previous code derived `storeQualified`
+  // locally as `actualSales >= targetValue`. When both were 0 (data anomaly,
+  // missing target, or unqualified week), `0 >= 0` evaluated to TRUE and the
+  // banner showed "3/3 weeks qualified" even when no week qualified. Backend
+  // engine uses strict `>` (see `engines.ts` `hasExceeded`) and writes the
+  // result to `calculationDetails.storeQualified`, surfaced as `w.storeQualified`
+  // in the API response. Treat backend as authoritative.
   const recentWeeks = weeklyOnly.map((w) => ({
     weekStart: w.periodStart,
     weekEnd: w.periodEnd,
     target: safeNum(w.targetValue, 0),
     actual: safeNum(w.actualSales, 0),
-    storeQualified: safeNum(w.actualSales, 0) >= safeNum(w.targetValue, 0),
+    storeQualified: Boolean(w.storeQualified),
     totalIncentive: safeNum(w.payout, 0),
+    eligibility: w.eligibility ?? null,
   }));
 
   // Per-week payout shapes for the period selector.
   const weekPayouts = weeklyOnly.map((w, i) => {
     const wTarget = safeNum(w.targetValue, 0);
     const wActual = safeNum(w.actualSales, 0);
-    const wExceeded = wActual >= wTarget;
+    const wExceeded = Boolean(w.storeQualified);
     const wPayout = safeNum(w.payout, 0);
     const prevW = i > 0 ? weeklyOnly[i - 1] : null;
     return {
@@ -149,6 +158,9 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
       myAttendanceEligible: Boolean(cs.attendanceEligible),
       staffing,
       split: { saPoolPct, smSharePct, dmSharePctEach },
+      // Per-week structured eligibility — drives EligibilityNotice and the
+      // 5-day attendance card visibility on FnlView.
+      eligibility: w.eligibility ?? null,
     };
   });
 
