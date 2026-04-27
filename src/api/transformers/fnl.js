@@ -12,10 +12,19 @@ function fallbackPayoutDate() {
 }
 
 function buildStreakShape(weeks) {
-  const mapped = safeArray(weeks).map((w) => ({
-    earned: safeNum(w?.payout, 0),
-    soldAt: w?.periodStart,
-  }));
+  // Phase 5.1 (F&L pilot, Reliance Trends Incentive Policy v1) — a week
+  // counts toward the streak only when payout > 0. The new gates (PI HOLD,
+  // GM not achieved, leave-in-week) all zero out payout via the engine,
+  // so the existing payout-based streak naturally accounts for them. We
+  // explicitly drop weeks where the backend marks them on PI hold even if
+  // somehow a residual payout slipped through (defense-in-depth — the
+  // gate is supposed to zero everything).
+  const mapped = safeArray(weeks)
+    .filter((w) => !(w?.piHoldFlag === true))
+    .map((w) => ({
+      earned: safeNum(w?.payout, 0),
+      soldAt: w?.periodStart,
+    }));
   const result = computeStreak(mapped, new Date());
   return {
     current: result.current,
@@ -136,6 +145,15 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     storeQualified: Boolean(w.storeQualified),
     totalIncentive: safeNum(w.payout, 0),
     eligibility: w.eligibility ?? null,
+    // Phase 5.1 — F&L pilot. Forward the PI/GM gate state so the trajectory
+    // strip can render a "PI hold" pill on bad weeks and a "GM missed"
+    // chip for managers. Null when no metric was ingested for the week
+    // (admin can chase the missing feed; UI should treat as unknown).
+    pilferageIndex: w.pilferageIndex ?? null,
+    piHoldFlag: w.piHoldFlag ?? null,
+    gmTarget: w.gmTarget ?? null,
+    gmActual: w.gmActual ?? null,
+    gmAchieved: w.gmAchieved ?? null,
   }));
 
   // Per-week payout shapes for the period selector.
@@ -161,6 +179,14 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
       // Per-week structured eligibility — drives EligibilityNotice and the
       // 5-day attendance card visibility on FnlView.
       eligibility: w.eligibility ?? null,
+      // Phase 5.1 — F&L pilot. PI/GM forwarded to the period selector so
+      // the manager's hero card can show "GM missed (3.2% vs 4.0%)" and
+      // the SA's hero can show a PI HOLD banner without a second fetch.
+      pilferageIndex: w.pilferageIndex ?? null,
+      piHoldFlag: w.piHoldFlag ?? null,
+      gmTarget: w.gmTarget ?? null,
+      gmActual: w.gmActual ?? null,
+      gmAchieved: w.gmAchieved ?? null,
     };
   });
 
@@ -183,6 +209,16 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
   };
 
   const wd = detail.workingDays ?? {};
+
+  // Phase 5.1 — Top-level current-week PI/GM. Pulled from the current week
+  // entry in the period selector so the hero card and manager hero card
+  // can render the PI HOLD banner / GM-missed chip without recomputing.
+  const currentMetric = currentWeek ?? null;
+  const pilferageIndex = currentMetric?.pilferageIndex ?? null;
+  const piHoldFlag = currentMetric?.piHoldFlag ?? null;
+  const gmTarget = currentMetric?.gmTarget ?? null;
+  const gmActual = currentMetric?.gmActual ?? null;
+  const gmAchieved = currentMetric?.gmAchieved ?? null;
 
   return {
     weekStart,
@@ -212,5 +248,13 @@ export function transformFnlPayout(detail, _ruleSplits, _storeEmployees) {
     recentWeeks,
     weekPayouts,
     monthAggregate,
+    // Phase 5.1 — F&L pilot: hero-level PI/GM. Null when no metric was
+    // ingested for the current week. UI should treat null as "no data
+    // yet" (don't show a green check, don't show a red flag).
+    pilferageIndex,
+    piHoldFlag,
+    gmTarget,
+    gmActual,
+    gmAchieved,
   };
 }
