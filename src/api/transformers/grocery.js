@@ -43,8 +43,38 @@ function defaultShape() {
     lastCampaignPayoutPerEmp: 0,
     nextPayoutDate: fallbackPayoutDate(),
     workingDays: { current: 0, total: 0, daysLeft: 0 },
-    streak: { current: 0, longest: 0, lastActiveDay: null, kind: 'working-days-active', label: 'working days', caption: 'present + selling' },
+    streak: {
+      current: 0,
+      longest: 0,
+      lastActiveDay: null,
+      kind: 'working-days-active',
+      label: 'working days',
+      caption: 'present + selling',
+    },
     projections: [],
+    // Phase 6.1 — Grocery HR Sales pilot defaults. The hero card and
+    // manager view drive off these when present; null = "no monthly data
+    // yet" and the UI hides the HR Sales section entirely.
+    mode: null,
+    formatTier: null,
+    roleBucket: null,
+    slabAmount: 0,
+    salesAchievementPct: null,
+    salesBucket: null,
+    salesStatus: null,
+    mysteryShopperRating: null,
+    popComplianceRating: null,
+    attendance: null,
+    awlDays: null,
+    actualWorkingDays: null,
+    salesBudgetRsLacs: null,
+    salesActualRsLacs: null,
+    // Phase 6.1 — Category PIP defaults.
+    pipPlan: null,
+    pipPerArticle: [],
+    pipStorePool: 0,
+    pipEarnerCount: 0,
+    pipFundingSource: null,
   };
 }
 
@@ -127,5 +157,42 @@ export function transformGroceryPayout(detail, _fallbackCampaign, salesRows) {
     },
     streak: buildStreakShape(salesRows),
     projections,
+    // Phase 6.1 — Grocery HR Sales pilot. Forwarded from
+    // `calculationDetails` on the latest matching ledger row (the backend
+    // surfaces these via `currentStanding.hrSales` when `plan.config.mode
+    // === 'HR_SALES'`). Null when the employee has no HR Sales row this
+    // period (e.g., they're on a Category PIP campaign instead, or the
+    // monthly metric hasn't been ingested yet).
+    mode: cs.hrSales?.mode ?? cs.mode ?? null,
+    formatTier: cs.hrSales?.formatTier ?? null,
+    roleBucket: cs.hrSales?.roleBucket ?? null,
+    slabAmount: safeNum(cs.hrSales?.slabAmount, 0),
+    salesAchievementPct: cs.hrSales?.salesAchievementPct ?? null,
+    salesBucket: cs.hrSales?.salesBucket ?? null,
+    salesStatus: cs.hrSales?.salesStatus ?? null,
+    mysteryShopperRating: cs.hrSales?.mysteryShopperRating ?? null,
+    popComplianceRating: cs.hrSales?.popComplianceRating ?? null,
+    attendance: cs.hrSales?.attendance ?? null,
+    awlDays: cs.hrSales?.awlDays ?? null,
+    actualWorkingDays: cs.hrSales?.workingDays ?? null,
+    salesBudgetRsLacs: cs.hrSales?.salesBudgetRsLacs ?? null,
+    salesActualRsLacs: cs.hrSales?.salesActualRsLacs ?? null,
+    // Phase 6.1 — Category PIP forwarding. Per-article breakdown lets the
+    // mobile drilldown render a "you sold X / target Y, qualifying yes/no"
+    // table per SKU, so an employee on a vendor-funded Ice Cream campaign
+    // sees the granular picture instead of a single store-pool number.
+    pipPlan: cs.pip
+      ? {
+          campaignName: cs.pip.campaignName ?? null,
+          fundingSource: cs.pip.fundingSource ?? null,
+          attribution: cs.pip.attribution ?? null,
+          startDate: cs.pip.startDate ?? null,
+          endDate: cs.pip.endDate ?? null,
+        }
+      : null,
+    pipPerArticle: safeArray(cs.pip?.perArticle),
+    pipStorePool: safeNum(cs.pip?.storePool, 0),
+    pipEarnerCount: safeNum(cs.pip?.earnerCount, 0),
+    pipFundingSource: cs.pip?.fundingSource ?? null,
   };
 }
